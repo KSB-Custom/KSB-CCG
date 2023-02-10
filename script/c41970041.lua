@@ -144,7 +144,7 @@ function s.setop(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.SelectMatchingCard(tp,s.setfilter,tp,0,LOCATION_ONFIELD,1,1,nil)
 	if #g>0 then
 		Duel.HintSelection(g)
-		Duel.ChangePosition(tc,POS_FACEDOWN_DEFENSE)
+		Duel.ChangePosition(g,POS_FACEDOWN_DEFENSE)
 	end
 end
 --BANISH
