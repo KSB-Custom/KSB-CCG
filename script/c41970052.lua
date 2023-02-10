@@ -9,13 +9,14 @@ function s.initial_effect(c)
 	e2:SetType(EFFECT_TYPE_SINGLE)
 	e2:SetCode(EFFECT_PIERCE)
 	c:RegisterEffect(e2)
-	--position
+	--position and decrease ATK
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(id,0))
-	e1:SetCategory(CATEGORY_POSITION)
+	e1:SetCategory(CATEGORY_POSITION+CATEGORY_ATKCHANGE)
 	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e1:SetProperty(EFFECT_FLAG_DELAY)
 	e1:SetCode(EVENT_SPSUMMON_SUCCESS)
+	e1:SetTarget(s.postg)
 	e1:SetOperation(s.posop)
 	c:RegisterEffect(e1)
 	--Destroy Special Summoned monster(s)
@@ -32,7 +33,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e3)
 	--pendulum set/spsummon
 	local e4=Effect.CreateEffect(c)
-	e4:SetDescription(aux.Stringid(id,0))
+	e4:SetDescription(aux.Stringid(id,2))
 	e4:SetCategory(CATEGORY_DESTROY+CATEGORY_SPECIAL_SUMMON)
 	e4:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
 	e4:SetCode(EVENT_PHASE+PHASE_END)
@@ -68,7 +69,7 @@ function s.initial_effect(c)
 	e7:SetRange(LOCATION_PZONE)
 	e7:SetCode(EFFECT_UPDATE_ATTACK)
 	e7:SetTargetRange(0,LOCATION_MZONE)
-	e7:SetValue(-400)
+	e7:SetValue(-600)
 	c:RegisterEffect(e7)
 	end
 --DESTROY SP SUMMON
@@ -126,6 +127,9 @@ function s.penop(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 --change to Defense
+function s.postg(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return Duel.IsExistingMatchingCard(aux.NOT(aux.FaceupFilter(Card.IsStatus,STATUS_BATTLE_DESTROYED)),tp,0,LOCATION_MZONE,1,nil) end
+end
 function s.posop(e,tp,eg,ep,ev,re,r,rp)
 local g=Duel.GetMatchingGroup(Card.IsFaceup,tp,0,LOCATION_MZONE,nil)
 		local tc=g:GetFirst()
