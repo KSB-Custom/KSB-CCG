@@ -44,6 +44,54 @@ function s.initial_effect(c)
 	e6:SetTarget(s.sptg)
 	e6:SetOperation(s.spop)
 	c:RegisterEffect(e6)
+	--Damage
+	local e4=Effect.CreateEffect(c)
+	e4:SetCategory(CATEGORY_RECOVER)
+	e4:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
+	e4:SetCode(EVENT_PHASE+PHASE_END)
+	e4:SetRange(LOCATION_PZONE)
+	e4:SetCountLimit(1,{id,3})
+	e4:SetTarget(s.damtg)
+	e4:SetOperation(s.damop)
+	c:RegisterEffect(e4)
+	--to deck
+	local e1=Effect.CreateEffect(c)
+	e1:SetDescription(aux.Stringid(id,0))
+	e1:SetCategory(CATEGORY_TODECK+CATEGORY_SPECIAL_SUMMON)
+	e1:SetType(EFFECT_TYPE_IGNITION)
+	e1:SetProperty(EFFECT_FLAG_DELAY)
+	e1:SetCountLimit(1,{id,4})
+	e1:SetRange(LOCATION_PZONE)
+	e1:SetTarget(s.tdtg)
+	e1:SetOperation(s.tdop)
+	c:RegisterEffect(e1)
+end
+--TO DECK AND SpecialSummon
+function s.tdfilter(c)
+	return c:IsAbleToDeck()
+end
+function s.spfilter2(c,e,tp,lv)
+	return c:IsSetCard(0x1065) and c:IsLevelBelow(lv) and c:IsCanBeSpecialSummoned(e,0,tp,false,false,POS_FACEUP)
+end
+function s.tdtg(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return Duel.IsExistingMatchingCard(s.tdfilter,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,nil) end
+	Duel.SetOperationInfo(0,CATEGORY_TODECK,nil,1,tp,LOCATION_GRAVE+LOCATION_REMOVED)
+end
+function s.tdop(e,tp,eg,ep,ev,re,r,rp)
+	local g=Duel.GetMatchingGroup(s.tdfilter,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,nil)
+	if #g==0 then return end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TODECK)
+	local sg=g:Select(tp,1,#g,nil)
+	local ct=Duel.SendtoDeck(sg,nil,2,REASON_EFFECT)
+	local dg=Duel.GetMatchingGroup(s.spfilter2,tp,LOCATION_DECK,0,nil,e,tp,ct)
+	if ct>0 and Duel.SelectYesNo(tp,aux.Stringid(id,1)) then
+		Duel.BreakEffect()
+		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
+		local tg=sg:Select(tp,1,1,nil)
+		if Duel.SpecialSummon(tg,0,tp,tp,false,false,POS_FACEUP)~=0 then
+			Duel.ConfirmCards(1-tp,tg)
+		end
+	end
 end
 --no damage
 function s.regop(e,tp,eg,ep,ev,re,r,rp)
@@ -131,10 +179,14 @@ function s.spop(e,tp,eg,ep,ev,re,r,rp)
 		tc:RegisterEffect(e1)
 	end
 end
-	--INMUNE EFFECT 
-function s.etarget(e,c)
-	return c:IsSetCard(0x1065)
+function s.damtg(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return true end
+	Duel.SetTargetParam(1000)
+	Duel.SetOperationInfo(0,CATEGORY_DAMAGE,nil,0,PLAYER_ALL,1000)
 end
-function s.efilter(e,re)
-	return re:GetOwnerPlayer()~=e:GetHandlerPlayer()
+function s.damop(e,tp,eg,ep,ev,re,r,rp)
+	local d=Duel.GetChainInfo(0,CHAININFO_TARGET_PARAM)
+	Duel.Damage(1-tp,d,REASON_EFFECT,true)
+	Duel.Damage(tp,d,REASON_EFFECT,true)
+	Duel.RDComplete()
 end
