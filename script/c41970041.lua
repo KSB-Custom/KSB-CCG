@@ -60,7 +60,8 @@ function s.initial_effect(c)
 	e5:SetOperation(s.activate)
 	c:RegisterEffect(e5)
 	end
-	function s.tdcon(e,tp,eg,ep,ev,re,r,rp)
+	--RETURN SPELL/TRAP AND GAIN ATK
+function s.tdcon(e,tp,eg,ep,ev,re,r,rp)
 	return re and (re:GetHandler():IsCode(CARD_POLYMERIZATION) or re:GetHandler():IsSetCard(0x46)) 
 	and e:GetHandler():IsSummonType(SUMMON_TYPE_FUSION)
 end
@@ -68,7 +69,7 @@ function s.tdfilter(c)
 	return c:IsSpellTrap() and c:IsAbleToDeck()
 end
 function s.tdtg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return true end
+	if chk==0 then return Duel.IsExistingMatchingCard(s.tdfilter,tp,LOCATION_GRAVE,LOCATION_GRAVE,1,nil) end
 	local g=Duel.GetMatchingGroup(s.tdfilter,tp,LOCATION_GRAVE,LOCATION_GRAVE,nil)
 	Duel.SetOperationInfo(0,CATEGORY_TODECK,nil,1,PLAYER_ALL,LOCATION_GRAVE)
 end
@@ -132,19 +133,18 @@ function s.cost2(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.PayLPCost(tp,1500)
 end
 function s.setfilter(c)
-	return c:IsFaceup() and c:IsCanTurnSet()
+	return c:IsFaceup() and c:IsCanTurnSet() and ((c:IsSpellTrap() and c:IsType(TYPE_CONTINUOUS)) or c:IsMonster() or (c:IsSpell() and c:IsType(TYPE_FIELD)))
 end
 function s.settg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chk==0 then return Duel.IsExistingTarget(s.setfilter,tp,0,LOCATION_MZONE,1,nil) end
+	if chk==0 then return Duel.IsExistingTarget(s.setfilter,tp,0,LOCATION_ONFIELD,1,nil) end
 	local g=Duel.GetMatchingGroup(s.setfilter,tp,0,LOCATION_MZONE,1,1,nil)
 	Duel.SetOperationInfo(0,CATEGORY_POSITION,g,1,0,0)
 end
 function s.setop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_POSCHANGE)
-	local g=Duel.SelectMatchingCard(tp,s.setfilter,tp,0,LOCATION_MZONE,1,1,nil)
+	local g=Duel.SelectMatchingCard(tp,s.setfilter,tp,0,LOCATION_ONFIELD,1,1,nil)
 	if #g>0 then
-		Duel.HintSelection(g)
-		Duel.ChangePosition(g,POS_FACEDOWN_DEFENSE)
+		Duel.ChangePosition(g,POS_FACEDOWN)
 	end
 end
 --BANISH
