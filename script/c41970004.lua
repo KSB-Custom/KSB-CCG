@@ -34,6 +34,19 @@ function s.initial_effect(c)
 	e3:SetCountLimit(1)
 	e3:SetValue(s.valcon)
 	c:RegisterEffect(e3)
+--splimit
+	local e20=Effect.CreateEffect(c)
+	e20:SetType(EFFECT_TYPE_FIELD)
+	e20:SetRange(LOCATION_PZONE)
+	e20:SetCode(EFFECT_CANNOT_SPECIAL_SUMMON)
+	e20:SetProperty(EFFECT_FLAG_PLAYER_TARGET+EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_CANNOT_NEGATE)
+	e20:SetTargetRange(1,0)
+	e20:SetTarget(s.splimit)
+	c:RegisterEffect(e20)
+end
+s.listed_series={0x1065}
+function s.splimit(e,c,tp,sumtp,sumpos)
+	return not c:IsSetCard(0x1065) and (sumtp&SUMMON_TYPE_PENDULUM)==SUMMON_TYPE_PENDULUM
 end
 function s.indtg(e,c)
 	return c:IsSetCard(0x1065) and c:IsType(TYPE_MONSTER)
@@ -72,9 +85,9 @@ end
 function s.efilter(e,re)
 	return e:GetOwnerPlayer()~=re:GetOwnerPlayer()
 end
---
+--Banish and special summon during End Phase
 function s.filter(c)
-	return c:IsSetCard(0x1065) and c:IsType(TYPE_NORMAL) and c:IsAbleToRemove()
+	return c:IsSetCard(0x1065) and c:IsType(TYPE_NORMAL) and c:IsAbleToRemove() and not c:IsCode(id)
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.filter,tp,LOCATION_DECK,0,1,nil,e,tp) end

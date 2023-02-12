@@ -47,6 +47,19 @@ function s.initial_effect(c)
 	e7:SetCode(EFFECT_CANNOT_BE_MATERIAL)
 	e7:SetValue(aux.cannotmatfilter(SUMMON_TYPE_FUSION,SUMMON_TYPE_SYNCHRO,SUMMON_TYPE_XYZ,SUMMON_TYPE_LINK))
 	c:RegisterEffect(e7)
+--splimit
+	local e20=Effect.CreateEffect(c)
+	e20:SetType(EFFECT_TYPE_FIELD)
+	e20:SetRange(LOCATION_PZONE)
+	e20:SetCode(EFFECT_CANNOT_SPECIAL_SUMMON)
+	e20:SetProperty(EFFECT_FLAG_PLAYER_TARGET+EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_CANNOT_NEGATE)
+	e20:SetTargetRange(1,0)
+	e20:SetTarget(s.splimit6)
+	c:RegisterEffect(e20)
+end
+s.listed_series={0x1065}
+function s.splimit6(e,c,tp,sumtp,sumpos)
+	return not c:IsSetCard(0x1065) and (sumtp&SUMMON_TYPE_PENDULUM)==SUMMON_TYPE_PENDULUM
 end
 function s.ffilter(c,fc,sumtype,tp)
 	return c:IsSetCard(0x1065) and c:IsType(TYPE_PENDULUM)

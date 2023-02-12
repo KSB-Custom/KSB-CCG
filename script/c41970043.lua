@@ -56,13 +56,26 @@ function s.initial_effect(c)
 	e1:SetTarget(s.tdtg)
 	e1:SetOperation(s.tdop)
 	c:RegisterEffect(e1)
+--splimit
+	local e20=Effect.CreateEffect(c)
+	e20:SetType(EFFECT_TYPE_FIELD)
+	e20:SetRange(LOCATION_PZONE)
+	e20:SetCode(EFFECT_CANNOT_SPECIAL_SUMMON)
+	e20:SetProperty(EFFECT_FLAG_PLAYER_TARGET+EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_CANNOT_NEGATE)
+	e20:SetTargetRange(1,0)
+	e20:SetTarget(s.splimit6)
+	c:RegisterEffect(e20)
+end
+s.listed_series={0x1065}
+function s.splimit6(e,c,tp,sumtp,sumpos)
+	return not c:IsSetCard(0x1065) and (sumtp&SUMMON_TYPE_PENDULUM)==SUMMON_TYPE_PENDULUM
 end
 --TO DECK AND SpecialSummon
 function s.tdfilter(c)
 	return c:IsAbleToDeck()
 end
 function s.spfilter2(c,e,tp,lv)
-	return c:IsSetCard(0x1065) and c:IsLevelBelow(lv) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
+	return c:IsSetCard(0x1065) and c:IsLevelBelow(ct) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
 end
 function s.tdtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.tdfilter,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,nil) end
@@ -74,12 +87,11 @@ function s.tdop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TODECK)
 	local sg=g:Select(tp,1,#g,nil)
 	local ct=Duel.SendtoDeck(sg,nil,2,REASON_EFFECT)
-	local dg=Duel.GetMatchingGroup(s.spfilter2,tp,LOCATION_DECK,0,nil,e,tp,ct)
 	if Duel.GetLocationCount(tp,LOCATION_MZONE)<=0 then return end
 	if ct>0 and Duel.SelectYesNo(tp,aux.Stringid(id,1)) then
 		Duel.BreakEffect()
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-		local tg=dg:Select(tp,1,1,nil)
+		local tg=Duel.SelectMatchingCard(tp,s.spfilter2,tp,LOCATION_DECK,0,1,1,nil,lv,e,tp)
 		if Duel.SpecialSummon(tg,0,tp,tp,false,false,POS_FACEUP)~=0 then
 			Duel.ConfirmCards(1-tp,tg)
 		end

@@ -37,6 +37,19 @@ function s.initial_effect(c)
 	local e4=e3:Clone()
 		e3:SetCode(EFFECT_UPDATE_DEFENSE)
 		c:RegisterEffect(e4)
+--splimit
+	local e20=Effect.CreateEffect(c)
+	e20:SetType(EFFECT_TYPE_FIELD)
+	e20:SetRange(LOCATION_PZONE)
+	e20:SetCode(EFFECT_CANNOT_SPECIAL_SUMMON)
+	e20:SetProperty(EFFECT_FLAG_PLAYER_TARGET+EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_CANNOT_NEGATE)
+	e20:SetTargetRange(1,0)
+	e20:SetTarget(s.splimit)
+	c:RegisterEffect(e20)
+end
+s.listed_series={0x1065}
+function s.splimit(e,c,tp,sumtp,sumpos)
+	return not c:IsSetCard(0x1065) and (sumtp&SUMMON_TYPE_PENDULUM)==SUMMON_TYPE_PENDULUM
 end
 function s.atfilter(e,c)
 	return c:IsType(TYPE_MONSTER) and c:IsSetCard(0x1065)
@@ -69,9 +82,9 @@ end
 function s.efilter(e,re)
 	return e:GetOwnerPlayer()~=re:GetOwnerPlayer()
 end
---
+--TO HAND
 function s.thfilter(c)
-	return c:IsType(TYPE_NORMAL) and c:IsSetCard(0x1065) and c:IsAbleToHand()
+	return c:IsType(TYPE_NORMAL) and c:IsSetCard(0x1065) and c:IsAbleToHand() and not c:IsCode(id)
 end
 function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK,0,1,nil) end

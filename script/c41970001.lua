@@ -32,6 +32,19 @@ function s.initial_effect(c)
 	e3:SetTarget(s.atfilter)
 	e3:SetValue(1000)
 	c:RegisterEffect(e3)
+	--splimit
+	local e20=Effect.CreateEffect(c)
+	e20:SetType(EFFECT_TYPE_FIELD)
+	e20:SetRange(LOCATION_PZONE)
+	e20:SetCode(EFFECT_CANNOT_SPECIAL_SUMMON)
+	e20:SetProperty(EFFECT_FLAG_PLAYER_TARGET+EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_CANNOT_NEGATE)
+	e20:SetTargetRange(1,0)
+	e20:SetTarget(s.splimit)
+	c:RegisterEffect(e20)
+end
+s.listed_series={0x1065}
+function s.splimit(e,c,tp,sumtp,sumpos)
+	return not c:IsSetCard(0x1065) and (sumtp&SUMMON_TYPE_PENDULUM)==SUMMON_TYPE_PENDULUM
 end
 function s.atfilter(e,c)
 	return c:IsType(TYPE_MONSTER) and c:IsSetCard(0x1065)
@@ -66,7 +79,7 @@ function s.efilter(e,re)
 end
 --
 function s.scfilter(c,pc)
-	return c:IsType(TYPE_PENDULUM) and not c:IsForbidden() and c:IsLevelAbove(1) and c:IsSetCard(0x1065)
+	return c:IsType(TYPE_PENDULUM) and not c:IsForbidden() and c:IsLevelAbove(1) and c:IsSetCard(0x1065) and not c:IsCode(id)
 end
 function s.sctg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.scfilter,tp,LOCATION_DECK,0,1,nil,e:GetHandler()) end
