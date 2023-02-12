@@ -22,6 +22,9 @@ function s.initial_effect(c)
 	e2:SetTargetRange(0,LOCATION_MZONE)
 	e2:SetValue(s.value)
 	c:RegisterEffect(e2)
+	local e7=e2:Clone()
+	e7:SetCode(EFFECT_CANNOT_ATTACK_ANNOUNCE)
+	c:RegisterEffect(e7)
 	--Change Type
 	local e3=Effect.CreateEffect(c)
 	e3:SetDescription(aux.Stringid(id,1))
@@ -167,7 +170,7 @@ end
 --prevent
 function s.value(e,re,rp)
 local rc=re:GetHandler()
-	return re:IsActiveType(TYPE_MONSTER) and rc:IsRace(e:GetHandler():GetRace())
+	return re:IsActiveType(TYPE_MONSTER) and rc:IsRace(e:GetHandler():GetRace()) and rc:IsAttribute(e:GetHandler():GetAttribute())
 end
 --type 
 function s.artg1(e,tp,eg,ep,ev,re,r,rp,chk)

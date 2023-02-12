@@ -62,7 +62,7 @@ function s.tdfilter(c)
 	return c:IsAbleToDeck()
 end
 function s.spfilter2(c,e,tp,lv)
-	return c:IsSetCard(0x1065) and c:IsLevelBelow(lv) and c:IsCanBeSpecialSummoned(e,0,tp,false,false,POS_FACEUP)
+	return c:IsSetCard(0x1065) and c:IsLevelBelow(lv) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
 end
 function s.tdtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.tdfilter,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,nil) end
@@ -75,10 +75,11 @@ function s.tdop(e,tp,eg,ep,ev,re,r,rp)
 	local sg=g:Select(tp,1,#g,nil)
 	local ct=Duel.SendtoDeck(sg,nil,2,REASON_EFFECT)
 	local dg=Duel.GetMatchingGroup(s.spfilter2,tp,LOCATION_DECK,0,nil,e,tp,ct)
+	if Duel.GetLocationCount(tp,LOCATION_MZONE)<=0 then return end
 	if ct>0 and Duel.SelectYesNo(tp,aux.Stringid(id,1)) then
 		Duel.BreakEffect()
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-		local tg=sg:Select(tp,1,1,nil)
+		local tg=dg:Select(tp,1,1,nil)
 		if Duel.SpecialSummon(tg,0,tp,tp,false,false,POS_FACEUP)~=0 then
 			Duel.ConfirmCards(1-tp,tg)
 		end

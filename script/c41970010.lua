@@ -10,15 +10,16 @@ function s.initial_effect(c)
 	e1:SetCountLimit(1,{id,1})
 	e1:SetOperation(s.activate)
 	c:RegisterEffect(e1)
-	--to hand
+	--Place in PZone
 	local e2=Effect.CreateEffect(c)
 	e2:SetType(EFFECT_TYPE_IGNITION)
 	e2:SetRange(LOCATION_FZONE)
 	e2:SetCountLimit(1,{id,2})
+	e2:SetCondition(s.condition)
 	e2:SetTarget(s.ptg)
 	e2:SetOperation(s.pop)
 	c:RegisterEffect(e2)
-	--search
+	--Banish this card and search RPG spell/trap
 	local e3=Effect.CreateEffect(c)
 	e3:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH)
 	e3:SetType(EFFECT_TYPE_IGNITION)
@@ -43,6 +44,10 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 		Duel.ConfirmCards(1-tp,sg)
 	end
 end
+--Place in PZone
+function s.condition(e,tp,eg,ep,ev,re,r,rp)
+	return not Duel.GetFieldCard(tp,LOCATION_PZONE,0) or not Duel.GetFieldCard(tp,LOCATION_PZONE,1)
+end
 function s.pfilter(c)
 	return c:IsFaceup() and c:IsType(TYPE_PENDULUM) and c:IsSetCard(0x1065) 
 end
@@ -50,6 +55,7 @@ function s.ptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.pfilter,tp,LOCATION_EXTRA+LOCATION_GRAVE,0,1,nil) end
 end
 function s.pop(e,tp,eg,ep,ev,re,r,rp)
+	if not Duel.CheckPendulumZones(tp) then return false end
 	if not e:GetHandler():IsRelateToEffect(e) then return end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOFIELD)
 	local g=Duel.SelectMatchingCard(tp,s.pfilter,tp,LOCATION_EXTRA+LOCATION_GRAVE,0,1,1,nil)
