@@ -1,8 +1,8 @@
---RPG EE Mimic
+--RPG Mimic
 local s,id=GetID()
 function s.initial_effect(c)
 	c:EnableReviveLimit()
-	Link.AddProcedure(c,aux.FilterBoolFunctionEx(Card.IsSetCard,0x1065),4)
+	Link.AddProcedure(c,nil,3,4,s.lcheck)
 	--extra mat
 	local e0=Effect.CreateEffect(c)
 	e0:SetType(EFFECT_TYPE_FIELD)
@@ -40,6 +40,10 @@ function s.initial_effect(c)
 	e3:SetOperation(s.copyop)
 	c:RegisterEffect(e3)
 	end
+	s.listed_series={0x1065}
+function s.lcheck(g,lc,sumtype,tp)
+	return g:IsExists(Card.IsSetCard,1,nil,0x1065,lc,sumtype,tp)
+end
 function s.extraval(chk,summon_type,e,...)
 	if chk==0 then
 		local tp,sc=...
@@ -56,19 +60,19 @@ function s.copycost(e,tp,eg,ep,ev,re,r,rp,chk)
 	e:GetHandler():RegisterFlagEffect(id,RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END,0,1)
 end
 function s.copyfilter(c)
-	return c:IsMonster() and c:IsType(TYPE_PENDULUM) and c:IsFaceup() and c:IsSetCard(0x1065) and c:IsLocation(LOCATION_GRAVE)
+	return c:IsMonster() and c:IsType(TYPE_PENDULUM) and c:IsFaceup() and c:IsSetCard(0x1065) and (c:IsLocation(LOCATION_GRAVE) or c:IsLocation(LOCATION_REMOVED))
 end
 function s.copytg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	local c=e:GetHandler()
-	if chkc then return chkc:IsLocation(LOCATION_GRAVE) and s.copyfilter(chkc) and chkc~=c end
-	if chk==0 then return Duel.IsExistingTarget(s.copyfilter,tp,LOCATION_GRAVE,0,1,c) end
+	if chkc then return chkc:IsLocation(LOCATION_GRAVE+LOCATION_REMOVED) and s.copyfilter(chkc) and chkc~=c end
+	if chk==0 then return Duel.IsExistingTarget(s.copyfilter,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,c) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FACEUP)
-	Duel.SelectTarget(tp,s.copyfilter,tp,LOCATION_GRAVE,0,1,1,c)
+	Duel.SelectTarget(tp,s.copyfilter,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,1,c)
 end
 function s.copyop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local tc=Duel.GetFirstTarget()
-	if tc and c:IsRelateToEffect(e) and c:IsFaceup() and tc:IsRelateToEffect(e) and tc:IsLocation(LOCATION_GRAVE) then
+	if tc and c:IsRelateToEffect(e) and c:IsFaceup() and tc:IsRelateToEffect(e) and (tc:IsLocation(LOCATION_GRAVE) or tc:IsLocation(LOCATION_REMOVED)) then
 		local code=tc:GetOriginalCode()
 		local e1=Effect.CreateEffect(c)
 		e1:SetType(EFFECT_TYPE_SINGLE)
