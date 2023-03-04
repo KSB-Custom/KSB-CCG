@@ -1,4 +1,4 @@
---AZTECA hui
+--AZTECA huitzilopo
 local s,id=GetID()
 function s.initial_effect(c)
 --Synchro summon
@@ -19,10 +19,19 @@ function s.initial_effect(c)
 	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
 	e2:SetRange(LOCATION_MZONE)
 	e2:SetCode(EVENT_ATTACK_ANNOUNCE)
+	e2:SetCost(s.spcost)
 	e2:SetCountLimit(1,id)
 	e2:SetTarget(s.natg)
 	e2:SetOperation(s.naop)
 	c:RegisterEffect(e2)
+end
+function s.costfilter(c)
+	return c:IsType(TYPE_MONSTER) and not c:IsStatus(STATUS_BATTLE_DESTROYED)
+end
+function s.spcost(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return Duel.CheckReleaseGroupCost(tp,s.costfilter,1,false,nil,nil) end
+	local sg=Duel.SelectReleaseGroupCost(tp,s.costfilter,1,1,false,nil,nil)
+	Duel.Release(sg,REASON_COST)
 end
 function s.natg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
