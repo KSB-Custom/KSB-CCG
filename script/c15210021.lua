@@ -20,13 +20,15 @@ function s.initial_effect(c)
 	e2:SetRange(LOCATION_MZONE)
 	e2:SetCode(EVENT_ATTACK_ANNOUNCE)
 	e2:SetCountLimit(1,id)
-	e1:SetTarget(s.natg)
-	e1:SetOperation(s.naop)
+	e2:SetTarget(s.natg)
+	e2:SetOperation(s.naop)
 	c:RegisterEffect(e2)
 end
 function s.natg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
-	Duel.SetTargetCard(Duel.GetAttacker():GetAttack())
+	local tg=Duel.GetAttacker()
+	Duel.SetTargetCard(tg)
+	local dam=tg:GetAttack()
 end
 function s.naop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
