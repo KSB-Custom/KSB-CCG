@@ -4,7 +4,7 @@ function s.initial_effect(c)
 --Synchro summon
 	Synchro.AddProcedure(c,aux.FilterBoolFunctionEx(Card.IsSetCard,0x5F1),1,1,Synchro.NonTuner(nil),1,99)
 	c:EnableReviveLimit()
-	--Xyz summon
+	--Special summon
 	local e3=Effect.CreateEffect(c)
 	e3:SetCategory(CATEGORY_SPECIAL_SUMMON)
 	e3:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
@@ -65,6 +65,10 @@ function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
 			and Duel.GetLocationCount(tp,LOCATION_MZONE)>1
 	end
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,2,tp,LOCATION_DECK+LOCATION_GRAVE)
+Duel.SetChainLimit(s.chlimit)
+end
+function s.chlimit(e,ep,tp)
+	return tp==ep
 end
 function s.spcheck(sg,e,tp,mg)
 	return sg:GetClassCount(Card.GetLocation)==#sg 

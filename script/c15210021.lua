@@ -1,4 +1,4 @@
---AZTECA huitzilopo
+--AZTECA huitzilopotchtli
 local s,id=GetID()
 function s.initial_effect(c)
 --Synchro summon
@@ -10,7 +10,7 @@ function s.initial_effect(c)
 	e1:SetProperty(EFFECT_FLAG_IGNORE_IMMUNE)
 	e1:SetRange(LOCATION_MZONE)
 	e1:SetTargetRange(LOCATION_MZONE,0)
-	e1:SetTarget(aux.TargetBoolFunction(Card.IsSetCard,0x5F1))
+	e1:SetTarget(s.indtg)
 	e1:SetValue(1)
 	c:RegisterEffect(e1)
 	--Disable attack
@@ -24,6 +24,9 @@ function s.initial_effect(c)
 	e2:SetTarget(s.natg)
 	e2:SetOperation(s.naop)
 	c:RegisterEffect(e2)
+end
+function s.indtg(e,c)
+	return c:IsSetCard(0x5F1) and (c:IsType(TYPE_FUSION) or c:IsType(TYPE_SYNCHRO) or c:IsType(TYPE_LINK))
 end
 function s.costfilter(c)
 	return c:IsType(TYPE_MONSTER) and not c:IsStatus(STATUS_BATTLE_DESTROYED)
