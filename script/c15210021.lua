@@ -12,7 +12,7 @@ function s.initial_effect(c)
 	e1:SetRange(LOCATION_MZONE)
 	e1:SetTargetRange(LOCATION_MZONE,0)
 	e1:SetTarget(s.indtg)
-	e1:SetValue(tgoval)
+	e1:SetValue(aux.tgoval)
 	c:RegisterEffect(e1)
 	--Disable attack
 	local e2=Effect.CreateEffect(c)
