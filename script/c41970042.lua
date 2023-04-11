@@ -99,8 +99,7 @@ function s.regop(e,tp,eg,ep,ev,re,r,rp)
 end
 --
 function s.splimit(e,se,sp,st)
-	local c=e:GetHandler()
-	return not (c:IsLocation(LOCATION_EXTRA) and c:IsFacedown())
+	return (st&SUMMON_TYPE_FUSION)==SUMMON_TYPE_FUSION
 end
 function s.contactfil(tp)
 	return Duel.GetMatchingGroup(Card.IsAbleToRemoveAsCost,tp,LOCATION_ONFIELD,0,nil)
