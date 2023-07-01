@@ -43,7 +43,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e8)
 end
 function s.atktg(e,c)
-	return c:IsSetCard(0x1065) and c:IsType(TYPE_NORMAL)
+	return c:IsSetCard(0x1065) and (c:IsType(TYPE_NORMAL) or (c:IsType(TYPE_XYZ) and c:IsRank(8)))
 end
 function s.drcon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.GetTurnPlayer()==tp

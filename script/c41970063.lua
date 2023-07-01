@@ -30,7 +30,7 @@ function s.initial_effect(c)
 	e3:SetCondition(s.immcon)
 	e3:SetValue(s.immval)
 	c:RegisterEffect(e3)
-	--atk
+	--atk/def
 	local e4=Effect.CreateEffect(c)
 	e4:SetType(EFFECT_TYPE_SINGLE)
 	e4:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
@@ -38,6 +38,9 @@ function s.initial_effect(c)
 	e4:SetCode(EFFECT_UPDATE_ATTACK)
 	e4:SetValue(s.atkval)
 	c:RegisterEffect(e4)
+	local e5=e4:Clone()
+	e5:SetCode(EFFECT_UPDATE_DEFENSE)
+	c:RegisterEffect(e5)
 	end
 function s.immcon(e)
 	return Duel.IsBattlePhase()
