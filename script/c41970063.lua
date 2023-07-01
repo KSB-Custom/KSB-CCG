@@ -1,10 +1,11 @@
 --RPG Tank X Berseker
 local s,id=GetID()
 function s.initial_effect(c)
-	Pendulum.AddProcedure(c,false)
 	--Xyz summon
 	Xyz.AddProcedure(c,aux.FilterBoolFunctionEx(Card.IsSetCard,0x1065),8,2,nil,nil,99)
 	c:EnableReviveLimit()
+	--pendulum summon
+	Pendulum.AddProcedure(c,false)
 	--cannot select battle target
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_FIELD)
@@ -42,6 +43,7 @@ function s.initial_effect(c)
 	e5:SetCode(EFFECT_UPDATE_DEFENSE)
 	c:RegisterEffect(e5)
 	end
+	s.pendulum_level=8
 function s.immcon(e)
 	return Duel.IsBattlePhase()
 end
