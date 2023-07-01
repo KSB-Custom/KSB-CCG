@@ -1,6 +1,10 @@
 --RPG Tank X Berseker
 local s,id=GetID()
 function s.initial_effect(c)
+	Pendulum.AddProcedure(c,false)
+	--Xyz summon
+	Xyz.AddProcedure(c,aux.FilterBoolFunctionEx(Card.IsSetCard,0x1065),8,2,nil,nil,99)
+	c:EnableReviveLimit()
 	--cannot select battle target
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_FIELD)
@@ -26,10 +30,21 @@ function s.initial_effect(c)
 	e3:SetCondition(s.immcon)
 	e3:SetValue(s.immval)
 	c:RegisterEffect(e3)
+	--atk
+	local e4=Effect.CreateEffect(c)
+	e4:SetType(EFFECT_TYPE_SINGLE)
+	e4:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
+	e4:SetRange(LOCATION_MZONE)
+	e4:SetCode(EFFECT_UPDATE_ATTACK)
+	e4:SetValue(s.atkval)
+	c:RegisterEffect(e4)
 	end
 function s.immcon(e)
 	return Duel.IsBattlePhase()
 end
 function s.immval(e,te)
 	return te:GetOwnerPlayer()~=e:GetHandlerPlayer()
+end
+function s.atkval(e,c)
+	return c:GetOverlayCount()*500
 end
