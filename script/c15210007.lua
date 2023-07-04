@@ -29,14 +29,15 @@ function s.initial_effect(c)
 	c:RegisterEffect(e3)
 	--Draw
 	local e4=Effect.CreateEffect(c)
-	e4:SetDescription(aux.Stringid(id,1))
+	e4:SetDescription(aux.Stringid(id,3))
 	e4:SetCategory(CATEGORY_DRAW)
 	e4:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
+	e4:SetProperty(EFFECT_FLAG_DELAY+EFFECT_FLAG_PLAYER_TARGET)
 	e4:SetCode(EVENT_TO_GRAVE)
 	e4:SetCountLimit(1,id)
-	e4:SetCondition(function(e) return e:GetHandler():IsReason(REASON_EFFECT) end)
-	e4:SetTarget(s.target)
-	e4:SetOperation(s.operation)
+	e4:SetCondition(s.drcon)
+	e4:SetTarget(s.drtg)
+	e4:SetOperation(s.drop)
 	c:RegisterEffect(e4)
 end
 function s.cfilter(c)
@@ -66,23 +67,25 @@ function s.tgop(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 --draw
-function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
+function s.drfilter(c)
+	return c:IsSetCard(0x5F1) and c:IsFaceup and not c:IsCode(id)
+end
+function s.drcon(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
+	return c:IsLocation(LOCATION_GRAVE) and Duel.IsExistingMatchingCard(s.drfilter,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,nil)
+end
+function s.drtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsPlayerCanDraw(tp,2) end
 	Duel.SetTargetPlayer(tp)
 	Duel.SetTargetParam(2)
 	Duel.SetOperationInfo(0,CATEGORY_DRAW,nil,0,tp,2)
+	Duel.SetOperationInfo(0,CATEGORY_HANDES,nil,0,tp,1)
 end
-function s.operation(e,tp,eg,ep,ev,re,r,rp)
+function s.drop(e,tp,eg,ep,ev,re,r,rp)
 	local p,d=Duel.GetChainInfo(0,CHAININFO_TARGET_PLAYER,CHAININFO_TARGET_PARAM)
-	if Duel.Draw(p,d,REASON_EFFECT)<2 then return end
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TODECK)
-	local g=Duel.SelectMatchingCard(tp,Card.IsAbleToDeck,tp,LOCATION_HAND,0,1,1,nil)
-	if #g>0 then
+	if Duel.Draw(p,d,REASON_EFFECT)==2 then
+		Duel.ShuffleHand(p)
 		Duel.BreakEffect()
-		if Duel.SelectOption(tp,aux.Stringid(id,1),aux.Stringid(id,2))==0 then
-			Duel.SendtoDeck(g,nil,0,REASON_EFFECT)
-		else
-			Duel.SendtoDeck(g,nil,1,REASON_EFFECT)
-		end
+		Duel.DiscardHand(p,nil,1,1,REASON_EFFECT+REASON_DISCARD)
 	end
 end
