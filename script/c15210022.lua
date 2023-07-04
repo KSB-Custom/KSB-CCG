@@ -1,7 +1,7 @@
 --AZTECA Quetzalcoatl
 local s,id=GetID()
 function s.initial_effect(c)
---Synchro summon
+	--Synchro summon
 	Synchro.AddProcedure(c,aux.FilterBoolFunctionEx(Card.IsSetCard,0x5F1),1,1,Synchro.NonTuner(nil),1,99)
 	c:EnableReviveLimit()
 	--Special summon
@@ -24,6 +24,7 @@ function s.initial_effect(c)
 	e2:SetRange(LOCATION_MZONE)
 	e2:SetCountLimit(1,{id,1})
 	e2:SetCondition(s.discon)
+	e2:SetCost(s.negcost)
 	e2:SetTarget(s.distg)
 	e2:SetOperation(s.disop)
 	c:RegisterEffect(e2)
@@ -32,10 +33,14 @@ function s.discon(e,tp,eg,ep,ev,re,r,rp)
 	return re:GetHandler()~=e:GetHandler() and not e:GetHandler():IsStatus(STATUS_BATTLE_DESTROYED)
 		and (re:IsActiveType(TYPE_MONSTER) or re:IsHasType(EFFECT_TYPE_ACTIVATE)) and Duel.IsChainNegatable(ev)
 end
-function s.discost(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsPlayerCanDiscardDeckAsCost(tp,1) end
-	Duel.DiscardDeck(tp,1,REASON_COST)
+function s.cfilter(c)
+	return c:IsMonster() and c:IsSetCard(0x5F1)
 end
+function s.negcost(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return Duel.CheckReleaseGroup(tp,s.cfilter,1,nil) end
+	local sg=Duel.SelectReleaseGroup(tp,s.cfilter,1,1,nil)
+	Duel.Release(sg,REASON_COST)
+	end
 function s.distg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
 	Duel.SetOperationInfo(0,CATEGORY_NEGATE,eg,1,0,0)

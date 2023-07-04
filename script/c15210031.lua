@@ -12,6 +12,7 @@ function s.initial_effect(c)
 	e1:SetCode(EVENT_PHASE+PHASE_STANDBY)
 	e1:SetRange(LOCATION_GRAVE)
 	e1:SetCountLimit(1,id)
+	e1:SetCondition(s.ntcon)
 	e1:SetTarget(s.target)
 	e1:SetOperation(s.operation)
 	c:RegisterEffect(e1)
@@ -28,6 +29,13 @@ function s.initial_effect(c)
 	e2:SetOperation(s.tgop)
 	c:RegisterEffect(e2)
 	end
+	--Check for non-"AZTECA" monster
+function s.filter(c)
+	return c:IsFacedown() or not c:IsSetCard(0x5F1)
+end
+function s.ntcon(e,tp,eg,ep,ev,re,r,rp)
+	return (Duel.GetFieldGroupCount(tp,LOCATION_MZONE,0)==0 or not Duel.IsExistingMatchingCard(s.filter,tp,LOCATION_MZONE,0,1,nil))
+end
 function s.ffilter(c,fc,sumtype,tp)
 	return c:IsType(TYPE_MONSTER,fc,sumtype,tp) and not c:IsType(TYPE_TOKEN,fc,sumtype,tp)
 end
