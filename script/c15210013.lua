@@ -1,7 +1,7 @@
 --AZTECA Tlacoatzin
 local s,id=GetID()
 function s.initial_effect(c)
-	--"Salamangreat" monster is normal summoned, optional trigger effect
+	--"Azteca" monster is normal summoned, optional trigger effect
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(id,0))
 	e1:SetCategory(CATEGORY_SPECIAL_SUMMON)
