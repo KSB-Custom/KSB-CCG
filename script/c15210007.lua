@@ -68,7 +68,7 @@ function s.tgop(e,tp,eg,ep,ev,re,r,rp)
 end
 --draw
 function s.drfilter(c)
-	return c:IsSetCard(0x5F1) and c:IsFaceup and not c:IsCode(id)
+	return c:IsSetCard(0x5F1) and not c:IsCode(id)
 end
 function s.drcon(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
