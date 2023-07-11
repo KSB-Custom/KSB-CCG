@@ -9,16 +9,6 @@ function s.initial_effect(c)
 	e1:SetType(EFFECT_TYPE_SINGLE)
 	e1:SetCode(EFFECT_PIERCE)
 	c:RegisterEffect(e1)
-	--atk
-	local e2=Effect.CreateEffect(c)
-	e2:SetCategory(CATEGORY_ATKCHANGE)
-	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
-	e2:SetCode(EVENT_BATTLE_START)
-	e2:SetRange(LOCATION_PZONE)
-	e2:SetCountLimit(1)
-	e2:SetCondition(s.atkcon1)
-	e2:SetOperation(s.atkop1)
-	c:RegisterEffect(e2)
 	--send top of deck
 	local e3=Effect.CreateEffect(c)
 	e3:SetDescription(aux.Stringid(id,0))
@@ -156,27 +146,6 @@ function s.rmop(e,tp,eg,ep,ev,re,r,rp)
 	if #g>0 then
 		Duel.HintSelection(g)
 		Duel.Remove(g,POS_FACEUP,REASON_EFFECT)
-	end
-end
---decrease op atkcon1
-function s.atkcon1(e,tp,eg,ep,ev,re,r,rp)
-	local tc=Duel.GetAttacker()
-	local bc=Duel.GetAttackTarget()
-	if not bc then return false end
-	if tc:IsControler(1-tp) then bc,tc=tc,bc end
-	e:SetLabelObject(bc)
-	return bc:IsFaceup() and tc:IsFaceup() and tc:IsSetCard(0x1065)
-end
-function s.atkop1(e,tp,eg,ep,ev,re,r,rp)
-	if not e:GetHandler():IsRelateToEffect(e) then return end
-	local bc=e:GetLabelObject()
-	if bc:IsRelateToBattle() and bc:IsFaceup() and bc:IsControler(1-tp) then
-		local e1=Effect.CreateEffect(e:GetHandler())
-		e1:SetType(EFFECT_TYPE_SINGLE)
-		e1:SetCode(EFFECT_UPDATE_ATTACK)
-		e1:SetValue(-500)
-		e1:SetReset(RESET_EVENT+RESETS_STANDARD)
-		bc:RegisterEffect(e1)
 	end
 end
 --PLACE IT IN THE PZONE
