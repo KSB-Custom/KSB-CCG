@@ -77,7 +77,7 @@ function s.efilter(e,re)
 end
 --place in PZ
 function s.pcfilter(c)
-	return c:IsSetCard(0x1065) and c:IsType(TYPE_PENDULUM) and c:IsType(TYPE_NORMAL) and not c:IsCode(id)
+	return c:IsSetCard(0x1065) and c:IsType(TYPE_PENDULUM) and (c:IsType(TYPE_NORMAL) or (c:IsType(TYPE_XYZ) and c:IsRank(8))) and not c:IsCode(id)
 end
 function s.pctg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.CheckPendulumZones(tp)
