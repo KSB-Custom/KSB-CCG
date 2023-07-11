@@ -78,25 +78,13 @@ function s.spfilter2(c,e,tp,lv)
 	return c:IsSetCard(0x1065) and c:IsLevelBelow(ct) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
 end
 function s.tdtg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(s.tdfilter,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,nil) end
-	Duel.SetOperationInfo(0,CATEGORY_TODECK,nil,1,tp,LOCATION_GRAVE+LOCATION_REMOVED)
+	if chk==0 then return true end
+	Duel.SetOperationInfo(0,CATEGORY_TODECK,nil,1,PLAYER_ALL,LOCATION_REMOVED)
 end
 function s.tdop(e,tp,eg,ep,ev,re,r,rp)
-	local g=Duel.GetMatchingGroup(s.tdfilter,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,nil)
-	if #g==0 then return end
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TODECK)
-	local sg=g:Select(tp,1,#g,nil)
-	local ct=Duel.SendtoDeck(sg,nil,2,REASON_EFFECT)
-	if Duel.GetLocationCount(tp,LOCATION_MZONE)<=0 then return end
-	if ct>0 and Duel.SelectYesNo(tp,aux.Stringid(id,1)) then
-		Duel.BreakEffect()
-		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-		local tg=Duel.SelectMatchingCard(tp,s.spfilter2,tp,LOCATION_DECK,0,1,1,nil,lv,e,tp)
-		if Duel.SpecialSummon(tg,0,tp,tp,false,false,POS_FACEUP)~=0 then
-			Duel.ConfirmCards(1-tp,tg)
-		end
-	end
-end
+	local c=e:GetHandler()
+	local g=Duel.GetFieldGroup(tp,LOCATION_REMOVED,LOCATION_REMOVED)
+	Duel.SendtoDeck(g,nil,SEQ_DECKSHUFFLE,REASON_EFFECT)
 --no damage
 function s.regop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
