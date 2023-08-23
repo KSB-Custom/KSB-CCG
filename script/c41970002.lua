@@ -21,6 +21,7 @@ function s.initial_effect(c)
 	e5:SetType(EFFECT_TYPE_IGNITION)
 	e5:SetRange(LOCATION_PZONE)
 	e5:SetCountLimit(1,{id,1})
+	e5:SetCost(s.thcost)
 	e5:SetTarget(s.thtg)
 	e5:SetOperation(s.thop)
 	c:RegisterEffect(e5)
@@ -85,6 +86,11 @@ end
 --TO HAND
 function s.thfilter(c)
 	return c:IsType(TYPE_NORMAL) and c:IsSetCard(0x1065) and c:IsAbleToHand() and not c:IsCode(id)
+end
+function s.thcost(e,tp,eg,ep,ev,re,r,rp,chk)
+	local exc=(e:GetHandler():IsLocation(LOCATION_HAND) and not e:GetHandler():IsAbleToGraveAsCost()) and e:GetHandler() or nil
+	if chk==0 then return Duel.IsExistingMatchingCard(Card.IsDiscardable,tp,LOCATION_HAND,0,1,exc) end
+	Duel.DiscardHand(tp,Card.IsDiscardable,1,1,REASON_COST+REASON_DISCARD,exc)
 end
 function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK,0,1,nil) end
