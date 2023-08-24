@@ -20,33 +20,12 @@ function s.initial_effect(c)
 	e2:SetType(EFFECT_TYPE_IGNITION)
 	e2:SetRange(LOCATION_PZONE)
 	e2:SetCountLimit(1,{id,1})
+	e1:SetCost(s.ppcost)
 	e2:SetTarget(s.pctg)
 	e2:SetOperation(s.pcop)
 	c:RegisterEffect(e2)
-    --act limit
-	local e3=Effect.CreateEffect(c)
-	e3:SetType(EFFECT_TYPE_FIELD)
-	e3:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
-	e3:SetCode(EFFECT_CANNOT_ACTIVATE)
-	e3:SetTargetRange(0,1)
-	e3:SetRange(LOCATION_PZONE)
-	e3:SetCondition(s.actcon)
-	e3:SetValue(1)
-	c:RegisterEffect(e3)
---splimit
-	local e20=Effect.CreateEffect(c)
-	e20:SetType(EFFECT_TYPE_FIELD)
-	e20:SetRange(LOCATION_PZONE)
-	e20:SetCode(EFFECT_CANNOT_SPECIAL_SUMMON)
-	e20:SetProperty(EFFECT_FLAG_PLAYER_TARGET+EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_CANNOT_NEGATE)
-	e20:SetTargetRange(1,0)
-	e20:SetTarget(s.splimit)
-	c:RegisterEffect(e20)
 end
 s.listed_series={0x1065}
-function s.splimit(e,c,tp,sumtp,sumpos)
-	return not c:IsSetCard(0x1065) and (sumtp&SUMMON_TYPE_PENDULUM)==SUMMON_TYPE_PENDULUM
-end
 function s.spcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local exc=(e:GetHandler():IsLocation(LOCATION_HAND) and not e:GetHandler():IsAbleToGraveAsCost()) and e:GetHandler() or nil
 	if chk==0 then return Duel.IsExistingMatchingCard(Card.IsDiscardable,tp,LOCATION_HAND,0,1,exc) end
@@ -78,6 +57,11 @@ end
 --place in PZ
 function s.pcfilter(c)
 	return c:IsSetCard(0x1065) and c:IsType(TYPE_PENDULUM) and (c:IsType(TYPE_NORMAL) or (c:IsType(TYPE_XYZ) and c:IsRank(8))) and not c:IsCode(id)
+end
+function s.ppcost(e,tp,eg,ep,ev,re,r,rp,chk)
+	local exc=(e:GetHandler():IsLocation(LOCATION_HAND) and not e:GetHandler():IsAbleToGraveAsCost()) and e:GetHandler() or nil
+	if chk==0 then return Duel.IsExistingMatchingCard(Card.IsDiscardable,tp,LOCATION_HAND,0,1,exc) end
+	Duel.DiscardHand(tp,Card.IsDiscardable,1,1,REASON_COST+REASON_DISCARD,exc)
 end
 function s.pctg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.CheckPendulumZones(tp)

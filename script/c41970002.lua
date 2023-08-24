@@ -25,33 +25,8 @@ function s.initial_effect(c)
 	e5:SetTarget(s.thtg)
 	e5:SetOperation(s.thop)
 	c:RegisterEffect(e5)
-	--atk
-	local e3=Effect.CreateEffect(c)
-	e3:SetType(EFFECT_TYPE_FIELD)
-	e3:SetCode(EFFECT_UPDATE_ATTACK)
-	e3:SetRange(LOCATION_PZONE)
-	e3:SetTargetRange(LOCATION_MZONE,0)
-	e3:SetTarget(s.atfilter)
-	e3:SetValue(400)
-	c:RegisterEffect(e3)
-	--def
-	local e4=e3:Clone()
-		e3:SetCode(EFFECT_UPDATE_DEFENSE)
-		c:RegisterEffect(e4)
---splimit
-	local e20=Effect.CreateEffect(c)
-	e20:SetType(EFFECT_TYPE_FIELD)
-	e20:SetRange(LOCATION_PZONE)
-	e20:SetCode(EFFECT_CANNOT_SPECIAL_SUMMON)
-	e20:SetProperty(EFFECT_FLAG_PLAYER_TARGET+EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_CANNOT_NEGATE)
-	e20:SetTargetRange(1,0)
-	e20:SetTarget(s.splimit)
-	c:RegisterEffect(e20)
-end
-s.listed_series={0x1065}
-function s.splimit(e,c,tp,sumtp,sumpos)
-	return not c:IsSetCard(0x1065) and (sumtp&SUMMON_TYPE_PENDULUM)==SUMMON_TYPE_PENDULUM
-end
+	end
+	--SPECIAL SUMMON
 function s.atfilter(e,c)
 	return c:IsType(TYPE_MONSTER) and c:IsSetCard(0x1065)
 end
