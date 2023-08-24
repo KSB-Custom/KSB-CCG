@@ -24,30 +24,8 @@ function s.initial_effect(c)
 	e2:SetTarget(s.target)
 	e2:SetOperation(s.activate)
 	c:RegisterEffect(e2)
-	--first cannot destroyed
-	local e3=Effect.CreateEffect(c)
-	e3:SetType(EFFECT_TYPE_FIELD)
-	e3:SetCode(EFFECT_INDESTRUCTABLE_COUNT)
-	e3:SetRange(LOCATION_PZONE)
-	e3:SetTargetRange(LOCATION_MZONE,0)
-	e3:SetTarget(s.indtg)
-	e3:SetCountLimit(1)
-	e3:SetValue(s.valcon)
-	c:RegisterEffect(e3)
---splimit
-	local e20=Effect.CreateEffect(c)
-	e20:SetType(EFFECT_TYPE_FIELD)
-	e20:SetRange(LOCATION_PZONE)
-	e20:SetCode(EFFECT_CANNOT_SPECIAL_SUMMON)
-	e20:SetProperty(EFFECT_FLAG_PLAYER_TARGET+EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_CANNOT_NEGATE)
-	e20:SetTargetRange(1,0)
-	e20:SetTarget(s.splimit)
-	c:RegisterEffect(e20)
 end
 s.listed_series={0x1065}
-function s.splimit(e,c,tp,sumtp,sumpos)
-	return not c:IsSetCard(0x1065) and (sumtp&SUMMON_TYPE_PENDULUM)==SUMMON_TYPE_PENDULUM
-end
 function s.indtg(e,c)
 	return c:IsSetCard(0x1065) and c:IsType(TYPE_MONSTER)
 end
