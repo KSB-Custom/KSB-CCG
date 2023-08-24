@@ -81,19 +81,16 @@ function s.initial_effect(c)
 
 end
 s.listed_series={0x1065}
-function s.splimit(e,c,tp,sumtp,sumpos)
-	return not c:IsSetCard(0x1065) and (sumtp&SUMMON_TYPE_PENDULUM)==SUMMON_TYPE_PENDULUM
-end
 --gain Effect
 function s.mtcon(e,tp,eg,ep,ev,re,r,rp)
-	return r&REASON_FUSION+REASON_SYNCHRO+REASON_XYZ+REASON_LINK+REASON_RITUAL)~=0 and eg:IsExists(Card.IsSetCard,1,nil,0x1065)
+	return (r&REASON_FUSION+REASON_SYNCHRO+REASON_XYZ+REASON_LINK+REASON_RITUAL)~=0 and eg:IsExists(Card.IsSetCard,1,nil,0x1065)
 end
 function s.mtop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local rc=c:GetReasonCard()
-	--Cannot be destroyed by opponent's card effects
+	--Cannot be targeted by oonent's card effects
 	local e1=Effect.CreateEffect(c)
-	e1:SetDescription(3060)
+	e1:SetDescription(3061)
 	e1:SetType(EFFECT_TYPE_SINGLE)
 	e1:SetProperty(EFFECT_FLAG_CLIENT_HINT)
 	e1:SetCode(EFFECT_CANNOT_BE_EFFECT_TARGET)
@@ -107,8 +104,9 @@ function s.indval(e,re,rp)
 end
 --Gain lp
 function s.gcon(e,tp,eg,ep,ev,re,r,rp)
-	return (re:IsHasType(EFFECT_TYPE_ACTIVATE) or re:IsActiveType(TYPE_MONSTER))
-		and re:IsSetCard(0x1065)
+	local c=re:GetHandler()
+	return ((re:IsHasType(EFFECT_TYPE_ACTIVATE) or re:IsActiveType(TYPE_MONSTER)))
+		and c:IsSetCard(0x1065)
 		end
 function s.rectg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
@@ -116,7 +114,7 @@ function s.rectg(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.SetTargetParam(100)
 	Duel.SetOperationInfo(0,CATEGORY_RECOVER,nil,0,tp,100)
 end
-function s.recop(e,tp,eg,ep,ev,re,r,rp)
+function s.gop(e,tp,eg,ep,ev,re,r,rp)
 	local p,d=Duel.GetChainInfo(0,CHAININFO_TARGET_PLAYER,CHAININFO_TARGET_PARAM)
 	Duel.Recover(p,d,REASON_EFFECT)
 end
