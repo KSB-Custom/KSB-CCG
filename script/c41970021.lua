@@ -24,22 +24,27 @@ function s.initial_effect(c)
 	e3:SetTarget(s.tg)
 	e3:SetOperation(s.op)
 	c:RegisterEffect(e3)
-	--ritual level
-	local e4=Ritual.AddWholeLevelTribute(c,aux.FilterBoolFunction(Card.IsSetCard,0x1065))
-	--double tribute
-	local e5=Effect.CreateEffect(c)
-	e5:SetType(EFFECT_TYPE_SINGLE)
-	e5:SetCode(EFFECT_DOUBLE_TRIBUTE)
-	e5:SetValue(s.condition)
-	c:RegisterEffect(e5)
-	--attack target
-	local e6=Effect.CreateEffect(c)
-	e6:SetType(EFFECT_TYPE_SINGLE)
-	e6:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
-	e6:SetCode(EFFECT_IGNORE_BATTLE_TARGET)
-	e6:SetRange(LOCATION_MZONE)
-	e6:SetValue(1)
-	c:RegisterEffect(e6)
+	--Give eff
+	local e1=Effect.CreateEffect(c)
+	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
+	e1:SetProperty(EFFECT_FLAG_EVENT_PLAYER+EFFECT_FLAG_CANNOT_DISABLE)
+	e1:SetCode(EVENT_BE_MATERIAL)
+	e1:SetCondition(s.mtcon)
+	e1:SetOperation(s.mtop)
+	c:RegisterEffect(e1)
+	--gain 100 lp
+	local e4=Effect.CreateEffect(c)
+	e4:SetDescription(aux.Stringid(id,0))
+	e4:SetCategory(CATEGORY_RECOVER)
+	e4:SetType(EFFECT_TYPE_QUICK_F)
+	e4:SetCode(EVENT_CHAINING)
+	e4:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
+	e4:SetRange(LOCATION_MZONE)
+	e4:SetCountLimit(1)
+	e4:SetTarget(s.rectg)
+	e4:SetCondition(s.gcon)
+	e4:SetOperation(s.gop)
+	c:RegisterEffect(e4)
 	--discarded place in Pzone
 	local e7=Effect.CreateEffect(c)
 	e7:SetDescription(aux.Stringid(id,1))
@@ -73,20 +78,51 @@ function s.initial_effect(c)
 	e0:SetTarget(s.thtg)
 	e0:SetOperation(s.thop)
 	c:RegisterEffect(e0)
---splimit
-	local e20=Effect.CreateEffect(c)
-	e20:SetType(EFFECT_TYPE_FIELD)
-	e20:SetRange(LOCATION_PZONE)
-	e20:SetCode(EFFECT_CANNOT_SPECIAL_SUMMON)
-	e20:SetProperty(EFFECT_FLAG_PLAYER_TARGET+EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_CANNOT_NEGATE)
-	e20:SetTargetRange(1,0)
-	e20:SetTarget(s.splimit)
-	c:RegisterEffect(e20)
+
 end
 s.listed_series={0x1065}
 function s.splimit(e,c,tp,sumtp,sumpos)
 	return not c:IsSetCard(0x1065) and (sumtp&SUMMON_TYPE_PENDULUM)==SUMMON_TYPE_PENDULUM
 end
+--gain Effect
+function s.mtcon(e,tp,eg,ep,ev,re,r,rp)
+	return r&REASON_FUSION+REASON_SYNCHRO+REASON_XYZ+REASON_LINK+REASON_RITUAL)~=0 and eg:IsExists(Card.IsSetCard,1,nil,0x1065)
+end
+function s.mtop(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
+	local rc=c:GetReasonCard()
+	--Cannot be destroyed by opponent's card effects
+	local e1=Effect.CreateEffect(c)
+	e1:SetDescription(3060)
+	e1:SetType(EFFECT_TYPE_SINGLE)
+	e1:SetProperty(EFFECT_FLAG_CLIENT_HINT)
+	e1:SetCode(EFFECT_CANNOT_BE_EFFECT_TARGET)
+	e1:SetValue(s.indval)
+	e1:SetOwnerPlayer(ep)
+	e1:SetReset(RESET_EVENT+RESETS_STANDARD)
+	rc:RegisterEffect(e1,true)
+end
+function s.indval(e,re,rp)
+	return rp==1-e:GetOwnerPlayer()
+end
+--Gain lp
+function s.gcon(e,tp,eg,ep,ev,re,r,rp)
+	return (re:IsHasType(EFFECT_TYPE_ACTIVATE) or re:IsActiveType(TYPE_MONSTER))
+		and re:IsSetCard(0x1065)
+		end
+function s.rectg(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return true end
+	Duel.SetTargetPlayer(tp)
+	Duel.SetTargetParam(100)
+	Duel.SetOperationInfo(0,CATEGORY_RECOVER,nil,0,tp,100)
+end
+function s.recop(e,tp,eg,ep,ev,re,r,rp)
+	local p,d=Duel.GetChainInfo(0,CHAININFO_TARGET_PLAYER,CHAININFO_TARGET_PARAM)
+	Duel.Recover(p,d,REASON_EFFECT)
+end
+function s.filter(c)
+	return c:IsFaceup() and (c:IsLocation(LOCATION_SZONE) or c:IsType(TYPE_EFFECT))
+	end
 --DAMAGE
 function s.rev(e,re,r,rp,rc)
 	return (r&REASON_EFFECT)~=0
