@@ -1,4 +1,4 @@
---RPG Eden Eternal
+--Aven
 local s,id=GetID()
 function s.initial_effect(c)
 	--Activate
@@ -7,7 +7,7 @@ function s.initial_effect(c)
 	e1:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH)
 	e1:SetType(EFFECT_TYPE_ACTIVATE)
 	e1:SetCode(EVENT_FREE_CHAIN)
-	e1:SetCountLimit(1,id,EFFECT_COUNT_CODE_OATH)
+	e1:SetCountLimit(1,id,1)
 	e1:SetOperation(s.activate)
 	c:RegisterEffect(e1)
 	--Place in PZone
@@ -19,21 +19,24 @@ function s.initial_effect(c)
 	e2:SetTarget(s.ptg)
 	e2:SetOperation(s.pop)
 	c:RegisterEffect(e2)
-	--Banish this card and search RPG spell/trap
+	--atk
 	local e3=Effect.CreateEffect(c)
-	e3:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH)
-	e3:SetType(EFFECT_TYPE_IGNITION)
-	e3:SetRange(LOCATION_GRAVE)
-	e3:SetCountLimit(1,{id,3})
-	e3:SetCost(aux.bfgcost)
-	e3:SetTarget(s.thtg)
-	e3:SetOperation(s.thop)
+	e3:SetType(EFFECT_TYPE_FIELD)
+	e3:SetCode(EFFECT_UPDATE_ATTACK)
+	e3:SetRange(LOCATION_PZONE)
+	e3:SetTargetRange(LOCATION_MZONE,0)
+	e3:SetTarget(aux.TargetBoolFunction(Card.IsSetCard,0x1065))
+	e3:SetValue(300)
 	c:RegisterEffect(e3)
+	local e4=e3:Clone()
+	e4:SetCode(EFFECT_UPDATE_DEFENSE)
+	c:RegisterEffect(e4)
 	end
 	s.listed_series={0x1065}
 function s.thfilter(c)
 	return c:IsMonster() and c:IsSetCard(0x1065) and c:IsAbleToHand()
 end
+--Add "FNO" monster
 function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	if not e:GetHandler():IsRelateToEffect(e) then return end
 	local g=Duel.GetMatchingGroup(s.thfilter,tp,LOCATION_DECK,0,nil)
@@ -61,21 +64,5 @@ function s.pop(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.SelectMatchingCard(tp,s.pfilter,tp,LOCATION_EXTRA+LOCATION_GRAVE,0,1,1,nil)
 	if #g>0 then
 		Duel.MoveToField(g:GetFirst(),tp,tp,LOCATION_PZONE,POS_FACEUP,true)
-	end
-end
---SEARCH
-function s.thfilter2(c)
-	return c:IsSetCard(0x1065) and c:IsType(TYPE_SPELL|TYPE_TRAP) and not c:IsCode(id)
-end
-function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(s.thfilter2,tp,LOCATION_DECK,0,1,nil) end
-	Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_DECK)
-end
-function s.thop(e,tp,eg,ep,ev,re,r,rp)
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
-	local g=Duel.SelectMatchingCard(tp,s.thfilter2,tp,LOCATION_DECK,0,1,1,nil)
-	if #g>0 then
-		Duel.SendtoHand(g,nil,REASON_EFFECT)
-		Duel.ConfirmCards(1-tp,g)
 	end
 end
