@@ -21,20 +21,21 @@ function s.initial_effect(c)
 	--Add itself to the hand
 	local e3=Effect.CreateEffect(c)
 	e3:SetDescription(aux.Stringid(id,2))
-	e3:SetCategory(CATEGORY_TOHAND)
+	e3:SetCategory(CATEGORY_HANDES+CATEGORY_DRAW)
 	e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
+	e3:SetProperty(EFFECT_FLAG_DELAY)
 	e3:SetCode(EVENT_DISCARD)
 	e3:SetRange(LOCATION_GRAVE)
-	e3:SetCountLimit(1,{id,1})
-	e3:SetCondition(s.thcon)
-	e3:SetTarget(s.thtg)
-	e3:SetOperation(s.thop)
+	e3:SetCountLimit(2,{id,1})
+	e3:SetCondition(s.drwcond)
+	e3:SetTarget(s.drwtg)
+	e3:SetOperation(s.drwop)
 	c:RegisterEffect(e3)
 end
 s.listed_series={0x1065}
 --Special summon
 function s.spfilter(c,e,tp)
-	return c:IsSetCard(0x1065) or ((c:IsFaceup() and c:IsSetCard(0x1065)) and c:IsType(TYPE_PENDULUM)) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
+	return c:IsCanBeSpecialSummoned(e,0,tp,false,false) and c:IsSetCard(0x1065) and c:IsLocation(LOCATION_HAND) or (c:IsFaceup() and c:IsSetCard(0x1065)) 
 end
 function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
@@ -55,17 +56,17 @@ function s.handcon(e)
 		and Duel.GetFieldGroupCount(1-e:GetHandlerPlayer(),LOCATION_ONFIELD,0)>1
 end
 --Add itself to the hand
-function s.thcfilter(c,tp)
-	return c:IsControler(tp) and c:IsPreviousControler(tp) and c:IsSetCard(0x1065) and c:IsReason(REASON_EFFECT)
+function s.dfilter(c,tp)
+	return c:IsControler(tp) and c:IsPreviousControler(tp) and c:IsSetCard(0x1065) 
 end
-function s.thcon(e,tp,eg,ep,ev,re,r,rp)
-	return eg:IsExists(s.thcfilter,1,nil,tp)
+function s.drwcond(e,tp,eg,ep,ev,re,r,rp)
+	return eg:IsExists(s.dfilter,1,e:GetHandler(),tp) 
 end
-function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
+function s.drwtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return e:GetHandler():IsAbleToHand() end
 	Duel.SetOperationInfo(0,CATEGORY_TOHAND,e:GetHandler(),1,0,0)
 end
-function s.thop(e,tp,eg,ep,ev,re,r,rp)
+function s.drwop(e,tp,eg,ep,ev,re,r,rp)
 	if e:GetHandler():IsRelateToEffect(e) then
 		Duel.SendtoHand(e:GetHandler(),nil,REASON_EFFECT)
 	end
