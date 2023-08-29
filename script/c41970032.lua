@@ -1,4 +1,4 @@
---RPG DPS martial artist
+--FNO Melee Class martial artist
 local s,id=GetID()
 function s.initial_effect(c)
 	--pendulum summon
@@ -19,6 +19,7 @@ function s.initial_effect(c)
 	e2:SetType(EFFECT_TYPE_IGNITION)
 	e2:SetRange(LOCATION_PZONE)
 	e2:SetCountLimit(1,{id,2})
+	e2:SetCondition(s.pcon)
 	e2:SetTarget(s.ptg)
 	e2:SetOperation(s.pop)
 	c:RegisterEffect(e2)
@@ -66,28 +67,22 @@ function s.initial_effect(c)
 	e6:SetCost(s.atcost)
 	e6:SetOperation(s.atoperation)
 	c:RegisterEffect(e6)
-	--splimit
-	local e20=Effect.CreateEffect(c)
-	e20:SetType(EFFECT_TYPE_FIELD)
-	e20:SetRange(LOCATION_PZONE)
-	e20:SetCode(EFFECT_CANNOT_SPECIAL_SUMMON)
-	e20:SetProperty(EFFECT_FLAG_PLAYER_TARGET+EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_CANNOT_NEGATE)
-	e20:SetTargetRange(1,0)
-	e20:SetTarget(s.splimit6)
-	c:RegisterEffect(e20)
 end
 s.listed_series={0x1065}
-function s.splimit6(e,c,tp,sumtp,sumpos)
-	return not c:IsSetCard(0x1065) and (sumtp&SUMMON_TYPE_PENDULUM)==SUMMON_TYPE_PENDULUM
-end
 function s.atfilter(e,c)
 	return c:IsType(TYPE_MONSTER) and c:IsSetCard(0x1065)
 end
 function s.atkcon(e)
 	return not Duel.IsTurnPlayer(e:GetHandlerPlayer())
 end
+--Special Summon itself
+function s.cfilter5(c)
+	return c:IsFacedown() or not c:IsSetCard(0x1065)
+end
 function s.spcon2(e,tp,eg,ep,ev,re,r,rp)
-	return e:GetHandler():GetPreviousLocation()==LOCATION_HAND and (r&REASON_DISCARD)~=0
+	return (e:GetHandler():GetPreviousLocation()==LOCATION_HAND and (r&REASON_DISCARD)~=0) 
+	and Duel.GetLocationCount(tp,LOCATION_MZONE,tp,LOCATION_REASON_TOFIELD,zone)>0
+		and (Duel.GetFieldGroupCount(tp,LOCATION_MZONE,0)==0 or not Duel.IsExistingMatchingCard(s.cfilter5,tp,LOCATION_MZONE,0,1,nil)) 
 end
 function s.sptg2(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
@@ -135,6 +130,9 @@ function s.spop3(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 --add
+function s.pcon(e,tp,eg,ep,ev,re,r,rp)
+	return Duel.IsExistingMatchingCard(Card.IsSetCard,tp,LOCATION_PZONE,0,1,e:GetHandler(),0x1065)
+end
 function s.pfilter(c)
 	return c:IsFaceup() and c:IsType(TYPE_PENDULUM) and c:IsSetCard(0x1065) and c:IsAbleToHand()
 end
