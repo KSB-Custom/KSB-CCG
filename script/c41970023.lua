@@ -74,7 +74,7 @@ function s.initial_effect(c)
 	--heal
 	local e12=Effect.CreateEffect(c)
 	e12:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
-	e12:SetCode(EVENT_SPUMMON_SUCCESS)
+	e12:SetCode(EVENT_SPSUMMON_SUCCESS)
 	e12:SetProperty(EFFECT_FLAG_DELAY)
 	e12:SetRange(LOCATION_PZONE)
 	e12:SetCondition(s.hcondition)
