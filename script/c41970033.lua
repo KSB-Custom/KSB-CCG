@@ -3,7 +3,7 @@ local s,id=GetID()
 function s.initial_effect(c)
 	--pendulum summon
 	Pendulum.AddProcedure(c)
-	-- cannot disable pendulum summon
+	--Cannot disable pendulum summon
 	local e4=Effect.CreateEffect(c)
 	e4:SetType(EFFECT_TYPE_FIELD)
 	e4:SetCode(EFFECT_CANNOT_DISABLE_SPSUMMON)
@@ -35,7 +35,6 @@ function s.initial_effect(c)
 	e3:SetRange(LOCATION_HAND)
 	e3:SetHintTiming(0,TIMINGS_CHECK_MONSTER|TIMING_END_PHASE)
 	e3:SetCountLimit(1,{id,3})
-	e3:SetCondition(s.negcon)
 	e3:SetCost(s.negcost)
 	e3:SetTarget(s.negtg)
 	e3:SetOperation(s.negop)
@@ -44,7 +43,7 @@ function s.initial_effect(c)
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(id,2))
 	e1:SetCategory(CATEGORY_DEFCHANGE)
-	e1:SetType(EFFECT_TYPE_IGNITION)
+	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e1:SetCode(EVENT_FREE_CHAIN)
 	e1:SetRange(LOCATION_MZONE)
 	e1:SetCountLimit(1,{id,4})
@@ -52,18 +51,14 @@ function s.initial_effect(c)
 	e1:SetCost(s.defcost)
 	e1:SetOperation(s.defop)
 	c:RegisterEffect(e1)
-	local e2=e1:Clone()
-	e2:SetType(EFFECT_TYPE_QUICK_O)
-	e2:SetCode(EVENT_FREE_CHAIN)
-	e2:SetHintTiming(0,TIMINGS_CHECK_MONSTER_E)
-	e2:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL)
-	e2:SetCondition(s.setcon2)
-	c:RegisterEffect(e2)
+	--Banish 1 card from either GY
 	local e8=Effect.CreateEffect(c)
+	e8:SetDescription(aux.Stringid(id,3))
 	e8:SetCategory(CATEGORY_REMOVE)
 	e8:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e8:SetProperty(EFFECT_FLAG_DELAY+EFFECT_FLAG_CARD_TARGET)
 	e8:SetCode(EVENT_DESTROYED)
+	e8:SetCountLimit(1,{id,5})
 	e8:SetCondition(s.rmcon)
 	e8:SetTarget(s.rmtg)
 	e8:SetOperation(s.rmop)
@@ -73,23 +68,12 @@ function s.initial_effect(c)
 	e9:SetProperty(EFFECT_FLAG_DELAY)
 	e9:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e9:SetCode(EVENT_RELEASE)
+	e9:SetCountLimit(1,{id,5})
 	e9:SetTarget(s.rmtg)
 	e9:SetOperation(s.rmop)
 	c:RegisterEffect(e9)
-	--splimit
-	local e20=Effect.CreateEffect(c)
-	e20:SetType(EFFECT_TYPE_FIELD)
-	e20:SetRange(LOCATION_PZONE)
-	e20:SetCode(EFFECT_CANNOT_SPECIAL_SUMMON)
-	e20:SetProperty(EFFECT_FLAG_PLAYER_TARGET+EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_CANNOT_NEGATE)
-	e20:SetTargetRange(1,0)
-	e20:SetTarget(s.splimit6)
-	c:RegisterEffect(e20)
 end
 s.listed_series={0x1065}
-function s.splimit6(e,c,tp,sumtp,sumpos)
-	return not c:IsSetCard(0x1065) and (sumtp&SUMMON_TYPE_PENDULUM)==SUMMON_TYPE_PENDULUM
-end
 function s.setcheck(c)
 	return c:IsCode(41970022) and c:IsFaceup()
 end
@@ -128,19 +112,23 @@ function s.spop(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 --negate eff
-function s.negcon(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.GetFieldGroupCount(tp,0,LOCATION_ONFIELD)>Duel.GetFieldGroupCount(tp,LOCATION_ONFIELD,0)
+function s.negfilter(c)
+	return c:IsSetCard(0x1065) and c:IsDiscardable()
 end
 function s.negcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
-	if chk==0 then return c:IsDiscardable() end
-	Duel.SendtoGrave(c,REASON_COST+REASON_DISCARD)
+	if chk==0 then return c:IsDiscardable()
+	and Duel.IsExistingMatchingCard(s.negfilter,tp,LOCATION_HAND,0,1,e:GetHandler())	end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DISCARD)
+	local g=Duel.SelectMatchingCard(tp,s.negfilter,tp,LOCATION_HAND,0,1,1,e:GetHandler())
+	g:AddCard(e:GetHandler())
+	Duel.SendtoGrave(g,REASON_DISCARD+REASON_COST)
 end
 function s.negtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsOnField() and chkc:IsNegatableSpellTrap() end
-	if chk==0 then return Duel.IsExistingTarget(Card.IsNegatableSpellTrap,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,nil) end
+	if chk==0 then return Duel.IsExistingTarget(Card.IsNegatableSpellTrap,tp,0,LOCATION_ONFIELD,1,nil) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_NEGATE)
-	local g=Duel.SelectTarget(tp,Card.IsNegatableSpellTrap,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,1,nil)
+	local g=Duel.SelectTarget(tp,Card.IsNegatableSpellTrap,tp,0,LOCATION_ONFIELD,1,1,nil)
 	Duel.SetOperationInfo(0,CATEGORY_DISABLE,g,1,0,0)
 end
 function s.negop(e,tp,eg,ep,ev,re,r,rp)
@@ -153,7 +141,7 @@ function s.negop(e,tp,eg,ep,ev,re,r,rp)
 		e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
 		e1:SetCode(EFFECT_DISABLE)
 		if Duel.GetCurrentPhase()==PHASE_END then
-			e1:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END,2)
+			e1:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END)
 		else
 			e1:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END)
 		end
@@ -162,7 +150,6 @@ function s.negop(e,tp,eg,ep,ev,re,r,rp)
 		e2:SetCode(EFFECT_DISABLE_EFFECT)
 		e2:SetValue(RESET_TURN_SET)
 		tc:RegisterEffect(e2)
-		Duel.Draw(1-tp,1,REASON_EFFECT)
 		if tc:IsType(TYPE_TRAPMONSTER) then
 			local e3=e1:Clone()
 			e3:SetCode(EFFECT_DISABLE_TRAPMONSTER)
@@ -170,7 +157,7 @@ function s.negop(e,tp,eg,ep,ev,re,r,rp)
 		end
 	end
 end
---Discard and attack and cannot be destroyed
+--Discard and gain attack 
 function s.defcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.defcfilter,tp,LOCATION_HAND,0,1,nil) end
 	Duel.DiscardHand(tp,s.defcfilter,1,1,REASON_COST+REASON_DISCARD)
@@ -181,22 +168,10 @@ function s.defop(e,tp,eg,ep,ev,re,r,rp)
 	--Gain ATK/DEF
 	local e1=Effect.CreateEffect(c)
 		e1:SetType(EFFECT_TYPE_SINGLE)
-		e1:SetCode(EFFECT_UPDATE_DEFENSE)
-		e1:SetValue(300)
+		e1:SetCode(EFFECT_UPDATE_ATTACK)
+		e1:SetValue(600)
 		e1:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END)
 		c:RegisterEffect(e1)
-		local e2=e1:Clone()
-		e2:SetCode(EFFECT_UPDATE_ATTACK)
-		c:RegisterEffect(e2)
-	-- Cannot be destroyed once
-	local e3=Effect.CreateEffect(c)
-	e3:SetType(EFFECT_TYPE_SINGLE)
-	e3:SetCode(EFFECT_INDESTRUCTABLE_COUNT)
-	e3:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
-	e3:SetCountLimit(1)
-	e3:SetValue(function(_,_,r)return (r&REASON_BATTLE+REASON_EFFECT)~=0 end)
-	e3:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END)
-	c:RegisterEffect(e3,true)
 	--attack all
 	local e4=Effect.CreateEffect(c)
 	e4:SetType(EFFECT_TYPE_SINGLE)
