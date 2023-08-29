@@ -35,7 +35,7 @@ end
 s.listed_series={0x1065}
 --Special summon
 function s.spfilter(c,e,tp)
-	return c:IsCanBeSpecialSummoned(e,0,tp,false,false) and c:IsSetCard(0x1065) and c:IsLocation(LOCATION_HAND) or (c:IsFaceup() and c:IsSetCard(0x1065)) 
+	return c:IsCanBeSpecialSummoned(e,0,tp,false,false) and c:IsSetCard(0x1065) and (c:IsLocation(LOCATION_HAND) or (c:IsFaceup() and c:IsSetCard(0x1065)))
 end
 function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
