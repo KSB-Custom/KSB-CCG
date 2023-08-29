@@ -4,12 +4,13 @@ function s.initial_effect(c)
 	--pendulum summon
 	Pendulum.AddProcedure(c)
 	c:EnableReviveLimit()
-	--Add Ritual Spell
+	--Discard and add Ritual Spell
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(id,0))
 	e1:SetType(EFFECT_TYPE_IGNITION)
 	e1:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH)
-	e1:SetCountLimit(1)
+	e1:SetCountLimit(1,{id,4})
+	e1:SetCost(s.atcost)
 	e1:SetRange(LOCATION_PZONE)
 	e1:SetProperty(EFFECT_FLAG_DELAY)
 	e1:SetTarget(s.thtg1)
@@ -17,7 +18,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e1)
 	--Banish itself from GY and search spell
 	local e2=Effect.CreateEffect(c)
-	e2:SetDescription(aux.Stringid(id,2))
+	e2:SetDescription(aux.Stringid(id,1))
 	e2:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH)
 	e2:SetType(EFFECT_TYPE_QUICK_O)
 	e2:SetRange(LOCATION_GRAVE)
@@ -28,39 +29,31 @@ function s.initial_effect(c)
 	e2:SetTarget(s.thtg2)
 	e2:SetOperation(s.thop2)
 	c:RegisterEffect(e2)
-	--tuner, no damage and recover
+	--Lvl Change
 	local e3=Effect.CreateEffect(c)
 	e3:SetDescription(aux.Stringid(id,2))
-	e3:SetProperty(EFFECT_FLAG_CARD_TARGET)
-	e3:SetType(EFFECT_TYPE_QUICK_O)
-	e3:SetRange(LOCATION_MZONE)
-	e3:SetCountLimit(1,{id,3})
-	e3:SetCode(EVENT_FREE_CHAIN)
-	e3:SetTarget(s.indtg)
-	e3:SetOperation(s.indop)
+	e3:SetCategory(CATEGORY_LVCHANGE)
+	e3:SetType(EFFECT_TYPE_IGNITION)
+	e3:SetRange(LOCATION_PZONE)
+	e3:SetProperty(EFFECT_FLAG_DELAY)
+	e3:SetCountLimit(1,{id,5})
+	e3:SetTarget(s.lvtg)
+	e3:SetOperation(s.lvop)
 	c:RegisterEffect(e3)
-	--Gain LP 
+	--Return to hand if you Gain LP 
 	local e4=Effect.CreateEffect(c)
-	e4:SetType(EFFECT_TYPE_CONTINUOUS+EFFECT_TYPE_FIELD)
-	e4:SetProperty(EFFECT_FLAG_DELAY)
-	e4:SetCode(EVENT_SUMMON_SUCCESS)
+	e4:SetDescription(aux.Stringid(id,3))
+	e4:SetCategory(CATEGORY_TOHAND)
+	e4:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
+	e4:SetCode(EVENT_RECOVER)
 	e4:SetRange(LOCATION_PZONE)
-	e4:SetCondition(s.reccon1)
-	e4:SetOperation(s.recop1)
+	e4:SetCountLimit(1,{id,2})
+	e4:SetTarget(s.sthtg)
+	e4:SetOperation(s.sthop)
 	c:RegisterEffect(e4)
-	--avoid battle damage
-	local e5=Effect.CreateEffect(c)
-	e5:SetType(EFFECT_TYPE_FIELD)
-	e5:SetCode(EFFECT_AVOID_BATTLE_DAMAGE)
-	e5:SetProperty(EFFECT_FLAG_IGNORE_IMMUNE)
-	e5:SetRange(LOCATION_PZONE)
-	e5:SetTargetRange(LOCATION_MZONE,0)
-	e5:SetTarget(s.efilter)
-	e5:SetValue(1)
-	c:RegisterEffect(e5)
 	--discarded, destroy
 	local e7=Effect.CreateEffect(c)
-	e7:SetDescription(aux.Stringid(id,2))
+	e7:SetDescription(aux.Stringid(id,4))
 	e7:SetProperty(EFFECT_FLAG_DELAY)
 	e7:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e7:SetCode(EVENT_TO_GRAVE)
@@ -120,32 +113,58 @@ function s.thop2(e,tp,eg,ep,ev,re,r,rp)
 		Duel.ConfirmCards(1-tp,g)
 	end
 end
---tuner, no damage, recover
-function s.indtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then return chkc:IsLocation(LOCATION_MZONE) end
-	if chk==0 then return Duel.IsExistingTarget(nil,tp,LOCATION_MZONE,LOCATION_MZONE,1,nil) end
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FACEUP)
-	local g=Duel.SelectTarget(tp,nil,tp,LOCATION_MZONE,LOCATION_MZONE,1,1,nil)
-	Duel.SetOperationInfo(0,CATEGORY_RECOVER,nil,0,tp,g:GetFirst():GetDefense()/2)
+--Return to the hand if you gain LP
+function s.sthtg(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return true end
+	Duel.SetOperationInfo(0,CATEGORY_TOHAND,e:GetHandler(),1,0,0)
 end
-function s.indop(e,tp,eg,ep,ev,re,r,rp)
+function s.sthop(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
+	if c:IsRelateToEffect(e) then
+		Duel.SendtoHand(c,nil,REASON_EFFECT)
+	end
+end
+--change level
+function s.lvfilter(c)
+	return c:IsFaceup() and c:IsSetCard(0x1065) and c:HasLevel()
+end
+function s.lvtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+	if chkc then return chkc:IsControler(tp) and chkc:IsLocation(LOCATION_MZONE) and s.lvfilter(chkc) end
+	if chk==0 then return Duel.IsExistingTarget(s.lvfilter,tp,LOCATION_MZONE,0,1,nil) end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FACEUP)
+	Duel.SelectTarget(tp,s.lvfilter,tp,LOCATION_MZONE,0,1,1,nil)
+end
+function s.lvop(e,tp,eg,ep,ev,re,r,rp,chk)
 	local tc=Duel.GetFirstTarget()
-	if tc and tc:IsRelateToEffect(e) then
-	Duel.Recover(tp,tc:GetDefense()/2,REASON_EFFECT)
+	if tc:IsRelateToEffect(e) and tc:IsFaceup() then
+		local op=0
+		if tc:GetLevel()==1 then
+			op=Duel.SelectOption(tp,aux.Stringid(id,2))
+		else
+			op=Duel.SelectOption(tp,aux.Stringid(id,2),aux.Stringid(id,3))
+		end
 		local e1=Effect.CreateEffect(e:GetHandler())
 		e1:SetType(EFFECT_TYPE_SINGLE)
-		e1:SetCode(EFFECT_ADD_TYPE)
-		e1:SetValue(TYPE_TUNER)
+		e1:SetCode(EFFECT_UPDATE_LEVEL)
 		e1:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END)
+		if op==0 then
+			e1:SetValue(2)
+		else
+			e1:SetValue(-2)
+		end
 		tc:RegisterEffect(e1)
-		local e4=e1:Clone()
-		e4:SetCode(EFFECT_AVOID_BATTLE_DAMAGE)
-		tc:RegisterEffect(e4)
 	end
 end
 --Add ritual spell
 function s.thfilter2(c)
 	return c:IsRitualSpell() and c:IsAbleToHand() and c:IsSetCard(0x1065)
+end
+function s.disfilter(c)
+	return c:IsDiscardable()
+end
+function s.atcost(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return Duel.IsExistingMatchingCard(s.disfilter,tp,LOCATION_HAND,0,1,nil) end
+	Duel.DiscardHand(tp,s.disfilter,1,1,REASON_COST+REASON_DISCARD)
 end
 function s.thtg1(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.thfilter2,tp,LOCATION_DECK+LOCATION_GRAVE,0,1,nil) end
@@ -183,8 +202,4 @@ function s.recop1(e,tp,eg,ep,ev,re,r,rp)
 		local sum=g:GetSum(s.sum)
 		Duel.Recover(tp,sum,REASON_EFFECT)
 	end
-end
-
-function s.efilter(e,c)
-	return c:IsSetCard(0x1065) and (c:IsType(TYPE_NORMAL) or c:IsType(TYPE_RITUAL))
 end

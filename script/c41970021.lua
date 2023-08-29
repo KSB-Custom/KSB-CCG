@@ -4,15 +4,6 @@ function s.initial_effect(c)
 	--pendulum summon
 	Pendulum.AddProcedure(c)
 	c:EnableReviveLimit()
-	--damage conversion
-	local e2=Effect.CreateEffect(c)
-	e2:SetType(EFFECT_TYPE_FIELD)
-	e2:SetCode(EFFECT_REVERSE_DAMAGE)
-	e2:SetRange(LOCATION_PZONE)
-	e2:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
-	e2:SetTargetRange(1,0)
-	e2:SetValue(s.rev)
-	c:RegisterEffect(e2)
 	--recover
 	local e3=Effect.CreateEffect(c)
 	e3:SetDescription(aux.Stringid(id,0))
@@ -121,10 +112,7 @@ end
 function s.filter(c)
 	return c:IsFaceup() and (c:IsLocation(LOCATION_SZONE) or c:IsType(TYPE_EFFECT))
 	end
---DAMAGE
-function s.rev(e,re,r,rp,rc)
-	return (r&REASON_EFFECT)~=0
-end
+
 function s.condition(e,c)
 	return c:IsSetCard(0x1065)
 end
