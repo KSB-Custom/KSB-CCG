@@ -74,15 +74,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e9)
 end
 s.listed_series={0x1065}
-function s.setcheck(c)
-	return c:IsCode(41970022) and c:IsFaceup()
-end
-function s.setcon1(e,tp,eg,ep,ev,re,r,rp)
-	return not Duel.IsExistingMatchingCard(s.setcheck,tp,LOCATION_MZONE,0,1,nil)
-end
-function s.setcon2(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.IsExistingMatchingCard(s.setcheck,tp,LOCATION_MZONE,0,1,nil)
-end
+
 function s.target(e,c)
 	return c:IsSetCard(0x1065) and c:IsType(TYPE_PENDULUM)
 end

@@ -24,6 +24,7 @@ function s.initial_effect(c)
 	e2:SetTarget(s.pztg)
 	e2:SetOperation(s.pzop)
 	c:RegisterEffect(e2)
+	Duel.AddCustomActivityCounter(id,ACTIVITY_SPSUMMON,s.counterfilter)
 	--UNAFFECTED
 	local e3=Effect.CreateEffect(c)
 	e3:SetProperty(EFFECT_FLAG_CARD_TARGET)
@@ -49,7 +50,7 @@ function s.initial_effect(c)
 	local e5=Effect.CreateEffect(c)
 	e5:SetType(EFFECT_TYPE_FIELD)
 	e5:SetCode(EFFECT_REVERSE_DAMAGE)
-	e5:SetRange(LOCATION_MZONE)
+	e5:SetRange(LOCATION_PZONE)
 	e5:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
 	e5:SetCondition(s.dmcon)
 	e5:SetTargetRange(1,0)
@@ -57,8 +58,8 @@ function s.initial_effect(c)
 	c:RegisterEffect(e5)
 end
 s.listed_series={0x1065}
-function s.splimit6(e,c,tp,sumtp,sumpos)
-	return not c:IsSetCard(0x1065) and (sumtp&SUMMON_TYPE_PENDULUM)==SUMMON_TYPE_PENDULUM
+function s.counterfilter(c)
+	return not c:IsSummonType(SUMMON_TYPE_PENDULUM)
 end
 --Ritual
 	function s.ritualfil(c)
@@ -70,24 +71,14 @@ function s.exfilter0(c)
 function s.forcedgroup(c,e,tp)
 	return c:IsSetCard(0x1065) and c:IsLocation(LOCATION_HAND+LOCATION_ONFIELD)
 	end
---place in pendulum zones
+--Place 2 FNO cards in Pendulum zones
 function s.condition(e,tp,eg,ep,ev,re,r,rp)
 	return not Duel.GetFieldCard(tp,LOCATION_PZONE,0) and not Duel.GetFieldCard(tp,LOCATION_PZONE,1)
 end
 function s.thcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetCustomActivityCount(id,tp,ACTIVITY_SPSUMMON)==0 and e:GetHandler():IsDiscardable() end
 	Duel.SendtoGrave(e:GetHandler(),REASON_COST+REASON_DISCARD)
-	local e1=Effect.CreateEffect(e:GetHandler())
-	e1:SetType(EFFECT_TYPE_FIELD)
-	e1:SetCode(EFFECT_CANNOT_SPECIAL_SUMMON)
-	e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET+EFFECT_FLAG_CLIENT_HINT)
-	e1:SetDescription(aux.Stringid(id,3))
-	e1:SetReset(RESET_PHASE+PHASE_END)
-	e1:SetTarget(s.splimit)
-	e1:SetTargetRange(1,0)
-	Duel.RegisterEffect(e1,tp)
 end
---Place 2 FNO cards in Pendulum zones
 function s.filter(c)
 	return c:IsSetCard(0x1065) and c:IsType(TYPE_PENDULUM) and not c:IsForbidden()
 end
@@ -138,10 +129,6 @@ function s.recop(e,tp,eg,ep,ev,re,r,rp)
 	local p,d=Duel.GetChainInfo(0,CHAININFO_TARGET_PLAYER,CHAININFO_TARGET_PARAM)
 		Duel.Recover(p,d,REASON_EFFECT)
 end
---dmg conversion
-function s.rev(e,re,r,rp,rc)
-	return (r&REASON_EFFECT)~=0
-end
 --negate attack
 function s.nacond(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.GetTurnPlayer()~=tp
@@ -156,10 +143,13 @@ function s.naop(e,tp,eg,ep,ev,re,r,rp)
 		Duel.SkipPhase(1-tp,PHASE_BATTLE,RESET_PHASE+PHASE_BATTLE_STEP,1)
 	end
 end
---damage conversion
-function s.cfilter(c)
-	return c:IsFaceup() and c:IsSetCard(0x1065)
+--dmg conversion
+function s.rev(e,re,r,rp,rc)
+	return (r&REASON_EFFECT)~=0
 end
-function s.dmcon(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.IsExistingMatchingCard(s.cfilter,tp,LOCATION_ONFIELD,0,1,nil)
+function s.dmfilter(c)
+	return c:IsFaceup() and c:IsSetCard(0x1065) and c:IsType(TYPE_RITUAL)
+end
+function s.dmcon(e)
+	return Duel.IsExistingMatchingCard(s.dmfilter,e:GetHandlerPlayer(),LOCATION_MZONE,0,1,nil)
 end

@@ -32,7 +32,8 @@ function s.initial_effect(c)
 	e3:SetType(EFFECT_TYPE_QUICK_O)
 	e3:SetRange(LOCATION_MZONE)
 	e3:SetCountLimit(1,{id,3})
-	e3:SetCode(EVENT_FREE_CHAIN)
+	e3:SetCode(EVENT_FREE_CHAIN
+	e3:SetCost(s.ctcost)
 	e3:SetTarget(s.artg1)
 	e3:SetOperation(s.arop1)
 	c:RegisterEffect(e3)
@@ -73,19 +74,12 @@ function s.initial_effect(c)
 	--heal
 	local e12=Effect.CreateEffect(c)
 	e12:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
-	e12:SetCode(EVENT_SUMMON_SUCCESS)
+	e12:SetCode(EVENT_SPUMMON_SUCCESS)
 	e12:SetProperty(EFFECT_FLAG_DELAY)
 	e12:SetRange(LOCATION_PZONE)
 	e12:SetCondition(s.hcondition)
 	e12:SetOperation(s.hoperation)
 	c:RegisterEffect(e12)
-	local e13=e12:Clone()
-	e13:SetCode(EVENT_FLIP_SUMMON_SUCCESS)
-	e13:SetCondition(s.hcondition2)
-	c:RegisterEffect(e13)
-	local e14=e12:Clone()
-	e14:SetCode(EVENT_SPSUMMON_SUCCESS)
-	c:RegisterEffect(e14)
 end
 s.listed_series={0x1065}
 --draw and recover
@@ -149,6 +143,11 @@ end
 function s.value(e,re,rp)
 local rc=re:GetHandler()
 	return re:IsActiveType(TYPE_MONSTER) and rc:IsRace(e:GetHandler():GetRace()) and rc:IsAttribute(e:GetHandler():GetAttribute())
+end
+function s.ctcost(e,tp,eg,ep,ev,re,r,rp,chk)
+	local exc=(e:GetHandler():IsLocation(LOCATION_HAND) and not e:GetHandler():IsAbleToGraveAsCost()) and e:GetHandler() or nil
+	if chk==0 then return Duel.IsExistingMatchingCard(Card.IsDiscardable,tp,LOCATION_HAND,0,1,exc) end
+	Duel.DiscardHand(tp,Card.IsDiscardable,1,1,REASON_COST+REASON_DISCARD,exc)
 end
 --type 
 function s.artg1(e,tp,eg,ep,ev,re,r,rp,chk)
