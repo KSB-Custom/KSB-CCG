@@ -56,8 +56,8 @@ function s.initial_effect(c)
 	e4:SetCode(EVENT_TO_GRAVE)
 	e4:SetCountLimit(1,{id,4})
 	e4:SetCondition(s.spcon2)
-	e4:SetTarget(s.regtg)
-	e4:SetOperation(s.regop)
+	e4:SetTarget(s.retg)
+	e4:SetOperation(s.reop)
 	c:RegisterEffect(e4)
 	local e5=e4:Clone()
 	e5:SetCode(EVENT_REMOVE)
@@ -67,18 +67,9 @@ function s.initial_effect(c)
 	e9:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e9:SetCountLimit(1,{id,4})
 	e9:SetCode(EVENT_RELEASE)
-	e9:SetTarget(s.regtg)
-	e9:SetOperation(s.regop)
+	e9:SetTarget(s.retg)
+	e9:SetOperation(s.reop)
 	c:RegisterEffect(e9)
-	--Reduce damage
-	local e6=Effect.CreateEffect(c)
-	e6:SetType(EFFECT_TYPE_FIELD)
-	e6:SetCode(EFFECT_CHANGE_BATTLE_DAMAGE)
-	e6:SetRange(LOCATION_PZONE)
-	e6:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
-	e6:SetTargetRange(1,0)
-	e6:SetValue(HALF_DAMAGE)
-	c:RegisterEffect(e6)
 	--heal
 	local e12=Effect.CreateEffect(c)
 	e12:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
@@ -95,50 +86,24 @@ function s.initial_effect(c)
 	local e14=e12:Clone()
 	e14:SetCode(EVENT_SPSUMMON_SUCCESS)
 	c:RegisterEffect(e14)
---splimit
-	local e20=Effect.CreateEffect(c)
-	e20:SetType(EFFECT_TYPE_FIELD)
-	e20:SetRange(LOCATION_PZONE)
-	e20:SetCode(EFFECT_CANNOT_SPECIAL_SUMMON)
-	e20:SetProperty(EFFECT_FLAG_PLAYER_TARGET+EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_CANNOT_NEGATE)
-	e20:SetTargetRange(1,0)
-	e20:SetTarget(s.splimit)
-	c:RegisterEffect(e20)
 end
 s.listed_series={0x1065}
-function s.splimit(e,c,tp,sumtp,sumpos)
-	return not c:IsSetCard(0x1065) and (sumtp&SUMMON_TYPE_PENDULUM)==SUMMON_TYPE_PENDULUM
-end
 --draw and recover
 function s.spcon2(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():GetPreviousLocation()==LOCATION_HAND and (r&REASON_DISCARD)~=0
 end
-function s.regtg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return true end
-	Duel.SetPossibleOperationInfo(0,CATEGORY_DRAW,nil,1,tp,LOCATION_DECK)
-end
-function s.regop(e,tp,eg,ep,ev,re,r,rp)
-	local e1=Effect.CreateEffect(e:GetHandler())
-	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
-	e1:SetCode(EVENT_PHASE+PHASE_END)
-	e1:SetCountLimit(1)
-	e1:SetTarget(s.thtg)
-	e1:SetOperation(s.thop)
-	e1:SetReset(RESET_PHASE+PHASE_END)
-	Duel.RegisterEffect(e1,tp)
-end
-function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
+function s.retg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsPlayerCanDraw(tp,1) end
 	Duel.SetTargetPlayer(tp)
 	Duel.SetTargetParam(1)
 	Duel.SetOperationInfo(0,CATEGORY_DRAW,nil,0,tp,1)
-	Duel.SetOperationInfo(0,CATEGORY_RECOVER,nil,0,1-tp,1000)
+	Duel.SetOperationInfo(0,CATEGORY_RECOVER,nil,0,1-tp,500)
 end
-function s.thop(e,tp,eg,ep,ev,re,r,rp)
+function s.reop(e,tp,eg,ep,ev,re,r,rp)
 	local p,d=Duel.GetChainInfo(0,CHAININFO_TARGET_PLAYER,CHAININFO_TARGET_PARAM)
 	if Duel.Draw(p,d,REASON_EFFECT)>0 then
 		Duel.BreakEffect()
-		Duel.Recover(tp,1000,REASON_EFFECT)
+		Duel.Recover(tp,500,REASON_EFFECT)
 	end
 end
 --
