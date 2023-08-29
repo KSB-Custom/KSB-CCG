@@ -3,7 +3,7 @@ local s,id=GetID()
 function s.initial_effect(c)
 	Pendulum.AddProcedure(c)
 	c:EnableReviveLimit()
-	--negate attack
+	--Negate attack
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
 	e1:SetRange(LOCATION_PZONE)
@@ -45,38 +45,16 @@ function s.initial_effect(c)
 	e4:SetTarget(s.rectg)
 	e4:SetOperation(s.recop)
 	c:RegisterEffect(e4)
-	--Destruction replacement
+	--damage conversion
 	local e5=Effect.CreateEffect(c)
-	e5:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
-	e5:SetCode(EFFECT_DESTROY_REPLACE)
-	e5:SetRange(LOCATION_GRAVE)
-	e5:SetCountLimit(1,{id,3})
-	e5:SetTarget(s.reptg)
-	e5:SetValue(s.repval)
-	e5:SetOperation(s.repop)
+	e5:SetType(EFFECT_TYPE_FIELD)
+	e5:SetCode(EFFECT_REVERSE_DAMAGE)
+	e5:SetRange(LOCATION_MZONE)
+	e5:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
+	e5:SetCondition(s.dmcon)
+	e5:SetTargetRange(1,0)
+	e5:SetValue(s.rev)
 	c:RegisterEffect(e5)
-	--salvage
-	local e6=Effect.CreateEffect(c)
-	e6:SetDescription(aux.Stringid(id,0))
-	e6:SetCategory(CATEGORY_TOHAND)
-	e6:SetProperty(EFFECT_FLAG_CARD_TARGET)
-	e6:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
-	e6:SetRange(LOCATION_PZONE)
-	e6:SetCountLimit(1)
-	e6:SetCondition(s.thcon)
-	e6:SetCode(EVENT_SPSUMMON_SUCCESS)
-	e6:SetTarget(s.thtg)
-	e6:SetOperation(s.thop)
-	c:RegisterEffect(e6)
---splimit
-	local e20=Effect.CreateEffect(c)
-	e20:SetType(EFFECT_TYPE_FIELD)
-	e20:SetRange(LOCATION_PZONE)
-	e20:SetCode(EFFECT_CANNOT_SPECIAL_SUMMON)
-	e20:SetProperty(EFFECT_FLAG_PLAYER_TARGET+EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_CANNOT_NEGATE)
-	e20:SetTargetRange(1,0)
-	e20:SetTarget(s.splimit6)
-	c:RegisterEffect(e20)
 end
 s.listed_series={0x1065}
 function s.splimit6(e,c,tp,sumtp,sumpos)
@@ -109,9 +87,7 @@ function s.thcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	e1:SetTargetRange(1,0)
 	Duel.RegisterEffect(e1,tp)
 end
-function s.splimit(e,c,sump,sumtype,sumpos,targetp,se)
-	return sumtype & SUMMON_TYPE_PENDULUM==SUMMON_TYPE_PENDULUM
-end
+--Place 2 FNO cards in Pendulum zones
 function s.filter(c)
 	return c:IsSetCard(0x1065) and c:IsType(TYPE_PENDULUM) and not c:IsForbidden()
 end
@@ -162,21 +138,9 @@ function s.recop(e,tp,eg,ep,ev,re,r,rp)
 	local p,d=Duel.GetChainInfo(0,CHAININFO_TARGET_PLAYER,CHAININFO_TARGET_PARAM)
 		Duel.Recover(p,d,REASON_EFFECT)
 end
--- replacement
-function s.repfilter(c,tp)
-	return c:IsFaceup() and c:IsControler(tp) and c:IsOnField() and c:IsSetCard(0x1065)
-		and not c:IsReason(REASON_REPLACE) and c:IsReason(REASON_EFFECT+REASON_BATTLE)
-end
-function s.reptg(e,tp,eg,ep,ev,re,r,rp,chk)
-	local c=e:GetHandler()
-	if chk==0 then return c:IsAbleToRemove() and eg:IsExists(s.repfilter,1,nil,tp) end
-	return Duel.SelectEffectYesNo(tp,c,96)
-end
-function s.repval(e,c)
-	return s.repfilter(c,e:GetHandlerPlayer())
-end
-function s.repop(e,tp,eg,ep,ev,re,r,rp)
-	Duel.Remove(e:GetHandler(),POS_FACEUP,REASON_EFFECT+REASON_REPLACE)
+--dmg conversion
+function s.rev(e,re,r,rp,rc)
+	return (r&REASON_EFFECT)~=0
 end
 --negate attack
 function s.nacond(e,tp,eg,ep,ev,re,r,rp)
@@ -192,31 +156,10 @@ function s.naop(e,tp,eg,ep,ev,re,r,rp)
 		Duel.SkipPhase(1-tp,PHASE_BATTLE,RESET_PHASE+PHASE_BATTLE_STEP,1)
 	end
 end
---Add ritual material to hand
+--damage conversion
 function s.cfilter(c)
-	return c:IsSummonType(SUMMON_TYPE_RITUAL)
+	return c:IsFaceup() and c:IsSetCard(0x1065)
 end
-function s.thcon(e,tp,eg,ep,ev,re,r,rp)
-	return eg:IsExists(s.cfilter,1,nil)
-end
-function s.thfilter(c,e,tp)
-	return c:IsLocation(LOCATION_GRAVE) and c:IsReason(REASON_RELEASE) and c:IsControler(tp) and c:IsAbleToHand() and c:IsCanBeEffectTarget(e)
-end
-function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	local tc=eg:GetFirst()
-	local mat=tc:GetMaterial()
-	if chkc then return mat:IsContains(chkc) and s.thfilter(chkc,e,tp) end
-	if chk==0 then return mat:IsExists(s.thfilter,1,nil,e,tp) end
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_RTOHAND)
-	local g=mat:FilterSelect(tp,s.thfilter,1,1,nil,e,tp)
-	Duel.SetTargetCard(g)
-	Duel.SetOperationInfo(0,CATEGORY_TOHAND,g,#g,0,0)
-end
-function s.thop(e,tp,eg,ep,ev,re,r,rp)
-	if not e:GetHandler():IsRelateToEffect(e) then return end
-	local tc=Duel.GetFirstTarget()
-	if tc and tc:IsRelateToEffect(e) then
-		Duel.SendtoHand(tc,nil,REASON_EFFECT)
-		Duel.ConfirmCards(1-tp,tc)
-	end
+function s.dmcon(e,tp,eg,ep,ev,re,r,rp)
+	return Duel.IsExistingMatchingCard(s.cfilter,tp,LOCATION_ONFIELD,0,1,nil)
 end
