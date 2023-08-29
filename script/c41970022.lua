@@ -9,7 +9,7 @@ function s.initial_effect(c)
 	e1:SetDescription(aux.Stringid(id,0))
 	e1:SetType(EFFECT_TYPE_IGNITION)
 	e1:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH)
-	e1:SetCountLimit(1,{id,4})
+	e1:SetCountLimit(1,{id,1})
 	e1:SetCost(s.atcost)
 	e1:SetRange(LOCATION_PZONE)
 	e1:SetProperty(EFFECT_FLAG_DELAY)
@@ -23,7 +23,7 @@ function s.initial_effect(c)
 	e2:SetType(EFFECT_TYPE_QUICK_O)
 	e2:SetRange(LOCATION_GRAVE)
 	e2:SetCode(EVENT_FREE_CHAIN)
-	e2:SetCountLimit(1,{id,1})
+	e2:SetCountLimit(1,{id,2})
 	e2:SetCondition(s.grcondition)
 	e2:SetCost(aux.bfgcost)
 	e2:SetTarget(s.thtg2)
@@ -36,7 +36,7 @@ function s.initial_effect(c)
 	e3:SetType(EFFECT_TYPE_IGNITION)
 	e3:SetRange(LOCATION_PZONE)
 	e3:SetProperty(EFFECT_FLAG_DELAY)
-	e3:SetCountLimit(1,{id,5})
+	e3:SetCountLimit(1,{id,3})
 	e3:SetTarget(s.lvtg)
 	e3:SetOperation(s.lvop)
 	c:RegisterEffect(e3)
@@ -47,10 +47,21 @@ function s.initial_effect(c)
 	e4:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
 	e4:SetCode(EVENT_RECOVER)
 	e4:SetRange(LOCATION_PZONE)
-	e4:SetCountLimit(1,{id,2})
+	e4:SetCountLimit(1,{id,4})
 	e4:SetTarget(s.sthtg)
 	e4:SetOperation(s.sthop)
 	c:RegisterEffect(e4)
+	--Gain LP equal to opponent's monster's ATK
+	local e5=Effect.CreateEffect(c)
+	e5:SetDescription(aux.Stringid(id,7))
+	e5:SetCategory(CATEGORY_RECOVER)
+	e5:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
+	e5:SetRange(LOCATION_MZONE)
+	e5:SetCountLimit(1,{id,5})
+	e5:SetProperty(EFFECT_FLAG_CARD_TARGET)
+	e5:SetTarget(s.rctg)
+	e5:SetOperation(s.rcop)
+	c:RegisterEffect(e5)
 	--discarded, destroy
 	local e7=Effect.CreateEffect(c)
 	e7:SetDescription(aux.Stringid(id,4))
@@ -58,7 +69,7 @@ function s.initial_effect(c)
 	e7:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e7:SetCode(EVENT_TO_GRAVE)
 	e7:SetCondition(s.spcon2)
-	e7:SetCountLimit(1,{id,3})
+	e7:SetCountLimit(1,{id,0})
 	e7:SetTarget(s.sptg2)
 	e7:SetOperation(s.spop2)
 	c:RegisterEffect(e7)
@@ -68,7 +79,7 @@ function s.initial_effect(c)
 	local e9=Effect.CreateEffect(c)
 	e9:SetProperty(EFFECT_FLAG_DELAY)
 	e9:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
-	e9:SetCountLimit(1,{id,3})
+	e9:SetCountLimit(1,{id,0})
 	e9:SetCode(EVENT_RELEASE)
 	e9:SetTarget(s.sptg2)
 	e9:SetOperation(s.spop2)
@@ -138,10 +149,10 @@ function s.lvop(e,tp,eg,ep,ev,re,r,rp,chk)
 	local tc=Duel.GetFirstTarget()
 	if tc:IsRelateToEffect(e) and tc:IsFaceup() then
 		local op=0
-		if tc:GetLevel()==1 then
-			op=Duel.SelectOption(tp,aux.Stringid(id,2))
+		if tc:GetLevel()<=2 then
+			op=Duel.SelectOption(tp,aux.Stringid(id,5))
 		else
-			op=Duel.SelectOption(tp,aux.Stringid(id,2),aux.Stringid(id,3))
+			op=Duel.SelectOption(tp,aux.Stringid(id,5),aux.Stringid(id,6))
 		end
 		local e1=Effect.CreateEffect(e:GetHandler())
 		e1:SetType(EFFECT_TYPE_SINGLE)
@@ -153,6 +164,23 @@ function s.lvop(e,tp,eg,ep,ev,re,r,rp,chk)
 			e1:SetValue(-2)
 		end
 		tc:RegisterEffect(e1)
+	end
+end
+--Gain LP
+function s.rcfilter(c)
+	return c:IsFaceup() and c:GetAttack()>0
+end
+function s.rctg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+	if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsControler(1-tp) and s.rcfilter(chkc) end
+	if chk==0 then return Duel.IsExistingTarget(s.rcfilter,tp,0,LOCATION_MZONE,1,nil) end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TARGET)
+	local g=Duel.SelectTarget(tp,s.rcfilter,tp,0,LOCATION_MZONE,1,1,nil)
+	Duel.SetOperationInfo(0,CATEGORY_RECOVER,nil,0,tp,g:GetFirst():GetAttack())
+end
+function s.rcop(e,tp,eg,ep,ev,re,r,rp)
+	local tc=Duel.GetFirstTarget()
+	if e:GetHandler():IsRelateToEffect(e) and tc:IsFaceup() and tc:IsRelateToEffect(e) then
+		Duel.Recover(tp,tc:GetAttack(),REASON_EFFECT)
 	end
 end
 --Add ritual spell
