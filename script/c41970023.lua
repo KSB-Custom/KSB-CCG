@@ -32,7 +32,7 @@ function s.initial_effect(c)
 	e3:SetType(EFFECT_TYPE_QUICK_O)
 	e3:SetRange(LOCATION_MZONE)
 	e3:SetCountLimit(1,{id,3})
-	e3:SetCode(EVENT_FREE_CHAIN
+	e3:SetCode(EVENT_FREE_CHAIN)
 	e3:SetCost(s.ctcost)
 	e3:SetTarget(s.artg1)
 	e3:SetOperation(s.arop1)
