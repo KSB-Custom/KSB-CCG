@@ -17,7 +17,6 @@ function s.initial_effect(c)
 	e7:SetProperty(EFFECT_FLAG_DELAY)
 	e7:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e7:SetCode(EVENT_TO_GRAVE)
-	e7:SetCountLimit(1,{id,2})
 	e7:SetCondition(s.spcon2)
 	e7:SetCost(s.cost2)
 	e7:SetOperation(s.setop)
@@ -25,17 +24,6 @@ function s.initial_effect(c)
 	local e8=e7:Clone()
 	e8:SetCode(EVENT_REMOVE)
 	c:RegisterEffect(e8)
-	--fusion summon
-	local params = {fusfilter=aux.FilterBoolFunction(Card.IsSetCard,0x1065)}
-	local e2=Effect.CreateEffect(c)
-	e2:SetType(EFFECT_TYPE_QUICK_O)
-	e2:SetCode(EVENT_FREE_CHAIN)
-	e2:SetHintTiming(0,TIMINGS_CHECK_MONSTER)
-	e2:SetRange(LOCATION_GRAVE)
-	e2:SetCost(aux.bfgcost)
-	e2:SetTarget(Fusion.SummonEffTG(params))
-	e2:SetOperation(Fusion.SummonEffOP(params))
-	c:RegisterEffect(e2)
 end
 function s.cfilter(c)
 	return c:IsSetCard(0x1065) and c:IsType(TYPE_PENDULUM) and c:IsAbleToRemoveAsCost()
@@ -58,7 +46,7 @@ function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.NegateActivation(ev) and re:GetHandler():IsRelateToEffect(re) then
-		Duel.Remove(eg,POS_FACEUP,REASON_EFFECT)
+		Duel.Destroy(eg,REASON_EFFECT)
 	end
 end
 --Set
