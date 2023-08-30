@@ -1,16 +1,11 @@
 --RPG Magic Illusionist
 local s,id=GetID()
 function s.initial_effect(c)
+	c:SetSPSummonOnce(id)
 	c:EnableReviveLimit()
 	Pendulum.AddProcedure(c,false)
 	Fusion.AddProcMixN(c,true,true,s.ffilter,2)
 	Fusion.AddContactProc(c,s.contactfil,s.contactop,s.splimit)
-	--change damage
-	local e0=Effect.CreateEffect(c)
-	e0:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
-	e0:SetCode(EVENT_SPSUMMON_SUCCESS)
-	e0:SetOperation(s.regop)
-	c:RegisterEffect(e0)
 	--Special summon 1 monster from pendulum zone
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(id,0))
@@ -65,29 +60,6 @@ function s.initial_effect(c)
 	c:RegisterEffect(e6)
 end
 s.listed_series={0x1065}
---no damage
-function s.regop(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
-	if not (re and re:GetHandler():IsCode(id) and c:IsSummonType(SUMMON_TYPE_SPECIAL)) then return end
-	local e1=Effect.CreateEffect(c)
-	e1:SetType(EFFECT_TYPE_FIELD)
-	e1:SetCode(EFFECT_CHANGE_DAMAGE)
-	e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
-	e1:SetTargetRange(0,1)
-	e1:SetValue(0)
-	e1:SetReset(RESET_PHASE+PHASE_END)
-	Duel.RegisterEffect(e1,tp)
-	local e2=e1:Clone()
-	e2:SetCode(EFFECT_NO_EFFECT_DAMAGE)
-	e2:SetReset(RESET_PHASE+PHASE_END)
-	Duel.RegisterEffect(e2,tp)
-	local e3=Effect.CreateEffect(c)
-	e3:SetDescription(aux.Stringid(id,0))
-	e3:SetProperty(EFFECT_FLAG_PLAYER_TARGET+EFFECT_FLAG_CLIENT_HINT)
-	e3:SetReset(RESET_PHASE+PHASE_END)
-	e3:SetTargetRange(0,1)
-	Duel.RegisterEffect(e3,tp)
-end
 --Special Summon card in the PZone
 function s.filter(c,e,tp)
 	return c:IsCanBeSpecialSummoned(e,0,tp,false,false) and c:IsSetCard(0x1065)
