@@ -1,7 +1,6 @@
 --RPG Magic Illusionist
 local s,id=GetID()
 function s.initial_effect(c)
-	c:SetSPSummonOnce(id)
 	c:EnableReviveLimit()
 	Pendulum.AddProcedure(c,false)
 	Fusion.AddProcMixN(c,true,true,s.ffilter,2)
@@ -12,12 +11,16 @@ function s.initial_effect(c)
 	e0:SetCode(EVENT_SPSUMMON_SUCCESS)
 	e0:SetOperation(s.regop)
 	c:RegisterEffect(e0)
-	--unaffected
+	--Special summon 1 monster from pendulum zone
 	local e1=Effect.CreateEffect(c)
-	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
+	e1:SetDescription(aux.Stringid(id,0))
+	e1:SetCategory(CATEGORY_SPECIAL_SUMMON)
+	e1:SetProperty(EFFECT_FLAG_CARD_TARGET+EFFECT_FLAG_DAMAGE_STEP)
+	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e1:SetCode(EVENT_SPSUMMON_SUCCESS)
-	e1:SetCondition(s.condition)
-	e1:SetOperation(s.operation)
+	e1:SetCountLimit(1,id)
+	e1:SetTarget(s.sptg)
+	e1:SetOperation(s.spop)
 	c:RegisterEffect(e1)
 	--disable activation field spell
 	local e2=Effect.CreateEffect(c)
@@ -60,20 +63,8 @@ function s.initial_effect(c)
 	e6:SetCountLimit(1)
 	e6:SetOperation(s.mtop)
 	c:RegisterEffect(e6)
---splimit
-	local e20=Effect.CreateEffect(c)
-	e20:SetType(EFFECT_TYPE_FIELD)
-	e20:SetRange(LOCATION_PZONE)
-	e20:SetCode(EFFECT_CANNOT_SPECIAL_SUMMON)
-	e20:SetProperty(EFFECT_FLAG_PLAYER_TARGET+EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_CANNOT_NEGATE)
-	e20:SetTargetRange(1,0)
-	e20:SetTarget(s.splimit6)
-	c:RegisterEffect(e20)
 end
 s.listed_series={0x1065}
-function s.splimit6(e,c,tp,sumtp,sumpos)
-	return not c:IsSetCard(0x1065) and (sumtp&SUMMON_TYPE_PENDULUM)==SUMMON_TYPE_PENDULUM
-end
 --no damage
 function s.regop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
@@ -96,6 +87,35 @@ function s.regop(e,tp,eg,ep,ev,re,r,rp)
 	e3:SetReset(RESET_PHASE+PHASE_END)
 	e3:SetTargetRange(0,1)
 	Duel.RegisterEffect(e3,tp)
+end
+--Special Summon card in the PZone
+function s.filter(c,e,tp)
+	return c:IsCanBeSpecialSummoned(e,0,tp,false,false) and c:IsSetCard(0x1065)
+end
+function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+	if chkc then return chkc:IsLocation(LOCATION_PZONE) and chkc:IsControler(tp) and s.filter(chkc,e,tp) end
+	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
+		and Duel.IsExistingTarget(s.filter,tp,LOCATION_PZONE,0,1,nil,e,tp) end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
+	local g=Duel.SelectTarget(tp,s.filter,tp,LOCATION_PZONE,0,1,1,nil,e,tp)
+	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,g,1,0,0)
+end
+function s.spop(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
+	local tc=Duel.GetFirstTarget()
+	if tc and tc:IsRelateToEffect(e) then
+		Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_FACEUP)
+	end
+	if c:IsRelateToEffect(e) then
+		--Cannot attack
+		local e1=Effect.CreateEffect(c)
+		e1:SetDescription(3206)
+		e1:SetType(EFFECT_TYPE_SINGLE)
+		e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_CLIENT_HINT)
+		e1:SetCode(EFFECT_CANNOT_ATTACK)
+		e1:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END)
+		c:RegisterEffect(e1)
+	end
 end
 --
 function s.splimit(e,se,sp,st)
@@ -150,21 +170,10 @@ end
 function s.efilter(e,re)
 	return e:GetOwnerPlayer()~=re:GetOwnerPlayer()
 end
-function s.imfilter(c)
-	return c:IsSetCard(0x1065) and c:IsType(TYPE_NORMAL)
-end
-function s.valcheck(e,c)
-	local g=c:GetMaterial()
-	local flag=0
-	if g:IsExists(s.imfilter,1,nil) then
-		flag=flag+0x4
-	end
-	e:GetLabelObject():SetLabel(flag)
-end
 --MANTEN
 function s.mtop(e,tp,eg,ep,ev,re,r,rp)
-	if Duel.CheckLPCost(tp,800) then
-		Duel.PayLPCost(tp,800)
+	if Duel.CheckLPCost(tp,500) then
+		Duel.PayLPCost(tp,500)
 	else
 		Duel.Destroy(e:GetHandler(),REASON_COST)
 	end
