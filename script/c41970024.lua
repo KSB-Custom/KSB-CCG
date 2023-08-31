@@ -24,7 +24,6 @@ function s.initial_effect(c)
 	e2:SetTarget(s.pztg)
 	e2:SetOperation(s.pzop)
 	c:RegisterEffect(e2)
-	Duel.AddCustomActivityCounter(id,ACTIVITY_SPSUMMON,s.counterfilter)
 	--UNAFFECTED
 	local e3=Effect.CreateEffect(c)
 	e3:SetProperty(EFFECT_FLAG_CARD_TARGET)
@@ -56,6 +55,7 @@ function s.initial_effect(c)
 	e5:SetTargetRange(1,0)
 	e5:SetValue(s.rev)
 	c:RegisterEffect(e5)
+	Duel.AddCustomActivityCounter(id,ACTIVITY_SPSUMMON,s.counterfilter)
 end
 s.listed_series={0x1065}
 function s.counterfilter(c)
@@ -78,6 +78,18 @@ end
 function s.thcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetCustomActivityCount(id,tp,ACTIVITY_SPSUMMON)==0 and e:GetHandler():IsDiscardable() end
 	Duel.SendtoGrave(e:GetHandler(),REASON_COST+REASON_DISCARD)
+	local e1=Effect.CreateEffect(e:GetHandler())
+	e1:SetType(EFFECT_TYPE_FIELD)
+	e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET+EFFECT_FLAG_OATH)
+	e1:SetCode(EFFECT_CANNOT_SPECIAL_SUMMON)
+	e1:SetReset(RESET_PHASE+PHASE_END)
+	e1:SetTargetRange(1,0)
+	e1:SetTarget(s.splimit)
+	Duel.RegisterEffect(e1,tp)
+	aux.RegisterClientHint(e:GetHandler(),nil,tp,1,0,aux.Stringid(id,2),nil)
+end
+function s.splimit(e,c,sump,sumtype,sumpos,targetp,se)
+	return (sumtype&SUMMON_TYPE_PENDULUM)==SUMMON_TYPE_PENDULUM
 end
 function s.filter(c)
 	return c:IsSetCard(0x1065) and c:IsType(TYPE_PENDULUM) and not c:IsForbidden()
