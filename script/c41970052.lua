@@ -163,7 +163,7 @@ local g=Duel.GetMatchingGroup(Card.IsFaceup,tp,0,LOCATION_MZONE,nil)
 end
 --Place or special summon
 function s.rpfilter(c,e,tp)
-	return c:IsSetCard(0x1065) and (not c:IsForbidden()
+	return c:IsSetCard(0x1065) and c:IsType(TYPE_PENDULUM) and (not c:IsForbidden()
 		or (Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and c:IsCanBeSpecialSummoned(e,0,tp,false,false)))
 end
 function s.rptg(e,tp,eg,ep,ev,re,r,rp,chk)
