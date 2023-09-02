@@ -60,6 +60,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e6)
 end
 s.listed_series={0x1065}
+s.material_setcode=0x1065
 --Special Summon card in the PZone
 function s.filter(c,e,tp)
 	return c:IsCanBeSpecialSummoned(e,0,tp,false,false) and c:IsSetCard(0x1065)

@@ -1,10 +1,16 @@
 --RPG Magic Warlock
 local s,id=GetID()
 function s.initial_effect(c)
-	c:SetSPSummonOnce(id)
 	c:EnableReviveLimit()
 	Pendulum.AddProcedure(c,false)
 	Fusion.AddProcMixN(c,true,true,s.ffilter,3)
+	--spsummon condition
+	local e1=Effect.CreateEffect(c)
+	e1:SetType(EFFECT_TYPE_SINGLE)
+	e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
+	e1:SetCode(EFFECT_SPSUMMON_CONDITION)
+	e1:SetValue(s.splimit)
+	c:RegisterEffect(e1)
 	--Negate the activation
 	local e2=Effect.CreateEffect(c)
 	e2:SetCategory(CATEGORY_NEGATE+CATEGORY_DESTROY)
@@ -49,19 +55,11 @@ function s.initial_effect(c)
 	e1:SetTarget(s.tdtg)
 	e1:SetOperation(s.tdop)
 	c:RegisterEffect(e1)
-	--splimit
-	local e20=Effect.CreateEffect(c)
-	e20:SetType(EFFECT_TYPE_FIELD)
-	e20:SetRange(LOCATION_PZONE)
-	e20:SetCode(EFFECT_CANNOT_SPECIAL_SUMMON)
-	e20:SetProperty(EFFECT_FLAG_PLAYER_TARGET+EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_CANNOT_NEGATE)
-	e20:SetTargetRange(1,0)
-	e20:SetTarget(s.splimit6)
-	c:RegisterEffect(e20)
 end
 s.listed_series={0x1065}
-function s.splimit6(e,c,tp,sumtp,sumpos)
-	return not c:IsSetCard(0x1065) and (sumtp&SUMMON_TYPE_PENDULUM)==SUMMON_TYPE_PENDULUM
+s.material_setcode=0x1065
+function s.splimit(e,se,sp,st)
+	return not e:GetHandler():IsLocation(LOCATION_EXTRA) or aux.fuslimit(e,se,sp,st)
 end
 --TO DECK AND SpecialSummon
 function s.tdfilter(c)
@@ -102,18 +100,6 @@ function s.regop(e,tp,eg,ep,ev,re,r,rp)
 	e3:SetTargetRange(0,1)
 	Duel.RegisterEffect(e3,tp)
 end
-function s.splimit(e,se,sp,st)
-	return (st&SUMMON_TYPE_FUSION)==SUMMON_TYPE_FUSION
-end
-function s.contactfil(tp)
-	return Duel.GetMatchingGroup(Card.IsAbleToRemoveAsCost,tp,LOCATION_ONFIELD,0,nil)
-end
-function s.contactop(g)
-	Duel.Remove(g,POS_FACEUP,REASON_COST+REASON_MATERIAL)
-end
-function s.ffilter(c,fc,sumtype,tp)
-	return c:IsSetCard(0x1065) and c:IsType(TYPE_PENDULUM)
-	end
 	--Negate
 function s.discon(e,tp,eg,ep,ev,re,r,rp)
 	return re:GetHandler()~=e:GetHandler() and not e:GetHandler():IsStatus(STATUS_BATTLE_DESTROYED)

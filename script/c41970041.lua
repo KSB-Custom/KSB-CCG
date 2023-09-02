@@ -59,20 +59,10 @@ function s.initial_effect(c)
 	e5:SetTarget(s.target)
 	e5:SetOperation(s.activate)
 	c:RegisterEffect(e5)
-	--splimit
-	local e20=Effect.CreateEffect(c)
-	e20:SetType(EFFECT_TYPE_FIELD)
-	e20:SetRange(LOCATION_PZONE)
-	e20:SetCode(EFFECT_CANNOT_SPECIAL_SUMMON)
-	e20:SetProperty(EFFECT_FLAG_PLAYER_TARGET+EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_CANNOT_NEGATE)
-	e20:SetTargetRange(1,0)
-	e20:SetTarget(s.splimit6)
-	c:RegisterEffect(e20)
+	
 end
 s.listed_series={0x1065}
-function s.splimit6(e,c,tp,sumtp,sumpos)
-	return not c:IsSetCard(0x1065) and (sumtp&SUMMON_TYPE_PENDULUM)==SUMMON_TYPE_PENDULUM
-end
+s.material_setcode=0x1065
 	--RETURN SPELL/TRAP AND GAIN ATK
 function s.tdcon(e,tp,eg,ep,ev,re,r,rp)
 	return re and (re:GetHandler():IsCode(CARD_POLYMERIZATION) or re:GetHandler():IsSetCard(0x46)) 
@@ -142,8 +132,8 @@ function s.rpop(e,tp,eg,ep,ev,re,r,rp)
 end
 --change to fd
 function s.cost2(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.CheckLPCost(tp,1500) end
-	Duel.PayLPCost(tp,1500)
+	if chk==0 then return Duel.CheckLPCost(tp,700) end
+	Duel.PayLPCost(tp,700)
 end
 function s.setfilter(c)
 	return c:IsFaceup() and c:IsCanTurnSet() and ((c:IsSpellTrap() and c:IsType(TYPE_CONTINUOUS)) or c:IsMonster() or (c:IsSpell() and c:IsType(TYPE_FIELD)))
