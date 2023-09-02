@@ -4,13 +4,6 @@ function s.initial_effect(c)
 	c:EnableReviveLimit()
 	Pendulum.AddProcedure(c,false)
 	Fusion.AddProcMixN(c,true,true,s.ffilter,3)
-	--spsummon condition
-	local e1=Effect.CreateEffect(c)
-	e1:SetType(EFFECT_TYPE_SINGLE)
-	e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
-	e1:SetCode(EFFECT_SPSUMMON_CONDITION)
-	e1:SetValue(s.splimit)
-	c:RegisterEffect(e1)
 	--Negate the activation
 	local e2=Effect.CreateEffect(c)
 	e2:SetCategory(CATEGORY_NEGATE+CATEGORY_DESTROY)
@@ -58,9 +51,6 @@ function s.initial_effect(c)
 end
 s.listed_series={0x1065}
 s.material_setcode=0x1065
-function s.splimit(e,se,sp,st)
-	return not e:GetHandler():IsLocation(LOCATION_EXTRA) or aux.fuslimit(e,se,sp,st)
-end
 --TO DECK AND SpecialSummon
 function s.tdfilter(c)
 	return c:IsAbleToDeck()
