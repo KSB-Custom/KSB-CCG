@@ -1,7 +1,7 @@
 --FNO Party
 local s,id=GetID()
 function s.initial_effect(c)
-	Xyz.AddProcedure(c,nil,8,2,nil,nil,99)
+	Xyz.AddProcedure(c,aux.FilterBoolFunctionEx(Card.IsSetCard,0x1065),8,2,nil,nil,99)
 	--Prevent effect and activation from being negated
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_FIELD)

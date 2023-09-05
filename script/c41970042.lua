@@ -102,7 +102,7 @@ function s.contactop(g)
 end
 --
 function s.ffilter(c,fc,sumtype,tp)
-	return c:IsSetCard(0x1065) and c:IsType(TYPE_PENDULUM)
+	return c:IsSetCard(0x1065) and (c:IsType(TYPE_PENDULUM) or c:IsType(TYPE_MONSTER))
 	end
 function s.distg(e,c)
 	return c:IsSpell()

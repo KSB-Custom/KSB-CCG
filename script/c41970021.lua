@@ -58,7 +58,7 @@ function s.initial_effect(c)
 	e9:SetTarget(s.sptg2)
 	e9:SetOperation(s.spop2)
 	c:RegisterEffect(e9)
-	--Search 1 Ritual Spell from your Deck or GY
+	--Search 1 Ritual Spell from your Deck
 	local e0=Effect.CreateEffect(c)
 	e0:SetDescription(aux.Stringid(id,0))
 	e0:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH)
@@ -74,7 +74,8 @@ end
 s.listed_series={0x1065}
 --gain Effect
 function s.mtcon(e,tp,eg,ep,ev,re,r,rp)
-	return (r&REASON_FUSION+REASON_SYNCHRO+REASON_XYZ+REASON_LINK+REASON_RITUAL)~=0 and eg:IsExists(Card.IsSetCard,1,nil,0x1065)
+	return (r==REASON_XYZ or r==REASON_SYNCHRO or r==REASON_FUSION or r==REASON_RITUAL or r==REASON_LINK) 
+	and e:GetHandler():GetReasonCard():IsSetCard(0x1065)
 end
 function s.mtop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
