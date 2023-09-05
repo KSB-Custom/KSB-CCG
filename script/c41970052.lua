@@ -1,4 +1,4 @@
---RPG Ranged Engineer
+--FNO Ranged Engineer
 local s,id=GetID()
 function s.initial_effect(c)
 	c:EnableReviveLimit()
@@ -19,18 +19,17 @@ function s.initial_effect(c)
 	e1:SetTarget(s.postg)
 	e1:SetOperation(s.posop)
 	c:RegisterEffect(e1)
-	--Destroy Special Summoned monster(s)
-	local e3=Effect.CreateEffect(c)
-	e3:SetDescription(aux.Stringid(id,1))
-	e3:SetCategory(CATEGORY_DESTROY)
-	e3:SetType(EFFECT_TYPE_QUICK_O)
-	e3:SetCode(EVENT_SPSUMMON_SUCCESS)
-	e3:SetRange(LOCATION_MZONE)
-	e3:SetCountLimit(1,{id,2})
-	e3:SetCondition(s.descon)
-	e3:SetTarget(s.destg)
-	e3:SetOperation(s.desop)
-	c:RegisterEffect(e3)
+--lvatkup
+	local e2=Effect.CreateEffect(c)
+	e2:SetDescription(aux.Stringid(id,1))
+	e2:SetCategory(CATEGORY_LVCHANGE)
+	e2:SetType(EFFECT_TYPE_IGNITION)
+	e2:SetRange(LOCATION_MZONE)
+	e2:SetCountLimit(1,{id,2})
+	e2:SetProperty(EFFECT_FLAG_CARD_TARGET)
+	e2:SetTarget(s.lvtg)
+	e2:SetOperation(s.lvop)
+	c:RegisterEffect(e2)
 	--pendulum set/spsummon
 	local e4=Effect.CreateEffect(c)
 	e4:SetDescription(aux.Stringid(id,2))
@@ -85,26 +84,7 @@ s.listed_series={0x1065}
 function s.splimit6(e,c,tp,sumtp,sumpos)
 	return not c:IsSetCard(0x1065) and (sumtp&SUMMON_TYPE_PENDULUM)==SUMMON_TYPE_PENDULUM
 end
---DESTROY SP SUMMON
-function s.descon(e,tp,eg,ep,ev,re,r,rp)
-	return tp==Duel.GetTurnPlayer() 
-	end
-	function s.desfilter2(c,tp)
-	return c:IsFaceup() and ep~=tp
-	end
-function s.destg(e,tp,eg,ep,ev,re,r,rp,chk)
-	local c=e:GetHandler()
-	local g=eg:Filter(s.desfilter2,nil,nil,tp)
-	if chk==0 then return #g>0 and not c:IsStatus(STATUS_CHAINING) and not eg:IsContains(c) end
-	Duel.SetTargetCard(eg)
-	Duel.SetOperationInfo(0,CATEGORY_DESTROY,g,#g,0,0)
-end
-function s.desop(e,tp,eg,ep,ev,re,r,rp)
-	local g=eg:Filter(s.desfilter2,nil,e,tp)
-	if #g>0 then
-		Duel.Destroy(g,REASON_EFFECT)
-	end
-end
+
 --sp sum itself
 function s.desfilter(c,tp)
 	return c:IsFaceup()
@@ -126,7 +106,7 @@ end
 --PLACE IT IN THE PZONE
 function s.pencon(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	return rp==1-tp and c:IsPreviousLocation(LOCATION_MZONE) and c:IsPreviousControler(tp)
+	return c:IsPreviousLocation(LOCATION_MZONE) and c:IsPreviousControler(tp)
 end
 function s.pentg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.CheckPendulumZones(tp) end
@@ -188,5 +168,27 @@ function s.rpop(e,tp,eg,ep,ev,re,r,rp)
 		else
 			Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_FACEUP)
 		end
+	end
+end
+function s.lvfilter(c)
+	local lv=c:GetLevel()
+	return c:IsFaceup() and lv>0 and lv~=8
+end
+function s.lvtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+	if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsControler(tp) and s.lvfilter(chkc) end
+	if chk==0 then return true end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FACEUP)
+	Duel.SelectTarget(tp,s.lvfilter,tp,LOCATION_MZONE,0,1,1,nil)
+end
+function s.lvop(e,tp,eg,ep,ev,re,r,rp)
+	local tc=Duel.GetFirstTarget()
+	if tc:IsRelateToEffect(e) and tc:IsFaceup() and tc:GetLevel()~=8 then
+		local e1=Effect.CreateEffect(e:GetHandler())
+		e1:SetType(EFFECT_TYPE_SINGLE)
+		e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
+		e1:SetCode(EFFECT_CHANGE_LEVEL)
+		e1:SetValue(8)
+		e1:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END)
+		tc:RegisterEffect(e1)
 	end
 end

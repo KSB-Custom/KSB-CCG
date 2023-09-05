@@ -1,9 +1,9 @@
---RPG Magic Warlock
+--FNO Magic Warlock
 local s,id=GetID()
 function s.initial_effect(c)
 	c:EnableReviveLimit()
 	Pendulum.AddProcedure(c,false)
-	Fusion.AddProcMixN(c,true,true,s.ffilter,3)
+	Fusion.AddProcMixN(c,true,true,aux.FilterBoolFunctionEx(Card.IsSetCard,0x1065),3)
 	--Negate the activation
 	local e2=Effect.CreateEffect(c)
 	e2:SetCategory(CATEGORY_NEGATE+CATEGORY_DESTROY)

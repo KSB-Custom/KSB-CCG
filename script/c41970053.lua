@@ -1,4 +1,4 @@
---RPG Ranged Ranger
+--FNO Ranged Ranger
 local s,id=GetID()
 function s.initial_effect(c)
 	c:EnableReviveLimit()
@@ -52,30 +52,8 @@ function s.initial_effect(c)
 	e7:SetTarget(s.rmtg)
 	e7:SetOperation(s.rmop)
 	c:RegisterEffect(e7)
-	--PLACE IN PZONE IF LEAVE MZONE
-	local e8=Effect.CreateEffect(c)
-	e8:SetDescription(aux.Stringid(id,4))
-	e8:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
-	e8:SetCode(EVENT_LEAVE_FIELD)
-	e8:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DELAY)
-	e8:SetCondition(s.pencon)
-	e8:SetTarget(s.pentg)
-	e8:SetOperation(s.penop)
-	c:RegisterEffect(e8)
---splimit
-	local e20=Effect.CreateEffect(c)
-	e20:SetType(EFFECT_TYPE_FIELD)
-	e20:SetRange(LOCATION_PZONE)
-	e20:SetCode(EFFECT_CANNOT_SPECIAL_SUMMON)
-	e20:SetProperty(EFFECT_FLAG_PLAYER_TARGET+EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_CANNOT_NEGATE)
-	e20:SetTargetRange(1,0)
-	e20:SetTarget(s.splimit6)
-	c:RegisterEffect(e20)
 end
 s.listed_series={0x1065}
-function s.splimit6(e,c,tp,sumtp,sumpos)
-	return not c:IsSetCard(0x1065) and (sumtp&SUMMON_TYPE_PENDULUM)==SUMMON_TYPE_PENDULUM
-end
 --Pierce
 function s.ptg(e,c)
 	return c:IsSetCard(0x1065)
@@ -146,21 +124,5 @@ function s.rmop(e,tp,eg,ep,ev,re,r,rp)
 	if #g>0 then
 		Duel.HintSelection(g)
 		Duel.Remove(g,POS_FACEUP,REASON_EFFECT)
-	end
-end
---PLACE IT IN THE PZONE
-function s.pencon(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
-	return rp==1-tp and c:IsPreviousLocation(LOCATION_MZONE) and c:IsPreviousControler(tp)
-end
-function s.pentg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.CheckPendulumZones(tp) end
-	e:GetHandler():IsLocation(LOCATION_GRAVE+LOCATION_EXTRA+LOCATION_REMOVED+LOCATION_HAND)
-end
-function s.penop(e,tp,eg,ep,ev,re,r,rp)
-	if not Duel.CheckPendulumZones(tp) then return false end
-	local c=e:GetHandler()
-	if c:IsRelateToEffect(e) then
-		Duel.MoveToField(c,tp,tp,LOCATION_PZONE,POS_FACEUP,true)
 	end
 end
