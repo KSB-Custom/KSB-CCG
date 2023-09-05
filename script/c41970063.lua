@@ -34,6 +34,14 @@ function s.initial_effect(c)
 	e4:SetCondition(s.condition)
 	e4:SetValue(s.aclimit)
 	c:RegisterEffect(e4)
+	--atkup
+	local e5=Effect.CreateEffect(c)
+	e5:SetType(EFFECT_TYPE_SINGLE)
+	e5:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
+	e5:SetCode(EFFECT_UPDATE_ATTACK)
+	e5:SetRange(LOCATION_MZONE)
+	e5:SetValue(s.val)
+	c:RegisterEffect(e5)
 	end
 --Ritual
 function s.effectfilter(e,c)
@@ -59,4 +67,11 @@ function s.condition(e)
 end
 function s.aclimit(e,re,tp)
 	return re:IsActiveType(TYPE_MONSTER)
+end
+--
+function s.val(e,c)
+	return (Duel.GetMatchingGroupCount(s.filter,c:GetControler(),LOCATION_ONFIELD,0,nil)+e:GetHandler():GetOverlayCount())*200
+end
+function s.filter(c)
+	return c:IsFaceup() and c:IsSetCard(0x1065)
 end
