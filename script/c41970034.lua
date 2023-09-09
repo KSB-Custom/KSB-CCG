@@ -129,7 +129,7 @@ function s.tgop(e,tp,eg,ep,ev,re,r,rp)
 	if #tg>0 then
 		Duel.SendtoGrave(tg,REASON_EFFECT+REASON_RETURN)
 		local dc=Duel.GetOperatedGroup():GetFirst()
-	if dc:IsSetCard(0x1065) then
+	if dc:IsSetCard(0xf14) then
 		Duel.Draw(tp,1,REASON_EFFECT)
 		Duel.DiscardHand(tp,aux.TRUE,1,1,REASON_EFFECT+REASON_DISCARD)
 	end
