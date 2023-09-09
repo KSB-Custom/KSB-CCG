@@ -57,7 +57,7 @@ function s.efilter(e,re)
 end
 --REDUCE PENDULUM SCALE
 function s.scfilter(c,pc)
-	return c:IsType(TYPE_PENDULUM) and not c:IsForbidden() and c:IsLevelAbove(1) and c:IsSetCard(0x1065) and not c:IsCode(id)
+	return c:IsType(TYPE_PENDULUM) and not c:IsForbidden() and c:IsLevelAbove(1) and c:IsSetCard(0xf14) and not c:IsCode(id)
 end
 function s.sctg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.scfilter,tp,LOCATION_DECK,0,1,nil,e:GetHandler()) 
