@@ -99,6 +99,10 @@ function s.setop(e,tp,eg,ep,ev,re,r,rp)
 		Duel.SSet(tp,c)
 	end
 end
+--cannot sum
+function s.sumlimit(e,c,sump,sumtype,sumpos,targetp,se)
+	return c:IsLocation(LOCATION_EXTRA) and not c:IsSetCard(0xf14) 
+end
 function s.lizfilter(e,c)
 	return not c:IsSetCard(0xf14)
 end

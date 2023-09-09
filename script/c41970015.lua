@@ -69,6 +69,10 @@ function s.scop(e,tp,eg,ep,ev,re,r,rp)
 		Synchro.CheckAdditional=nil
 	end
 end
+--cannot sum
+function s.sumlimit(e,c,sump,sumtype,sumpos,targetp,se)
+	return c:IsLocation(LOCATION_EXTRA) and not c:IsSetCard(0xf14) 
+end
 function s.lizfilter(e,c)
 	return not c:IsSetCard(0xf14)
 end
