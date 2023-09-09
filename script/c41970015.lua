@@ -1,4 +1,4 @@
---RPG Eternal Guardians
+--FNO Eternal Guardians
 local s,id=GetID()
 function s.initial_effect(c)
 	--Activate
