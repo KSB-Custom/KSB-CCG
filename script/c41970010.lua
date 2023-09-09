@@ -31,6 +31,17 @@ function s.initial_effect(c)
 	local e4=e3:Clone()
 	e4:SetCode(EFFECT_UPDATE_DEFENSE)
 	c:RegisterEffect(e4)
+	--spsummon limit
+	local e9=Effect.CreateEffect(c)
+	e9:SetDescription(aux.Stringid(id,9))
+	e9:SetType(EFFECT_TYPE_FIELD)
+	e9:SetRange(LOCATION_FZONE)
+	e9:SetCode(EFFECT_CANNOT_SPECIAL_SUMMON)
+	e9:SetProperty(EFFECT_FLAG_PLAYER_TARGET+EFFECT_FLAG_CLIENT_HINT)
+	e9:SetTargetRange(1,0)
+	e9:SetTarget(s.sumlimit)
+	c:RegisterEffect(e9)
+	aux.addContinuousLizardCheck(c,LOCATION_MZONE,s.lizfilter)
 	end
 	s.listed_series={0xf14}
 function s.thfilter(c)
@@ -65,4 +76,7 @@ function s.pop(e,tp,eg,ep,ev,re,r,rp)
 	if #g>0 then
 		Duel.MoveToField(g:GetFirst(),tp,tp,LOCATION_PZONE,POS_FACEUP,true)
 	end
+end
+function s.lizfilter(e,c)
+	return not c:IsSetCard(0xf14)
 end

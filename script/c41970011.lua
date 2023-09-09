@@ -7,14 +7,14 @@ function s.initial_effect(c)
 	e1:SetCode(EVENT_FREE_CHAIN)
 	c:RegisterEffect(e1)
 	--Atk in defense position
-	local e3=Effect.CreateEffect(c)
-	e3:SetType(EFFECT_TYPE_FIELD)
-	e3:SetCode(EFFECT_DEFENSE_ATTACK)
-	e3:SetRange(LOCATION_SZONE)
-	e3:SetTargetRange(LOCATION_MZONE,0)
-	e3:SetTarget(s.atktg)
-	e3:SetValue(1)
-	c:RegisterEffect(e3)
+	local e2=Effect.CreateEffect(c)
+	e2:SetType(EFFECT_TYPE_FIELD)
+	e2:SetCode(EFFECT_DEFENSE_ATTACK)
+	e2:SetRange(LOCATION_SZONE)
+	e2:SetTargetRange(LOCATION_MZONE,0)
+	e2:SetTarget(s.atktg)
+	e2:SetValue(1)
+	c:RegisterEffect(e2)
 	--Shuffle 3 "RPG" cards into deck, then draw 1
 	local e3=Effect.CreateEffect(c)
 	e3:SetDescription(aux.Stringid(id,1))
@@ -41,6 +41,17 @@ function s.initial_effect(c)
 	local e8=e7:Clone()
 	e8:SetCode(EVENT_REMOVE)
 	c:RegisterEffect(e8)
+	--spsummon limit
+	local e9=Effect.CreateEffect(c)
+	e9:SetDescription(aux.Stringid(id,9))
+	e9:SetType(EFFECT_TYPE_FIELD)
+	e9:SetRange(LOCATION_SZONE)
+	e9:SetCode(EFFECT_CANNOT_SPECIAL_SUMMON)
+	e9:SetProperty(EFFECT_FLAG_PLAYER_TARGET+EFFECT_FLAG_CLIENT_HINT)
+	e9:SetTargetRange(1,0)
+	e9:SetTarget(s.sumlimit)
+	c:RegisterEffect(e9)
+	aux.addContinuousLizardCheck(c,LOCATION_MZONE,s.lizfilter)
 end
 s.listed_series={0xf14}
 function s.atktg(e,c)
@@ -87,4 +98,7 @@ function s.setop(e,tp,eg,ep,ev,re,r,rp)
 	if c:IsRelateToEffect(e) and c:IsSSetable() then
 		Duel.SSet(tp,c)
 	end
+end
+function s.lizfilter(e,c)
+	return not c:IsSetCard(0xf14)
 end
