@@ -1,4 +1,4 @@
---RPG Support Ritual
+--FNO Heal Support Ritual
 local s,id=GetID()
 function s.initial_effect(c)
 	--Ritual Summon
@@ -28,7 +28,7 @@ function s.initial_effect(c)
 end
 	--Ritual
 function s.ritualfil(c)
-	return c:IsSetCard(0x1065)
+	return c:IsSetCard(0xf14)
 	end
 function s.exfilter0(c)
 	return  c:IsLevelAbove(1) and c:IsAbleToGrave()	
@@ -38,7 +38,7 @@ function s.forcedgroup(c,e,tp)
 	end
 	--SEARCH
 function s.thfilter(c)
-	return c:IsSetCard(0x1065) and c:IsRitualMonster() and (c:IsLocation(LOCATION_GRAVE) or (c:IsFaceup() and c:IsType(TYPE_PENDULUM))) and c:IsAbleToHand()
+	return c:IsSetCard(0xf14) and c:IsRitualMonster() and (c:IsLocation(LOCATION_GRAVE) or (c:IsFaceup() and c:IsType(TYPE_PENDULUM))) and c:IsAbleToHand()
 end
 function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_GRAVE+LOCATION_REMOVED,0,1,nil) end

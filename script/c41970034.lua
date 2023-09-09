@@ -1,4 +1,4 @@
---RPG DPS Samurai
+--FNO DPS Samurai
 local s,id=GetID()
 function s.initial_effect(c)
 	--pendulum summon
@@ -73,13 +73,13 @@ function s.initial_effect(c)
 	e20:SetTarget(s.splimit6)
 	c:RegisterEffect(e20)
 end
-s.listed_series={0x1065}
+s.listed_series={0xf14}
 function s.splimit6(e,c,tp,sumtp,sumpos)
-	return not c:IsSetCard(0x1065) and (sumtp&SUMMON_TYPE_PENDULUM)==SUMMON_TYPE_PENDULUM
+	return not c:IsSetCard(0xf14) and (sumtp&SUMMON_TYPE_PENDULUM)==SUMMON_TYPE_PENDULUM
 end
 --Send RPG from extra to GY
 function s.thfilter(c)
-	return c:IsSetCard(0x1065) and c:IsAbleToGrave()
+	return c:IsSetCard(0xf14) and c:IsAbleToGrave()
 end
 	function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_EXTRA,0,1,nil) end

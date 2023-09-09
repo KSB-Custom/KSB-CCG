@@ -3,7 +3,7 @@ local s,id=GetID()
 function s.initial_effect(c)
 	c:EnableReviveLimit()
 	Pendulum.AddProcedure(c,false)
-	Synchro.AddProcedure(c,aux.FilterBoolFunctionEx(Card.IsSetCard,0x1065),1,1,Synchro.NonTunerEx(Card.IsSetCard,0x1065),1,1)
+	Synchro.AddProcedure(c,aux.FilterBoolFunctionEx(Card.IsSetCard,0xf14),1,1,Synchro.NonTunerEx(Card.IsSetCard,0xf14),1,1)
 	--pierce
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_SINGLE)
@@ -53,14 +53,14 @@ function s.initial_effect(c)
 	e7:SetOperation(s.rmop)
 	c:RegisterEffect(e7)
 end
-s.listed_series={0x1065}
+s.listed_series={0xf14}
 --Pierce
 function s.ptg(e,c)
-	return c:IsSetCard(0x1065)
+	return c:IsSetCard(0xf14)
 end
 --Gain ATK
 function s.atkcon(e,tp,eg,ep,ev,re,r,rp)
-	if not Duel.IsExistingMatchingCard(Card.IsSetCard,tp,LOCATION_PZONE,0,1,e:GetHandler(),0x1065) then return end
+	if not Duel.IsExistingMatchingCard(Card.IsSetCard,tp,LOCATION_PZONE,0,1,e:GetHandler(),0xf14) then return end
 	local a=Duel.GetAttacker()
 	local d=Duel.GetAttackTarget()
 	if d and a:GetControler()~=d:GetControler() then
@@ -93,7 +93,7 @@ function s.tgtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.SetOperationInfo(0,CATEGORY_DECKDES,nil,0,tp,1)
 end
 function s.filter(c)
-	return c:IsLocation(LOCATION_GRAVE) and c:IsSetCard(0x1065)
+	return c:IsLocation(LOCATION_GRAVE) and c:IsSetCard(0xf14)
 end
 function s.tgop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()

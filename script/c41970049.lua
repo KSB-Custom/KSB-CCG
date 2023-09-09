@@ -26,7 +26,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e8)
 end
 function s.cfilter(c)
-	return c:IsSetCard(0x1065) and c:IsType(TYPE_PENDULUM) and c:IsAbleToRemoveAsCost()
+	return c:IsSetCard(0xf14) and c:IsType(TYPE_PENDULUM) and c:IsAbleToRemoveAsCost()
 end
 function s.condition(e,tp,eg,ep,ev,re,r,rp)
 	return (re:IsActiveType(TYPE_MONSTER) or re:IsHasType(EFFECT_TYPE_ACTIVATE)) and Duel.IsChainNegatable(ev)

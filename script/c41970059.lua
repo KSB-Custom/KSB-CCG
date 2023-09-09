@@ -27,7 +27,7 @@ function s.initial_effect(c)
 	e8:SetCode(EVENT_REMOVE)
 	c:RegisterEffect(e8)
 end
-	s.listed_series={0x1065}
+	s.listed_series={0xf14}
 --Set
 function s.filter(c)
 	return c:IsFaceup() and c:GetLevel()>=4
@@ -60,9 +60,9 @@ function s.setop(e,tp,eg,ep,ev,re,r,rp)
 	function s.condition(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.GetCurrentPhase()~=PHASE_DAMAGE or not Duel.IsDamageCalculated()
 end
-s.atkfilter=aux.FaceupFilter(Card.IsSetCard,0x1065)
+s.atkfilter=aux.FaceupFilter(Card.IsSetCard,0xf14)
 function s.atktg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsControler(tp) and chkc:IsFaceup() and chkc:IsSetCard(0x1065) end
+	if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsControler(tp) and chkc:IsFaceup() and chkc:IsSetCard(0xf14) end
 	if chk==0 then return Duel.IsExistingTarget(s.atkfilter,tp,LOCATION_MZONE,0,1,nil) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATKDEF)
 	Duel.SelectTarget(tp,s.atkfilter,tp,LOCATION_MZONE,0,1,1,nil)

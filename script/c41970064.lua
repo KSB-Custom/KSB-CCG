@@ -2,7 +2,7 @@
 local s,id=GetID()
 function s.initial_effect(c)
 	--Xyz Summon
-	Xyz.AddProcedure(c,aux.FilterBoolFunctionEx(Card.IsSetCard,0x1065),6,2)
+	Xyz.AddProcedure(c,aux.FilterBoolFunctionEx(Card.IsSetCard,0xf14),6,2)
 	--Enable pendulum summon
 	Pendulum.AddProcedure(c,false)
 	c:EnableReviveLimit()
@@ -45,6 +45,7 @@ function s.initial_effect(c)
 	e3:SetOperation(s.thop2)
 	c:RegisterEffect(e3)
 end
+
 s.pendulum_level=6
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsOnField() and chkc:IsSpellTrap() end
@@ -77,7 +78,7 @@ function s.op(e,tp,eg,ep,ev,re,r,rp)
 end
 --Add Fusion Material to hand
 function s.thfilter2(c,id)
-	return (c:GetReason()&0x40008)==0x40008 and c:IsMonster() and c:IsSetCard(0x1065) and c:GetTurnID()==id and c:IsAbleToHand()
+	return (c:GetReason()&0x40008)==0x40008 and c:IsMonster() and c:IsSetCard(0xf14) and c:GetTurnID()==id and c:IsAbleToHand()
 end
 function s.thtg2(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	local tid=Duel.GetTurnCount()

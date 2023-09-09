@@ -1,4 +1,4 @@
---RPG Heal Sage
+--FNO Heal Sage
 local s,id=GetID()
 function s.initial_effect(c)
 	Pendulum.AddProcedure(c)
@@ -57,20 +57,10 @@ function s.initial_effect(c)
 	c:RegisterEffect(e5)
 	Duel.AddCustomActivityCounter(id,ACTIVITY_SPSUMMON,s.counterfilter)
 end
-s.listed_series={0x1065}
+s.listed_series={0xf14}
 function s.counterfilter(c)
 	return not c:IsSummonType(SUMMON_TYPE_PENDULUM)
 end
---Ritual
-	function s.ritualfil(c)
-	return c:IsSetCard(0x1065)
-	end
-function s.exfilter0(c)
-	return c:IsSetCard(0x1065) and c:IsLevelAbove(1) and c:IsAbleToGrave()	
-	end
-function s.forcedgroup(c,e,tp)
-	return c:IsSetCard(0x1065) and c:IsLocation(LOCATION_HAND+LOCATION_ONFIELD)
-	end
 --Place 2 FNO cards in Pendulum zones
 function s.condition(e,tp,eg,ep,ev,re,r,rp)
 	return not Duel.GetFieldCard(tp,LOCATION_PZONE,0) and not Duel.GetFieldCard(tp,LOCATION_PZONE,1)
@@ -92,7 +82,7 @@ function s.splimit(e,c,sump,sumtype,sumpos,targetp,se)
 	return (sumtype&SUMMON_TYPE_PENDULUM)==SUMMON_TYPE_PENDULUM
 end
 function s.filter(c)
-	return c:IsSetCard(0x1065) and c:IsType(TYPE_PENDULUM) and not c:IsForbidden()
+	return c:IsSetCard(0xf14) and c:IsType(TYPE_PENDULUM) and not c:IsForbidden()
 end
 function s.pztg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.CheckPendulumZones(tp)
@@ -109,7 +99,7 @@ function s.pzop(e,tp,eg,ep,ev,re,r,rp)
 end
 --UNAFFECTED
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then return chkc:IsControler(tp) and chck:IsSetCard(0x1065) and chkc:IsOnField() and chkc:IsFaceup() end
+	if chkc then return chkc:IsControler(tp) and chck:IsSetCard(0xf14) and chkc:IsOnField() and chkc:IsFaceup() end
 	if chk==0 then return Duel.IsExistingTarget(Card.IsFaceup,tp,LOCATION_ONFIELD,0,1,nil) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FACEUP)
 	Duel.SelectTarget(tp,Card.IsFaceup,tp,LOCATION_ONFIELD,0,1,1,nil)
@@ -160,7 +150,7 @@ function s.rev(e,re,r,rp,rc)
 	return (r&REASON_EFFECT)~=0
 end
 function s.dmfilter(c)
-	return c:IsFaceup() and c:IsSetCard(0x1065) and c:IsType(TYPE_RITUAL)
+	return c:IsFaceup() and c:IsSetCard(0x1f14) and c:IsType(TYPE_MONSTER)
 end
 function s.dmcon(e)
 	return Duel.IsExistingMatchingCard(s.dmfilter,e:GetHandlerPlayer(),LOCATION_MZONE,0,1,nil)

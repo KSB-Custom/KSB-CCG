@@ -3,7 +3,7 @@ local s,id=GetID()
 function s.initial_effect(c)
 	c:EnableReviveLimit()
 	Pendulum.AddProcedure(c,false)
-	Synchro.AddProcedure(c,aux.FilterBoolFunctionEx(Card.IsSetCard,0x1065),1,1,Synchro.NonTunerEx(Card.IsSetCard,0x1065),1,1)
+	Synchro.AddProcedure(c,aux.FilterBoolFunctionEx(Card.IsSetCard,0xf14),1,1,Synchro.NonTunerEx(Card.IsSetCard,0xf14),1,1)
 	--pierce
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_SINGLE)
@@ -65,9 +65,9 @@ function s.initial_effect(c)
 	e20:SetTarget(s.splimit6)
 	c:RegisterEffect(e20)
 end
-s.listed_series={0x1065}
+s.listed_series={0xf14}
 function s.splimit6(e,c,tp,sumtp,sumpos)
-	return not c:IsSetCard(0x1065) and (sumtp&SUMMON_TYPE_PENDULUM)==SUMMON_TYPE_PENDULUM
+	return not c:IsSetCard(0xf14) and (sumtp&SUMMON_TYPE_PENDULUM)==SUMMON_TYPE_PENDULUM
 end
 function s.operation(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.GetMatchingGroup(Card.IsFaceup,tp,0,LOCATION_MZONE,nil)
@@ -91,7 +91,7 @@ function s.atkcon1(e,tp,eg,ep,ev,re,r,rp)
 	if not bc then return false end
 	if tc:IsControler(1-tp) then bc,tc=tc,bc end
 	e:SetLabelObject(bc)
-	return bc:IsFaceup() and tc:IsFaceup() and tc:IsSetCard(0x1065)
+	return bc:IsFaceup() and tc:IsFaceup() and tc:IsSetCard(0xf14)
 end
 function s.atkop1(e,tp,eg,ep,ev,re,r,rp)
 	if not e:GetHandler():IsRelateToEffect(e) then return end
@@ -123,8 +123,8 @@ function s.penop(e,tp,eg,ep,ev,re,r,rp)
 end
 --SP SUM FROM PZONE
 function s.spcost2(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.CheckReleaseGroupCost(tp,Card.IsSetCard,1,false,nil,nil,0x1065) end
-	local sg=Duel.SelectReleaseGroupCost(tp,Card.IsSetCard,1,1,false,nil,nil,0x1065)
+	if chk==0 then return Duel.CheckReleaseGroupCost(tp,Card.IsSetCard,1,false,nil,nil,0xf14) end
+	local sg=Duel.SelectReleaseGroupCost(tp,Card.IsSetCard,1,1,false,nil,nil,0xf14)
 	Duel.Release(sg,REASON_COST)
 end
 function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk)

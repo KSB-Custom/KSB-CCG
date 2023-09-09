@@ -85,7 +85,7 @@ function s.initial_effect(c)
 	e9:SetOperation(s.spop2)
 	c:RegisterEffect(e9)
 end
-s.listed_series={0x1065}
+s.listed_series={0xf14}
 
 --destroy
 function s.spcon2(e,tp,eg,ep,ev,re,r,rp)
@@ -107,7 +107,7 @@ function s.spop2(e,tp,eg,ep,ev,re,r,rp)
 end
 --SEARCH
 function s.thfilter(c)
-	return c:IsSetCard(0x1065) and c:IsType(TYPE_SPELL)
+	return c:IsSetCard(0xf14) and c:IsType(TYPE_SPELL)
 end
 function s.grcondition(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.GetTurnPlayer()~=tp
@@ -137,7 +137,7 @@ function s.sthop(e,tp,eg,ep,ev,re,r,rp)
 end
 --change level
 function s.lvfilter(c)
-	return c:IsFaceup() and c:IsSetCard(0x1065) and c:HasLevel()
+	return c:IsFaceup() and c:IsSetCard(0xf14) and c:HasLevel()
 end
 function s.lvtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsControler(tp) and chkc:IsLocation(LOCATION_MZONE) and s.lvfilter(chkc) end
@@ -185,7 +185,7 @@ function s.rcop(e,tp,eg,ep,ev,re,r,rp)
 end
 --Add ritual spell
 function s.thfilter2(c)
-	return c:IsRitualSpell() and c:IsAbleToHand() and c:IsSetCard(0x1065)
+	return c:IsRitualSpell() and c:IsAbleToHand() and c:IsSetCard(0xf14)
 end
 function s.disfilter(c)
 	return c:IsDiscardable()

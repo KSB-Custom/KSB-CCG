@@ -1,4 +1,4 @@
---RPG Tank Dragon Knight
+--FNO Tank Dragon Knight
 local s,id=GetID()
 function s.initial_effect(c)
 	--pendulum summon
@@ -25,15 +25,11 @@ function s.initial_effect(c)
 	e2:SetOperation(s.activate)
 	c:RegisterEffect(e2)
 end
-s.listed_series={0x1065}
-function s.indtg(e,c)
-	return c:IsSetCard(0x1065) and c:IsType(TYPE_MONSTER)
-end
-function s.valcon(e,re,r,rp)
-	return (r&REASON_BATTLE)~=0
-end
+s.listed_series={0x1f14}
+s.listed_series={0xf14}
+--SP summon
 function s.cfilter(c)
-	return c:IsSetCard(0x1065) and c:IsDiscardable()
+	return c:IsSetCard(0xf14) and c:IsDiscardable()
 end
 function s.spcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local exc=(e:GetHandler():IsLocation(LOCATION_HAND) and not e:GetHandler():IsAbleToGraveAsCost()) and e:GetHandler() or nil
@@ -65,7 +61,7 @@ function s.efilter(e,re)
 end
 --Banish and special summon during End Phase
 function s.filter(c)
-	return c:IsSetCard(0x1065) and c:IsType(TYPE_NORMAL) and c:IsAbleToRemove() and not c:IsCode(id)
+	return c:IsSetCard(0x1f14) and c:IsType(TYPE_PENDULUM) and c:IsAbleToRemove() and not c:IsCode(id)
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.filter,tp,LOCATION_DECK,0,1,nil,e,tp) end

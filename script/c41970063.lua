@@ -1,7 +1,7 @@
 --FNO Party
 local s,id=GetID()
 function s.initial_effect(c)
-	Xyz.AddProcedure(c,aux.FilterBoolFunctionEx(Card.IsSetCard,0x1065),8,2,nil,nil,99)
+	Xyz.AddProcedure(c,aux.FilterBoolFunctionEx(Card.IsSetCard,0xf14),8,2,nil,nil,99)
 	--Prevent effect and activation from being negated
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_FIELD)
@@ -46,7 +46,7 @@ function s.initial_effect(c)
 --Ritual
 function s.effectfilter(e,c)
 	local e=Duel.GetChainInfo(c,CHAININFO_TRIGGERING_EFFECT)
-	return e:GetHandler():IsRitualSpell() and e:GetHandler():IsSetCard(0x1065)
+	return e:GetHandler():IsRitualSpell() and e:GetHandler():IsSetCard(0xf14)
 end
 --fusion
 function s.mttg2(e,c)
@@ -54,11 +54,11 @@ function s.mttg2(e,c)
 end
 function s.mtval(e,c)
 	if not c then return false end
-	return c:IsSetCard(0x1065) and c:IsControler(e:GetHandlerPlayer())
+	return c:IsSetCard(0xf14) and c:IsControler(e:GetHandlerPlayer())
 end
 --Sychro
 function s.cfilter(c)
-	return c:IsFaceup() and c:IsSetCard(0x1065)
+	return c:IsFaceup() and c:IsSetCard(0xf14)
 end
 function s.condition(e)
 	local ph=Duel.GetCurrentPhase()
@@ -73,5 +73,5 @@ function s.val(e,c)
 	return (Duel.GetMatchingGroupCount(s.filter,c:GetControler(),LOCATION_ONFIELD,0,nil)+e:GetHandler():GetOverlayCount())*200
 end
 function s.filter(c)
-	return c:IsFaceup() and c:IsSetCard(0x1065)
+	return c:IsFaceup() and c:IsSetCard(0xf14)
 end

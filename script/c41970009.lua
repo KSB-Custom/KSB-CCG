@@ -32,10 +32,10 @@ function s.initial_effect(c)
 	e3:SetOperation(s.drwop)
 	c:RegisterEffect(e3)
 end
-s.listed_series={0x1065}
+s.listed_series={0xf14}
 --Special summon
 function s.spfilter(c,e,tp)
-	return c:IsCanBeSpecialSummoned(e,0,tp,false,false) and c:IsSetCard(0x1065) and (c:IsLocation(LOCATION_HAND) or (c:IsFaceup() and c:IsSetCard(0x1065)))
+	return c:IsCanBeSpecialSummoned(e,0,tp,false,false) and c:IsSetCard(0xf14) and (c:IsLocation(LOCATION_HAND) or (c:IsFaceup() and c:IsSetCard(0xf14)))
 end
 function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
@@ -57,7 +57,7 @@ function s.handcon(e)
 end
 --Add itself to the hand
 function s.dfilter(c,tp)
-	return c:IsControler(tp) and c:IsPreviousControler(tp) and c:IsSetCard(0x1065) 
+	return c:IsControler(tp) and c:IsPreviousControler(tp) and c:IsSetCard(0xf14) 
 end
 function s.drwcond(e,tp,eg,ep,ev,re,r,rp)
 	return eg:IsExists(s.dfilter,1,e:GetHandler(),tp) 

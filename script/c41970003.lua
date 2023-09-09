@@ -1,9 +1,9 @@
---RPG Tank Templar
+--FNO Tank Templar
 local s,id=GetID()
 function s.initial_effect(c)
 	--pendulum summon
 	Pendulum.AddProcedure(c)
-	--spsummon
+	--sp summon
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(id,0))
 	e1:SetCategory(CATEGORY_SPECIAL_SUMMON)
@@ -25,7 +25,7 @@ function s.initial_effect(c)
 	e2:SetOperation(s.pcop)
 	c:RegisterEffect(e2)
 end
-s.listed_series={0x1065}
+s.listed_series={0x1f14}
 function s.spcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local exc=(e:GetHandler():IsLocation(LOCATION_HAND) and not e:GetHandler():IsAbleToGraveAsCost()) and e:GetHandler() or nil
 	if chk==0 then return Duel.IsExistingMatchingCard(Card.IsDiscardable,tp,LOCATION_HAND,0,1,exc) end
@@ -56,7 +56,7 @@ function s.efilter(e,re)
 end
 --place in PZ
 function s.pcfilter(c)
-	return c:IsSetCard(0x1065) and c:IsType(TYPE_PENDULUM) and (c:IsType(TYPE_NORMAL) or (c:IsType(TYPE_XYZ) and c:IsRank(8))) and not c:IsCode(id)
+	return c:IsSetCard(0x1f14) and c:IsType(TYPE_PENDULUM) and not c:IsCode(id)
 end
 function s.ppcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local exc=(e:GetHandler():IsLocation(LOCATION_HAND) and not e:GetHandler():IsAbleToGraveAsCost()) and e:GetHandler() or nil
@@ -77,13 +77,4 @@ function s.pcop(e,tp,eg,ep,ev,re,r,rp)
 	if #g>0 then
 		Duel.MoveToField(g:GetFirst(),tp,tp,LOCATION_PZONE,POS_FACEUP,true)
 	end
-end
---
-function s.indfilter(c)
-	return c:IsFaceup() and c:IsSetCard(0x1065) and c:IsType(TYPE_NORMAL)
-end
-function s.actcon(e)
-	local ph=Duel.GetCurrentPhase()
-	return Duel.IsExistingMatchingCard(s.indfilter,e:GetHandlerPlayer(),LOCATION_MZONE,0,1,nil) 
-	and ph>=PHASE_BATTLE_START and ph<=PHASE_BATTLE
 end

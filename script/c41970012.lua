@@ -1,4 +1,4 @@
---RPG Eden Eternal
+--RPG Leyend of the Guardians
 local s,id=GetID()
 function s.initial_effect(c)
 	--to extra
@@ -35,7 +35,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e5)
 end
 function s.tefilter(c)
-	return c:IsType(TYPE_PENDULUM) and c:IsSetCard(0x1065) and not c:IsForbidden()
+	return c:IsType(TYPE_PENDULUM) and c:IsSetCard(0xf14) and not c:IsForbidden()
 end
 function s.tetg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.tefilter,tp,LOCATION_DECK,0,1,nil) end
@@ -49,7 +49,7 @@ function s.teop(e,tp,eg,ep,ev,re,r,rp)
 end
 	--To hand
 function s.thfilter(c)
-	return c:IsFaceup() and c:IsSetCard(0x1065) and c:IsType(TYPE_PENDULUM) and c:IsAbleToHand()
+	return c:IsFaceup() and c:IsSetCard(0xf14) and c:IsType(TYPE_PENDULUM) and c:IsAbleToHand()
 end
 function s.thcon2(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():GetPreviousLocation()==LOCATION_HAND and (r&REASON_DISCARD)~=0
@@ -68,7 +68,7 @@ function s.thop(e,tp,eg,ep,ev,re,r,rp)
 end
 -- replacement
 function s.repfilter(c,tp)
-	return c:IsFaceup() and c:IsControler(tp) and c:IsOnField() and c:IsSetCard(0x1065)
+	return c:IsFaceup() and c:IsControler(tp) and c:IsOnField() and c:IsSetCard(0xf14)
 		and not c:IsReason(REASON_REPLACE) and c:IsReason(REASON_EFFECT+REASON_BATTLE)
 end
 function s.reptg(e,tp,eg,ep,ev,re,r,rp,chk)

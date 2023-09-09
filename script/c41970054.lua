@@ -1,9 +1,9 @@
---RPG Ranged Inquisitor
+--FNO Ranged Inquisitor
 local s,id=GetID()
 function s.initial_effect(c)
 	c:EnableReviveLimit()
 	Pendulum.AddProcedure(c,false)
-	Synchro.AddProcedure(c,aux.FilterBoolFunctionEx(Card.IsSetCard,0x1065),1,1,Synchro.NonTunerEx(Card.IsSetCard,0x1065),1,99)
+	Synchro.AddProcedure(c,aux.FilterBoolFunctionEx(Card.IsSetCard,0x1065),1,1,Synchro.NonTunerEx(Card.IsSetCard,0xf14),1,99)
 	--remove instead send to gy
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_SINGLE)
@@ -59,9 +59,9 @@ function s.initial_effect(c)
 	e20:SetTarget(s.splimit6)
 	c:RegisterEffect(e20)
 end
-s.listed_series={0x1065}
+s.listed_series={0xf14}
 function s.splimit6(e,c,tp,sumtp,sumpos)
-	return not c:IsSetCard(0x1065) and (sumtp&SUMMON_TYPE_PENDULUM)==SUMMON_TYPE_PENDULUM
+	return not c:IsSetCard(0xf14) and (sumtp&SUMMON_TYPE_PENDULUM)==SUMMON_TYPE_PENDULUM
 end
 	--change to face-down
 function s.disfilter(c)
@@ -113,7 +113,7 @@ function s.penop(e,tp,eg,ep,ev,re,r,rp)
 end
 --special summon
 function s.cfilter(c,tp)
-	return c:IsReason(REASON_BATTLE+REASON_EFFECT) and c:IsPreviousSetCard(0x1065)
+	return c:IsReason(REASON_BATTLE+REASON_EFFECT) and c:IsPreviousSetCard(0xf14)
 		and c:IsPreviousControler(tp) and c:IsPreviousLocation(LOCATION_ONFIELD) and c:IsPreviousPosition(POS_FACEUP)
 end
 function s.spcon(e,tp,eg,ep,ev,re,r,rp)

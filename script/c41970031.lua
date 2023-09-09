@@ -63,9 +63,9 @@ function s.initial_effect(c)
 	e20:SetTarget(s.splimit6)
 	c:RegisterEffect(e20)
 end
-s.listed_series={0x1065}
+s.listed_series={0xf14}
 function s.splimit6(e,c,tp,sumtp,sumpos)
-	return not c:IsSetCard(0x1065) and (sumtp&SUMMON_TYPE_PENDULUM)==SUMMON_TYPE_PENDULUM
+	return not c:IsSetCard(0xf14) and (sumtp&SUMMON_TYPE_PENDULUM)==SUMMON_TYPE_PENDULUM
 end
 --RETURN BANISHED
 function s.tgtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
@@ -84,7 +84,7 @@ end
 --INCREASE ATK
 function s.atkcon(e,tp,eg,ep,ev,re,r,rp)
 	local tc,bc=Duel.GetBattleMonster(tp)
-	if not (tc and bc and tc:IsSetCard(0x1065)) then return false end
+	if not (tc and bc and tc:IsSetCard(0xf14)) then return false end
 	e:SetLabelObject(tc)
 	return true
 end

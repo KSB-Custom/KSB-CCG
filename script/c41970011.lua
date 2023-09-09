@@ -1,4 +1,4 @@
---RPG Eden Eternal
+--FNO Tank Fortress
 local s,id=GetID()
 function s.initial_effect(c)
 	--Activate
@@ -42,14 +42,15 @@ function s.initial_effect(c)
 	e8:SetCode(EVENT_REMOVE)
 	c:RegisterEffect(e8)
 end
+s.listed_series={0xf14}
 function s.atktg(e,c)
-	return c:IsSetCard(0x1065) and (c:IsType(TYPE_NORMAL) or (c:IsType(TYPE_XYZ) and c:IsRank(8)))
+	return c:IsSetCard(0x1f14) 
 end
 function s.drcon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.GetTurnPlayer()==tp
 end
 function s.tdfilter(c)
-	return c:IsSetCard(0x1065) and not c:IsCode(id) and (c:IsLocation(LOCATION_GRAVE) or c:IsFaceup()) and c:IsAbleToDeck()
+	return c:IsSetCard(0xf14) and (c:IsLocation(LOCATION_GRAVE) or (c:IsLocation(LOCATION_EXTRA) and c:IsFaceup())) and c:IsAbleToDeck()
 end
 function s.drtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsLocation(LOCATION_EXTRA+LOCATION_GRAVE) and chkc:IsControler(tp) and s.tdfilter(chkc) end
@@ -75,7 +76,7 @@ function s.drop(e,tp,eg,ep,ev,re,r,rp)
 end
 --DISCARDED
 function s.cfilter(c)
-	return c:IsFaceup() and c:IsSetCard(0x1065) and (c:IsType(TYPE_NORMAL) or c:GetLeftScale()==9)
+	return c:IsFaceup() and c:IsSetCard(0xf14) and not c:IsCode(id)
 end
 function s.spcon2(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():GetPreviousLocation()==LOCATION_HAND and (r&REASON_DISCARD)~=0 

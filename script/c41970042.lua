@@ -59,11 +59,11 @@ function s.initial_effect(c)
 	e6:SetOperation(s.mtop)
 	c:RegisterEffect(e6)
 end
-s.listed_series={0x1065}
-s.material_setcode=0x1065
+s.listed_series={0xf14}
+s.material_setcode=0xf14
 --Special Summon card in the PZone
 function s.filter(c,e,tp)
-	return c:IsCanBeSpecialSummoned(e,0,tp,false,false) and c:IsSetCard(0x1065)
+	return c:IsCanBeSpecialSummoned(e,0,tp,false,false) and c:IsSetCard(0xf14)
 end
 function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsLocation(LOCATION_PZONE) and chkc:IsControler(tp) and s.filter(chkc,e,tp) end
@@ -102,7 +102,7 @@ function s.contactop(g)
 end
 --
 function s.ffilter(c,fc,sumtype,tp)
-	return c:IsSetCard(0x1065) and (c:IsType(TYPE_PENDULUM) or c:IsType(TYPE_MONSTER))
+	return c:IsSetCard(0xf14) and (c:IsType(TYPE_PENDULUM) or c:IsType(TYPE_MONSTER))
 	end
 function s.distg(e,c)
 	return c:IsSpell()

@@ -1,9 +1,9 @@
---RPG Tank Warrior
+--FNO Tank Warrior
 local s,id=GetID()
 function s.initial_effect(c)
 	--pendulum summon
 	Pendulum.AddProcedure(c)
-	--spsummon
+	--sp summon
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(id,0))
 	e1:SetCategory(CATEGORY_SPECIAL_SUMMON)
@@ -24,13 +24,8 @@ function s.initial_effect(c)
 	e2:SetOperation(s.scop)
 	c:RegisterEffect(e2)
 end
-s.listed_series={0x1065}
-function s.splimit(e,c,tp,sumtp,sumpos)
-	return not c:IsSetCard(0x1065) and (sumtp&SUMMON_TYPE_PENDULUM)==SUMMON_TYPE_PENDULUM
-end
-function s.atfilter(e,c)
-	return c:IsType(TYPE_MONSTER) and c:IsSetCard(0x1065)
-end
+s.listed_series={0x1f14}
+s.listed_series={0xf14}
 --SpecialSummon it
 function s.spcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local exc=(e:GetHandler():IsLocation(LOCATION_HAND) and not e:GetHandler():IsAbleToGraveAsCost()) and e:GetHandler() or nil

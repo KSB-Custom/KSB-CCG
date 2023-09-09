@@ -68,16 +68,16 @@ function s.initial_effect(c)
 	e6:SetOperation(s.atoperation)
 	c:RegisterEffect(e6)
 end
-s.listed_series={0x1065}
+s.listed_series={0xf14}
 function s.atfilter(e,c)
-	return c:IsType(TYPE_MONSTER) and c:IsSetCard(0x1065)
+	return c:IsType(TYPE_MONSTER) and c:IsSetCard(0xf14)
 end
 function s.atkcon(e)
 	return not Duel.IsTurnPlayer(e:GetHandlerPlayer())
 end
 --Special Summon itself
 function s.cfilter5(c)
-	return c:IsFacedown() or not c:IsSetCard(0x1065)
+	return c:IsFacedown() or not c:IsSetCard(0xf14)
 end
 function s.spcon2(e,tp,eg,ep,ev,re,r,rp)
 	return (e:GetHandler():GetPreviousLocation()==LOCATION_HAND and (r&REASON_DISCARD)~=0) 
@@ -131,10 +131,10 @@ function s.spop3(e,tp,eg,ep,ev,re,r,rp)
 end
 --add
 function s.pcon(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.IsExistingMatchingCard(Card.IsSetCard,tp,LOCATION_PZONE,0,1,e:GetHandler(),0x1065)
+	return Duel.IsExistingMatchingCard(Card.IsSetCard,tp,LOCATION_PZONE,0,1,e:GetHandler(),0xf14)
 end
 function s.pfilter(c)
-	return c:IsFaceup() and c:IsType(TYPE_PENDULUM) and c:IsSetCard(0x1065) and c:IsAbleToHand()
+	return c:IsFaceup() and c:IsType(TYPE_PENDULUM) and c:IsSetCard(0xf14) and c:IsAbleToHand()
 end
 function s.ptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.pfilter,tp,LOCATION_EXTRA,0,1,nil) end

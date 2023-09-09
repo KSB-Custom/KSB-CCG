@@ -1,4 +1,4 @@
---RPG DPS Blade Dancer
+--FNO Melee Blade Dancer
 local s,id=GetID()
 function s.initial_effect(c)
 	--pendulum summon
@@ -72,21 +72,21 @@ function s.initial_effect(c)
 	e9:SetOperation(s.rmop)
 	c:RegisterEffect(e9)
 end
-s.listed_series={0x1065}
+s.listed_series={0xf14}
 
 function s.target(e,c)
-	return c:IsSetCard(0x1065) and c:IsType(TYPE_PENDULUM)
+	return c:IsSetCard(0xf14) and c:IsType(TYPE_PENDULUM)
 end
 --SP
 function s.cfilter(c,tp)
-	return c:IsReason(REASON_BATTLE+REASON_EFFECT) and c:IsPreviousSetCard(0x1065)
+	return c:IsReason(REASON_BATTLE+REASON_EFFECT) and c:IsPreviousSetCard(0xf14)
 		and c:IsPreviousControler(tp) and c:IsPreviousLocation(LOCATION_ONFIELD) and c:IsPreviousPosition(POS_FACEUP)
 end
 function s.spcon(e,tp,eg,ep,ev,re,r,rp)
 	return eg:IsExists(s.cfilter,1,nil,tp)
 end
 function s.spfilter(c,e,tp)
-	return c:IsSetCard(0x1065) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
+	return c:IsSetCard(0xf14) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
 	and ((c:IsLocation(LOCATION_HAND) or (c:IsFaceup() and c:IsType(TYPE_PENDULUM))))
 end
 function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
@@ -104,7 +104,7 @@ function s.spop(e,tp,eg,ep,ev,re,r,rp)
 end
 --negate eff
 function s.negfilter(c)
-	return c:IsSetCard(0x1065) and c:IsDiscardable()
+	return c:IsSetCard(0xf14) and c:IsDiscardable()
 end
 function s.negcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()

@@ -1,4 +1,4 @@
---RPG Mimic
+--FFFFFFFFFFFFFFFFFFN Mimic
 local s,id=GetID()
 function s.initial_effect(c)
 	c:EnableReviveLimit()
@@ -47,9 +47,9 @@ function s.initial_effect(c)
 	e4:SetOperation(s.copyop)
 	c:RegisterEffect(e4)
 	end
-	s.listed_series={0x1065}
+	s.listed_series={0xf14}
 function s.lcheck(g,lc,sumtype,tp)
-	return g:IsExists(Card.IsSetCard,1,nil,0x1065,lc,sumtype,tp)
+	return g:IsExists(Card.IsSetCard,1,nil,0xf14,lc,sumtype,tp)
 end
 function s.extraval(chk,summon_type,e,...)
 	if chk==0 then
@@ -67,7 +67,7 @@ function s.copycost(e,tp,eg,ep,ev,re,r,rp,chk)
 	e:GetHandler():RegisterFlagEffect(id,RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END,0,1)
 end
 function s.copyfilter(c)
-	return c:IsMonster() and c:IsType(TYPE_PENDULUM) and c:IsFaceup() and c:IsSetCard(0x1065) and (c:IsLocation(LOCATION_GRAVE) or c:IsLocation(LOCATION_REMOVED))
+	return c:IsMonster() and c:IsFaceup() and c:IsSetCard(0xf14) and (c:IsLocation(LOCATION_GRAVE) or c:IsLocation(LOCATION_REMOVED))
 end
 function s.copytg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	local c=e:GetHandler()
@@ -79,7 +79,8 @@ end
 function s.copyop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local tc=Duel.GetFirstTarget()
-	if tc and c:IsRelateToEffect(e) and c:IsFaceup() and tc:IsRelateToEffect(e) and (tc:IsLocation(LOCATION_GRAVE) or tc:IsLocation(LOCATION_REMOVED)) then
+	if tc and c:IsRelateToEffect(e) and c:IsFaceup() and tc:IsRelateToEffect(e) and (tc:IsLocation(LOCATION_GRAVE) or tc:IsLocation(LOCATION_REMOVED)) 
+	and not c:IsCode(id) then
 		local code=tc:GetOriginalCode()
 		local e1=Effect.CreateEffect(c)
 		e1:SetType(EFFECT_TYPE_SINGLE)

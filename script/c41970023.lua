@@ -1,9 +1,9 @@
---RPG Heal Shaman
+--FNO Heal Shaman
 local s,id=GetID()
 function s.initial_effect(c)
 	Pendulum.AddProcedure(c)
 	c:EnableReviveLimit()
-	--Apply the effects of a "RPG" Ritual spell
+	--Apply the effects of a "FNO" Ritual spell
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(id,0))
 	e1:SetType(EFFECT_TYPE_IGNITION)
@@ -45,6 +45,7 @@ function s.initial_effect(c)
 	e6:SetRange(LOCATION_MZONE)
 	e6:SetCountLimit(1,{id,5})
 	e6:SetCode(EVENT_FREE_CHAIN)
+	e6:SetCost(s.ctcost)
 	e6:SetTarget(s.artg2)
 	e6:SetOperation(s.arop2)
 	c:RegisterEffect(e6)
@@ -81,7 +82,7 @@ function s.initial_effect(c)
 	e12:SetOperation(s.hoperation)
 	c:RegisterEffect(e12)
 end
-s.listed_series={0x1065}
+s.listed_series={0xf14}
 --draw and recover
 function s.spcon2(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():GetPreviousLocation()==LOCATION_HAND and (r&REASON_DISCARD)~=0
@@ -106,7 +107,7 @@ function s.rcon(e,tp,eg,ep,ev,re,r,rp)
 	or Duel.GetFieldGroupCount(tp,0,LOCATION_ONFIELD)>Duel.GetFieldGroupCount(tp,LOCATION_ONFIELD,0)
 end
 function s.copfilter(c)
-	return c:IsAbleToGraveAsCost() and c:IsSetCard(0x1065) and c:GetType()==TYPE_SPELL+TYPE_RITUAL and c:CheckActivateEffect(true,true,false)~=nil 
+	return c:IsAbleToGraveAsCost() and c:IsSetCard(0xf14) and c:GetType()==TYPE_SPELL+TYPE_RITUAL and c:CheckActivateEffect(true,true,false)~=nil 
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then

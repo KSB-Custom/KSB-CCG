@@ -1,9 +1,9 @@
---RPG Magic Mage
+--FNO Magic Magician
 local s,id=GetID()
 function s.initial_effect(c)
 	c:EnableReviveLimit()
 	Pendulum.AddProcedure(c,false)
-	Fusion.AddProcMixN(c,true,true,aux.FilterBoolFunctionEx(Card.IsSetCard,0x1065),2)
+	Fusion.AddProcMixN(c,true,true,aux.FilterBoolFunctionEx(Card.IsSetCard,0xf14),2)
 	--Tribute + search
 	local e1=Effect.CreateEffect(c)
 	e1:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH)
@@ -61,12 +61,11 @@ function s.initial_effect(c)
 	c:RegisterEffect(e5)
 	
 end
-s.listed_series={0x1065}
-s.material_setcode=0x1065
+s.listed_series={0xf14}
+s.material_setcode=0xf14
 	--RETURN SPELL/TRAP AND GAIN ATK
 function s.tdcon(e,tp,eg,ep,ev,re,r,rp)
-	return re and (re:GetHandler():IsCode(CARD_POLYMERIZATION) or re:GetHandler():IsSetCard(0x46)) 
-	and e:GetHandler():IsSummonType(SUMMON_TYPE_FUSION)
+	return re and e:GetHandler():IsSummonType(SUMMON_TYPE_FUSION)
 end
 function s.tdfilter(c)
 	return c:IsSpellTrap() and c:IsAbleToDeck()
@@ -94,7 +93,7 @@ function s.tdop(e,tp,eg,ep,ev,re,r,rp)
 end
 --Add
 function s.thfilter(c)
-	return c:IsAbleToHand() and c:IsSetCard(0x1065) and c:IsTrap()
+	return c:IsAbleToHand() and c:IsSetCard(0xf14) and c:IsTrap()
 end
 function s.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return e:GetHandler():IsReleasable() end
@@ -132,20 +131,20 @@ function s.rpop(e,tp,eg,ep,ev,re,r,rp)
 end
 --change to fd
 function s.cost2(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.CheckLPCost(tp,700) end
-	Duel.PayLPCost(tp,700)
+	if chk==0 then return Duel.CheckLPCost(tp,500) end
+	Duel.PayLPCost(tp,500)
 end
 function s.setfilter(c)
-	return c:IsFaceup() and c:IsCanTurnSet() and ((c:IsSpellTrap() and c:IsType(TYPE_CONTINUOUS)) or c:IsMonster() or (c:IsSpell() and c:IsType(TYPE_FIELD)))
+	return c:IsFaceup() and c:IsCanTurnSet() and c:IsMonster()
 end
 function s.settg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chk==0 then return Duel.IsExistingTarget(s.setfilter,tp,0,LOCATION_ONFIELD,1,nil) end
+	if chk==0 then return Duel.IsExistingTarget(s.setfilter,tp,0,LOCATION_MZONE,1,nil) end
 	local g=Duel.GetMatchingGroup(s.setfilter,tp,0,LOCATION_MZONE,1,1,nil)
 	Duel.SetOperationInfo(0,CATEGORY_POSITION,g,1,0,0)
 end
 function s.setop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_POSCHANGE)
-	local g=Duel.SelectMatchingCard(tp,s.setfilter,tp,0,LOCATION_ONFIELD,1,1,nil)
+	local g=Duel.SelectMatchingCard(tp,s.setfilter,tp,0,LOCATION_MZONE,1,1,nil)
 	if #g>0 then
 		Duel.ChangePosition(g,POS_FACEDOWN)
 	end

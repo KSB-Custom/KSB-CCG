@@ -25,16 +25,16 @@ function s.initial_effect(c)
 	e3:SetCode(EFFECT_UPDATE_ATTACK)
 	e3:SetRange(LOCATION_PZONE)
 	e3:SetTargetRange(LOCATION_MZONE,0)
-	e3:SetTarget(aux.TargetBoolFunction(Card.IsSetCard,0x1065))
+	e3:SetTarget(aux.TargetBoolFunction(Card.IsSetCard,0xf14))
 	e3:SetValue(300)
 	c:RegisterEffect(e3)
 	local e4=e3:Clone()
 	e4:SetCode(EFFECT_UPDATE_DEFENSE)
 	c:RegisterEffect(e4)
 	end
-	s.listed_series={0x1065}
+	s.listed_series={0xf14}
 function s.thfilter(c)
-	return c:IsMonster() and c:IsSetCard(0x1065) and c:IsAbleToHand()
+	return c:IsMonster() and c:IsSetCard(0xf14) and c:IsAbleToHand()
 end
 --Add "FNO" monster
 function s.activate(e,tp,eg,ep,ev,re,r,rp)
@@ -52,7 +52,7 @@ function s.condition(e,tp,eg,ep,ev,re,r,rp)
 	return not Duel.GetFieldCard(tp,LOCATION_PZONE,0) or not Duel.GetFieldCard(tp,LOCATION_PZONE,1)
 end
 function s.pfilter(c)
-	return c:IsFaceup() and c:IsType(TYPE_PENDULUM) and c:IsSetCard(0x1065) 
+	return c:IsFaceup() and c:IsType(TYPE_PENDULUM) and c:IsSetCard(0xf14) 
 end
 function s.ptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.pfilter,tp,LOCATION_EXTRA+LOCATION_GRAVE,0,1,nil) end

@@ -49,14 +49,14 @@ function s.initial_effect(c)
 	e1:SetOperation(s.tdop)
 	c:RegisterEffect(e1)
 end
-s.listed_series={0x1065}
-s.material_setcode=0x1065
+s.listed_series={0xf14}
+s.material_setcode=0xf14
 --TO DECK AND SpecialSummon
 function s.tdfilter(c)
 	return c:IsAbleToDeck()
 end
 function s.spfilter2(c,e,tp,lv)
-	return c:IsSetCard(0x1065) and c:IsLevelBelow(ct) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
+	return c:IsSetCard(0xf14) and c:IsLevelBelow(ct) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
 end
 function s.tdtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
@@ -119,7 +119,7 @@ function s.disop(e,tp,eg,ep,ev,re,r,rp)
 end
 	--SPECIAL SUM STANDBY
 function s.spfilter(c,e,tp)
-	return c:IsSetCard(0x1065) and c:IsType(TYPE_MONSTER) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
+	return c:IsSetCard(0xf14) and c:IsType(TYPE_MONSTER) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
 end
 function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsLocation(LOCATION_REMOVED) and chkc:IsControler(tp) and s.spfilter(chkc,e,tp) end

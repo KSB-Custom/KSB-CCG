@@ -1,9 +1,9 @@
---RPG Tank Knight
+--FNO Tank Knight
 local s,id=GetID()
 function s.initial_effect(c)
 	--pendulum summon
 	Pendulum.AddProcedure(c)
-	--spsummon
+	--sp summon
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(id,1))
 	e1:SetCategory(CATEGORY_SPECIAL_SUMMON)
@@ -26,10 +26,8 @@ function s.initial_effect(c)
 	e5:SetOperation(s.thop)
 	c:RegisterEffect(e5)
 	end
+	s.listed_series={0x1f14}
 	--SPECIAL SUMMON
-function s.atfilter(e,c)
-	return c:IsType(TYPE_MONSTER) and c:IsSetCard(0x1065)
-end
 function s.spcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local exc=(e:GetHandler():IsLocation(LOCATION_HAND) and not e:GetHandler():IsAbleToGraveAsCost()) and e:GetHandler() or nil
 	if chk==0 then return Duel.IsExistingMatchingCard(Card.IsDiscardable,tp,LOCATION_HAND,0,1,exc) end
@@ -60,7 +58,7 @@ function s.efilter(e,re)
 end
 --TO HAND
 function s.thfilter(c)
-	return c:IsType(TYPE_NORMAL) and c:IsSetCard(0x1065) and c:IsAbleToHand() and not c:IsCode(id)
+	return c:IsSetCard(0x1f14) and c:IsType(TYPE_PENDULUM) and c:IsAbleToHand() and not c:IsCode(id)
 end
 function s.thcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local exc=(e:GetHandler():IsLocation(LOCATION_HAND) and not e:GetHandler():IsAbleToGraveAsCost()) and e:GetHandler() or nil

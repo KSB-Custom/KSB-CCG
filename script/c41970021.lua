@@ -1,4 +1,4 @@
---RPG Heal Cleric
+--FNO Heal Cleric
 local s,id=GetID()
 function s.initial_effect(c)
 	--pendulum summon
@@ -71,11 +71,11 @@ function s.initial_effect(c)
 	c:RegisterEffect(e0)
 
 end
-s.listed_series={0x1065}
---gain Effect
+s.listed_series={0xf14}
+--gain Effect cannot be targeted
 function s.mtcon(e,tp,eg,ep,ev,re,r,rp)
 	return (r==REASON_XYZ or r==REASON_SYNCHRO or r==REASON_FUSION or r==REASON_RITUAL or r==REASON_LINK) 
-	and e:GetHandler():GetReasonCard():IsSetCard(0x1065)
+	and e:GetHandler():GetReasonCard():IsSetCard(0xf14)
 end
 function s.mtop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
@@ -94,11 +94,11 @@ end
 function s.indval(e,re,rp)
 	return rp==1-e:GetOwnerPlayer()
 end
---Gain lp
+--once per chain Gain 100 lp
 function s.gcon(e,tp,eg,ep,ev,re,r,rp)
 	local c=re:GetHandler()
 	return ((re:IsHasType(EFFECT_TYPE_ACTIVATE) or re:IsActiveType(TYPE_MONSTER)))
-		and c:IsSetCard(0x1065)
+		and c:IsSetCard(0xf14)
 		end
 function s.rectg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
@@ -110,22 +110,7 @@ function s.gop(e,tp,eg,ep,ev,re,r,rp)
 	local p,d=Duel.GetChainInfo(0,CHAININFO_TARGET_PLAYER,CHAININFO_TARGET_PARAM)
 	Duel.Recover(p,d,REASON_EFFECT)
 end
-function s.filter(c)
-	return c:IsFaceup() and (c:IsLocation(LOCATION_SZONE) or c:IsType(TYPE_EFFECT))
-	end
-
-function s.condition(e,c)
-	return c:IsSetCard(0x1065)
-end
-	function s.ritualfil(c)
-	return c:IsSetCard(0x1065)
-	end
-function s.exfilter0(c)
-	return c:IsSetCard(0x1065) and c:IsLevelAbove(1) and c:IsAbleToGrave()	
-	end
-function s.forcedgroup(c,e,tp)
-	return c:IsSetCard(0x1065) and c:IsLocation(LOCATION_HAND+LOCATION_ONFIELD)
-	end
+	--Gain 1500 LP
 	function s.tg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
 	Duel.SetTargetPlayer(tp)
@@ -136,6 +121,7 @@ function s.op(e,tp,eg,ep,ev,re,r,rp)
 	local p,d=Duel.GetChainInfo(0,CHAININFO_TARGET_PLAYER,CHAININFO_TARGET_PARAM)
 	Duel.Recover(p,d,REASON_EFFECT)
 end
+--Discarded, place in PZone
 function s.spcon2(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():GetPreviousLocation()==LOCATION_HAND and (r&REASON_DISCARD)~=0
 end
@@ -153,7 +139,7 @@ function s.spop2(e,tp,eg,ep,ev,re,r,rp)
 end
 --Add ritual spell and return to hand
 function s.thfilter(c)
-	return c:IsRitualSpell() and c:IsAbleToHand() and c:IsSetCard(0x1065)
+	return c:IsRitualSpell() and c:IsAbleToHand() and c:IsSetCard(0xf14)
 end
 function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
