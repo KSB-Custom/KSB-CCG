@@ -107,13 +107,13 @@ function s.spop2(e,tp,eg,ep,ev,re,r,rp)
 end
 --SEARCH
 function s.thfilter(c)
-	return c:IsSetCard(0xf14) and c:IsType(TYPE_SPELL)
+	return c:IsSetCard(0xf14) and c:IsType(TYPE_SPELL) and c:IsAbleToHand()
 end
 function s.grcondition(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.GetTurnPlayer()~=tp
 end
 function s.thtg2(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK,0,1,nil) and c:IsAbleToHand() end
+	if chk==0 then return Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK,0,1,nil) end
 	Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_DECK)
 end
 function s.thop2(e,tp,eg,ep,ev,re,r,rp)
