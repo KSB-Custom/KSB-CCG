@@ -25,6 +25,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e2)
 	--special summon
 	local e7=Effect.CreateEffect(c)
+	e7:SetCategory(CATEGORY_SPECIAL_SUMMON)
 	e7:SetProperty(EFFECT_FLAG_DELAY)
 	e7:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e7:SetCode(EVENT_TO_GRAVE)
