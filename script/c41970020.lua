@@ -1,4 +1,4 @@
---FFFFFFFFFFFFFFFFFFN Mimic
+--FNO Mimic
 local s,id=GetID()
 function s.initial_effect(c)
 	c:EnableReviveLimit()
@@ -67,7 +67,8 @@ function s.copycost(e,tp,eg,ep,ev,re,r,rp,chk)
 	e:GetHandler():RegisterFlagEffect(id,RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END,0,1)
 end
 function s.copyfilter(c)
-	return c:IsMonster() and c:IsFaceup() and c:IsSetCard(0xf14) and (c:IsLocation(LOCATION_GRAVE) or c:IsLocation(LOCATION_REMOVED))
+	return c:IsType(TYPE_EFFECT) and c:IsFaceup() and c:IsSetCard(0xf14) and (c:IsLocation(LOCATION_GRAVE) or c:IsLocation(LOCATION_REMOVED))
+	and not c:IsType(TYPE_LINK)
 end
 function s.copytg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	local c=e:GetHandler()
@@ -79,8 +80,7 @@ end
 function s.copyop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local tc=Duel.GetFirstTarget()
-	if tc and c:IsRelateToEffect(e) and c:IsFaceup() and tc:IsRelateToEffect(e) and (tc:IsLocation(LOCATION_GRAVE) or tc:IsLocation(LOCATION_REMOVED)) 
-	and not c:IsCode(id) then
+	if tc and c:IsRelateToEffect(e) and c:IsFaceup() and tc:IsRelateToEffect(e) and (tc:IsLocation(LOCATION_GRAVE) or tc:IsLocation(LOCATION_REMOVED))  then
 		local code=tc:GetOriginalCode()
 		local e1=Effect.CreateEffect(c)
 		e1:SetType(EFFECT_TYPE_SINGLE)
@@ -96,7 +96,7 @@ function s.copyop(e,tp,eg,ep,ev,re,r,rp)
 end
 	--SPECIAL SUMMON
 function s.spfilter1(c,ft)
-	return c:IsSetCard(0x1065) and c:IsFaceup() and c:IsAbleToRemoveAsCost()
+	return c:IsSetCard(0xf14) and c:IsFaceup() and c:IsAbleToRemoveAsCost()
 end
 function s.spcost1(e,tp,eg,ep,ev,re,r,rp,chk)
 	local rg=Duel.GetMatchingGroup(s.spfilter1,tp,LOCATION_EXTRA,0,e:GetHandler())
