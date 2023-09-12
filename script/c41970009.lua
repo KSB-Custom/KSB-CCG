@@ -33,6 +33,10 @@ function s.initial_effect(c)
 	e3:SetTarget(s.drwtg)
 	e3:SetOperation(s.drwop)
 	c:RegisterEffect(e3)
+	--Special summon itself banished
+	local e4=e3:Clone()
+	e4:SetRange(LOCATION_REMOVED)
+	c:RegisterEffect(e4)
 end
 s.listed_series={0xf14}
 --Special summon
