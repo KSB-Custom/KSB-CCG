@@ -92,18 +92,22 @@ end
 function s.regop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
 	if tc and tc:IsRelateToEffect(e) and not tc:IsImmuneToEffect(e) then
+		e:SetLabelObject(tc)
+		tc:ResetFlagEffect(id)
 		local e1=Effect.CreateEffect(e:GetHandler())
 		e1:SetDescription(aux.Stringid(id,1))
 		e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 		e1:SetCode(EVENT_PHASE+PHASE_END)
 		e1:SetCountLimit(1)
+		e1:SetLabelObject(tc)
 		e1:SetOperation(s.desop)
-		e1:SetReset(RESET_PHASE+PHASE_END)
-		Duel.RegisterEffect(e1)
+		e1:SetReset(RESET_EVENT+RESETS_STANDARD_DISABLE+RESET_PHASE+PHASE_END)
+		Duel.RegisterEffect(e1,0)
+	end
 	end
 function s.desop(e,tp,eg,ep,ev,re,r,rp)
-	Duel.Destroy(e:GetHandler(),REASON_EFFECT)
-end
+	local tc=e:GetLabelObject()
+	Duel.Destroy(tc,REASON_EFFECT)
 end
 --Place in PZone
 function s.pentg(e,tp,eg,ep,ev,re,r,rp,chk)
