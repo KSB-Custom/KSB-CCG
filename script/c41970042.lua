@@ -81,14 +81,14 @@ function s.spop(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 --
-function s.splimit(e,se,sp,st)
-	return (st&SUMMON_TYPE_FUSION)==SUMMON_TYPE_FUSION
-end
 function s.contactfil(tp)
 	return Duel.GetMatchingGroup(Card.IsAbleToRemoveAsCost,tp,LOCATION_ONFIELD,0,nil)
 end
 function s.contactop(g)
 	Duel.Remove(g,POS_FACEUP,REASON_COST+REASON_MATERIAL)
+end
+function s.splimit(e,se,sp,st)
+	return (st&SUMMON_TYPE_FUSION)==SUMMON_TYPE_FUSION or (e:GetHandler():GetLocation()~=LOCATION_EXTRA or e:GetHandler():IsFaceup())
 end
 --
 function s.ffilter(c,fc,sumtype,tp)
