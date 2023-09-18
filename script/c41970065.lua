@@ -25,7 +25,7 @@ function s.initial_effect(c)
 	e2:SetCode(EVENT_SPSUMMON_SUCCESS)
 	e2:SetCountLimit(1,{id,1})
 	e2:SetRange(LOCATION_MZONE)
-	e2:SetCost(s.ovcost)
+	e2:SetTarget(s.mattg)
 	e2:SetOperation(s.ovop)
 	c:RegisterEffect(e2)
 	--Place this card in your Pendulum Zone
@@ -64,21 +64,18 @@ function s.initial_effect(c)
 	c:RegisterEffect(e4)
 end
 s.pendulum_level=10
-function s.ovcost(e,tp,eg,ep,ev,re,r,rp,chk)
-	local c=e:GetHandler()
-	if chk==0 then return c:GetFlagEffect(id)==0 and c:IsType(TYPE_XYZ) end
-	c:RegisterFlagEffect(id,RESET_CHAIN,0,1)
+function s.matfilter(c,e)
+	return c:IsLocation(LOCATION_REMOVED) and not c:IsImmuneToEffect(e)
 end
-function s.ovfilter(c,xc,tp,e)
-	return c:IsCanBeXyzMaterial(xc,tp,REASON_EFFECT) and not c:IsImmuneToEffect(e)
+function s.mattg(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return Duel.IsExistingMatchingCard(s.matfilter,tp,LOCATION_REMOVED,LOCATION_REMOVED,1,nil,e) end
 end
 function s.ovop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	if not c:IsRelateToEffect(e) then return end
+	if not c:IsRelateToEffect(e) or c:IsFacedown() then return end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_XMATERIAL)
-	local g=Duel.SelectMatchingCard(tp,s.ovfilter,tp,LOCATION_REMOVED,LOCATION_REMOVED,1,3,nil,c,tp,e)
+	local g=Duel.SelectMatchingCard(tp,s.matfilter,tp,LOCATION_REMOVED,LOCATION_REMOVED,1,3,nil,e)
 	if #g>0 then
-		Duel.HintSelection(g,true)
 		Duel.Overlay(c,g)
 	end
 end
