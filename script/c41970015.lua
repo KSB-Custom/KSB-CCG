@@ -34,6 +34,19 @@ function s.initial_effect(c)
 	e3:SetTarget(Fusion.SummonEffTG(table.unpack(params)))
 	e3:SetOperation(Fusion.SummonEffOP(table.unpack(params)))
 	c:RegisterEffect(e3)
+	--Discarded: set
+	local e7=Effect.CreateEffect(c)
+	e7:SetDescription(aux.Stringid(id,1))
+	e7:SetProperty(EFFECT_FLAG_DELAY)
+	e7:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
+	e7:SetCode(EVENT_TO_GRAVE)
+	e7:SetCountLimit(1,{id,3})
+	e7:SetCondition(s.spcon2)
+	e7:SetOperation(s.setop)
+	c:RegisterEffect(e7)
+	local e8=e7:Clone()
+	e8:SetCode(EVENT_REMOVE)
+	c:RegisterEffect(e8)
 	--spsummon limit
 	local e9=Effect.CreateEffect(c)
 	e9:SetDescription(aux.Stringid(id,9))
@@ -80,4 +93,14 @@ function s.sumlimit(e,c,sump,sumtype,sumpos,targetp,se)
 end
 function s.lizfilter(e,c)
 	return not c:IsSetCard(0xf14)
+end
+	--DISCARDED, set
+function s.spcon2(e,tp,eg,ep,ev,re,r,rp)
+	return e:GetHandler():GetPreviousLocation()==LOCATION_HAND and (r&REASON_DISCARD)~=0
+end
+function s.setop(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
+	if c:IsRelateToEffect(e) and c:IsSSetable() then
+		Duel.SSet(tp,c)
+	end
 end
