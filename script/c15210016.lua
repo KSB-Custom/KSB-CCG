@@ -36,7 +36,7 @@ function s.spcfilter(c)
 	return c:IsSetCard(0x5F1) and c:IsType(TYPE_MONSTER) and c:IsAbleToRemoveAsCost() and aux.SpElimFilter(c,true)
 end
 function s.spcost(e,tp,eg,ep,ev,re,r,rp,chk)
-	local rg=Duel.GetMatchingGroup(s.spcfilter,tp,LOCATION_MZONE+LOCATION_GRAVE,0,nil)
+	local rg=Duel.GetMatchingGroup(s.spcfilter,tp,LOCATION_GRAVE,0,nil)
 	if chk==0 then return #rg>1 and aux.SelectUnselectGroup(rg,e,tp,2,2,aux.ChkfMMZ(1),0) end
 	local g=aux.SelectUnselectGroup(rg,e,tp,2,2,aux.ChkfMMZ(1),1,tp,HINTMSG_REMOVE)
 	Duel.Remove(g,POS_FACEUP,REASON_COST)

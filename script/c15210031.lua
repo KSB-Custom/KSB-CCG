@@ -37,7 +37,7 @@ function s.ntcon(e,tp,eg,ep,ev,re,r,rp)
 	return (Duel.GetFieldGroupCount(tp,LOCATION_MZONE,0)==0 or not Duel.IsExistingMatchingCard(s.filter,tp,LOCATION_MZONE,0,1,nil))
 end
 function s.ffilter(c,fc,sumtype,tp)
-	return c:IsType(TYPE_MONSTER,fc,sumtype,tp) and not c:IsType(TYPE_TOKEN,fc,sumtype,tp)
+	return c:IsType(TYPE_MONSTER,fc,sumtype,tp) and c:IsType(TYPE_EFFECT,fc,sumtype,tp)
 end
 function s.ffilter2(c,fc,sumtype,tp)
 	return c:IsRace(RACE_WARRIOR,fc,sumtype,tp) and c:IsSetCard(0x5F1,fc,sumtype,tp) and not c:IsType(TYPE_TOKEN,fc,sumtype,tp)

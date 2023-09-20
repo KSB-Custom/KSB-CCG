@@ -14,7 +14,7 @@ function s.initial_effect(c)
 end
 s.listed_series={0x5F1}
 function s.cfilter(c)
-	return c:IsSetCard(0x5F1) and c:IsAbleToRemoveAsCost()
+	return c:IsSetCard(0x5F1) and c:IsType(TYPE_MONSTER) and c:IsAbleToRemoveAsCost()
 end
 function s.condition(e,tp,eg,ep,ev,re,r,rp)
 	return (re:IsActiveType(TYPE_MONSTER) or re:IsHasType(EFFECT_TYPE_ACTIVATE)) and Duel.IsChainNegatable(ev)
