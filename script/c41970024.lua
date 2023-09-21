@@ -132,12 +132,15 @@ function s.recop(e,tp,eg,ep,ev,re,r,rp)
 		Duel.Recover(p,d,REASON_EFFECT)
 end
 --negate attack
+function s.cfilter(c)
+	return c:IsSetCard(0xf14) and c:IsDiscardable()
+end
 function s.nacond(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.GetTurnPlayer()~=tp
 end
 function s.nacost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local exc=(e:GetHandler():IsLocation(LOCATION_HAND) and not e:GetHandler():IsAbleToGraveAsCost()) and e:GetHandler() or nil
-	if chk==0 then return Duel.IsExistingMatchingCard(Card.IsDiscardable,tp,LOCATION_HAND,0,1,exc) end
+	if chk==0 then return Duel.IsExistingMatchingCard(s.cfilter,tp,LOCATION_HAND,0,1,exc) end
 	Duel.DiscardHand(tp,Card.IsDiscardable,1,1,REASON_COST+REASON_DISCARD,exc)
 end
 function s.naop(e,tp,eg,ep,ev,re,r,rp)
@@ -150,7 +153,7 @@ function s.rev(e,re,r,rp,rc)
 	return (r&REASON_EFFECT)~=0
 end
 function s.dmfilter(c)
-	return c:IsFaceup() and c:IsSetCard(0x1f14) and c:IsType(TYPE_MONSTER)
+	return c:IsFaceup() and c:IsSetCard(0x2f14) and c:IsType(TYPE_MONSTER)
 end
 function s.dmcon(e)
 	return Duel.IsExistingMatchingCard(s.dmfilter,e:GetHandlerPlayer(),LOCATION_MZONE,0,1,nil)

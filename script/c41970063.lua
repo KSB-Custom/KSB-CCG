@@ -58,7 +58,7 @@ function s.mtval(e,c)
 end
 --Sychro
 function s.cfilter(c)
-	return c:IsFaceup() and c:IsSetCard(0xf14)
+	return c:IsFaceup() and c:IsSetCard(0xf14) and c:IsType(TYPE_SYNCHRO)
 end
 function s.condition(e)
 	local ph=Duel.GetCurrentPhase()
