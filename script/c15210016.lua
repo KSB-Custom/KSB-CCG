@@ -33,7 +33,7 @@ function s.initial_effect(c)
 end
 	--Special Sum
 function s.spcfilter(c)
-	return c:IsSetCard(0x5F1) and c:IsType(TYPE_MONSTER) and c:IsAbleToRemoveAsCost() and aux.SpElimFilter(c,true)
+	return c:IsSetCard(0xF15) and c:IsType(TYPE_MONSTER) and c:IsAbleToRemoveAsCost() and aux.SpElimFilter(c,true)
 end
 function s.spcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local rg=Duel.GetMatchingGroup(s.spcfilter,tp,LOCATION_GRAVE,0,nil)
@@ -60,7 +60,7 @@ function s.ntcon(e,c,minc)
 end
 --special summon
 function s.costfilter(c)
-	return c:IsSetCard(0x5F1) and c:IsAbleToGraveAsCost()
+	return c:IsSetCard(0xF15) and c:IsAbleToGraveAsCost()
 end
 function s.retcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.costfilter,tp,LOCATION_DECK,0,1,nil) end
@@ -69,7 +69,7 @@ function s.retcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.SendtoGrave(g,REASON_COST)
 end
 function s.filter(c,e,tp)
-	return c:IsSetCard(0x5F1) and c:IsLevelBelow(4) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
+	return c:IsSetCard(0xF15) and c:IsLevelBelow(4) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
 end
 function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0

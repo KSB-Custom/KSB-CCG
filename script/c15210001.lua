@@ -20,7 +20,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e2)
 	end
 function s.thfilter(c)
-	return c:IsMonster() and c:IsSetCard(0x5F1) and c:IsAbleToHand()
+	return c:IsMonster() and c:IsSetCard(0xF15) and c:IsAbleToHand()
 end
 function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	if not e:GetHandler():IsRelateToEffect(e) then return end
@@ -35,7 +35,7 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 end
 --
 function s.thfilter(c)
-	return c:IsSetCard(0x5F1) and c:IsMonster() and c:IsAbleToHand()
+	return c:IsSetCard(0xF15) and c:IsMonster() and c:IsAbleToHand()
 end
 function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingTarget(s.thfilter,tp,LOCATION_GRAVE,0,1,nil) end

@@ -1,20 +1,20 @@
 --AZTECA FUSION
 local s,id=GetID()
 function s.initial_effect(c)
-	local e1=Fusion.CreateSummonEff(c,aux.FilterBoolFunction(Card.IsSetCard,0x5F1),Fusion.OnFieldMat,s.fextra,Fusion.BanishMaterial,nil,nil,nil,nil,nil,nil,nil,nil,nil,s.extratg)
+	local e1=Fusion.CreateSummonEff(c,aux.FilterBoolFunction(Card.IsSetCard,0xF15),Fusion.OnFieldMat,s.fextra,Fusion.BanishMaterial,nil,nil,nil,nil,nil,nil,nil,nil,nil,s.extratg)
 	e1:SetCost(s.cost)
 	c:RegisterEffect(e1)
 	Duel.AddCustomActivityCounter(id,ACTIVITY_SPSUMMON,s.counterfilter)
 end
 function s.counterfilter(c)
-	return c:IsSetCard(0x5F1)
+	return c:IsSetCard(0xF15)
 end
 function s.ffilter(c)
 	return c:IsTtpe(TYPE_MONSTER)
 end
 function s.fextra(e,tp,mg)
 	if not Duel.IsPlayerAffectedByEffect(tp,69832741) then
-		return Duel.GetMatchingGroup(Fusion.IsMonsterFilter(Card.IsAbleToRemove),tp,LOCATION_DECK,0,nil)
+		return Duel.GetMatchingGroup(Fusion.IsMonsterFilter(Card.IsAbleToRemove),tp,LOCATION_DECK+LOCATION_HAND,0,nil)
 	end
 	return nil
 end
@@ -35,5 +35,5 @@ function s.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	aux.RegisterClientHint(e:GetHandler(),nil,tp,1,0,aux.Stringid(id,1),nil)
 end
 function s.splimit(e,c,sump,sumtype,sumpos,targetp,se)
-	return not c:IsSetCard(0x5F1)
+	return not c:IsSetCard(0xF15)
 end

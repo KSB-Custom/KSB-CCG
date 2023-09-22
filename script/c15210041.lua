@@ -27,11 +27,11 @@ function s.initial_effect(c)
 	c:RegisterEffect(e2)
 end
 function s.mfilter(c,lc,sumtype,tp)
-	return c:IsSetCard(0x5F1,lc,sumtype,tp) and c:IsLevelBelow(4)
+	return c:IsSetCard(0xF15,lc,sumtype,tp) and c:IsLevelBelow(4)
 end
 --Add
 function s.thfilter(c)
-	return c:IsSetCard(0x5F1) and c:IsSpellTrap() and c:IsAbleToHand()
+	return c:IsSetCard(0xF15) and c:IsSpellTrap() and c:IsAbleToHand()
 end
 function s.thcon(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():IsSummonType(SUMMON_TYPE_LINK)
@@ -49,7 +49,7 @@ function s.thop(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function s.repfilter(c,tp)
-	return c:IsFaceup() and c:IsControler(tp) and c:IsOnField() and c:IsSetCard(0x5F1)
+	return c:IsFaceup() and c:IsControler(tp) and c:IsOnField() and c:IsSetCard(0xF15)
 		and not c:IsReason(REASON_REPLACE) and c:IsReason(REASON_EFFECT+REASON_BATTLE)
 end
 function s.reptg(e,tp,eg,ep,ev,re,r,rp,chk)

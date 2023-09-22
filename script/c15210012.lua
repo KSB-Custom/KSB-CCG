@@ -25,7 +25,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e1)
 end
 function s.cfilter(c)
-	return c:IsSetCard(0x5F1) and not c:IsCode(id)
+	return c:IsSetCard(0xF15) and not c:IsCode(id)
 end
 function s.thcon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.IsTurnPlayer(tp)
@@ -57,7 +57,7 @@ function s.rmcon(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():IsSummonLocation(LOCATION_GRAVE)
 end
 function s.spfilter2(c,e,tp)
-	return c:IsSetCard(0x5F1) and c:IsLevelBelow(4) and c:IsCanBeSpecialSummoned(e,0,tp,false,false) and not c:IsCode(id)
+	return c:IsSetCard(0xF15) and c:IsLevelBelow(4) and c:IsCanBeSpecialSummoned(e,0,tp,false,false) and not c:IsCode(id)
 end
 function s.sptg2(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsControler(tp) and chkc:IsLocation(LOCATION_GRAVE) and s.spfilter2(chkc,e,tp) end

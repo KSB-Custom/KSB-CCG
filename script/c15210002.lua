@@ -21,7 +21,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e2)
 end
 function s.filter(c)
-	return c:IsSetCard(0x5F1) and c:IsType(TYPE_MONSTER) and c:IsAbleToHand()
+	return c:IsSetCard(0xF15) and c:IsType(TYPE_MONSTER) and c:IsAbleToHand()
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.filter,tp,LOCATION_DECK,0,1,nil) end
@@ -36,7 +36,7 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function s.tgfilter(c)
-	return c:IsFaceup() and c:IsSetCard(0x5F1) and c:IsLevelBelow(5) and not c:IsType(TYPE_TUNER)
+	return c:IsFaceup() and c:IsSetCard(0xF15) and c:IsLevelBelow(5) and not c:IsType(TYPE_TUNER)
 end
 function s.tunertg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsControler(tp) and s.tgfilter(chkc) end

@@ -2,7 +2,7 @@
 local s,id=GetID()
 function s.initial_effect(c)
 	--Synchro summon
-	Synchro.AddProcedure(c,aux.FilterBoolFunctionEx(Card.IsSetCard,0x5F1),1,1,Synchro.NonTuner(nil),1,99)
+	Synchro.AddProcedure(c,aux.FilterBoolFunctionEx(Card.IsSetCard,0xF15),1,1,Synchro.NonTuner(nil),1,99)
 	c:EnableReviveLimit()
 	--Special summon
 	local e3=Effect.CreateEffect(c)
@@ -34,7 +34,7 @@ function s.discon(e,tp,eg,ep,ev,re,r,rp)
 		and (re:IsActiveType(TYPE_MONSTER) or re:IsHasType(EFFECT_TYPE_ACTIVATE)) and Duel.IsChainNegatable(ev)
 end
 function s.cfilter(c)
-	return c:IsMonster() and c:IsSetCard(0x5F1)
+	return c:IsMonster() and c:IsSetCard(0xF15)
 end
 function s.negcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.CheckReleaseGroup(tp,s.cfilter,1,nil) end
@@ -60,7 +60,7 @@ function s.spcon(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():IsSummonType(SUMMON_TYPE_SYNCHRO)
 end
 function s.spfilter(c,e,tp)
-	return c:IsSetCard(0x5F1) and c:IsLevelBelow(4) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
+	return c:IsSetCard(0xF15) and c:IsLevelBelow(4) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
 end
 function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then

@@ -31,7 +31,7 @@ function s.initial_effect(c)
 	end
 	--Check for non-"AZTECA" monster
 function s.filter(c)
-	return c:IsFacedown() or not c:IsSetCard(0x5F1)
+	return c:IsFacedown() or not c:IsSetCard(0xF15)
 end
 function s.ntcon(e,tp,eg,ep,ev,re,r,rp)
 	return (Duel.GetFieldGroupCount(tp,LOCATION_MZONE,0)==0 or not Duel.IsExistingMatchingCard(s.filter,tp,LOCATION_MZONE,0,1,nil))
@@ -40,7 +40,7 @@ function s.ffilter(c,fc,sumtype,tp)
 	return c:IsType(TYPE_MONSTER,fc,sumtype,tp) and c:IsType(TYPE_EFFECT,fc,sumtype,tp)
 end
 function s.ffilter2(c,fc,sumtype,tp)
-	return c:IsRace(RACE_WARRIOR,fc,sumtype,tp) and c:IsSetCard(0x5F1,fc,sumtype,tp) and not c:IsType(TYPE_TOKEN,fc,sumtype,tp)
+	return c:IsRace(RACE_WARRIOR,fc,sumtype,tp) and c:IsSetCard(0xF15,fc,sumtype,tp) and not c:IsType(TYPE_TOKEN,fc,sumtype,tp)
 end
 --special sum
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk)

@@ -2,7 +2,7 @@
 local s,id=GetID()
 function s.initial_effect(c)
 --Synchro summon
-	Synchro.AddProcedure(c,aux.FilterBoolFunctionEx(Card.IsSetCard,0x5F1),1,1,Synchro.NonTuner(nil),1,99)
+	Synchro.AddProcedure(c,aux.FilterBoolFunctionEx(Card.IsSetCard,0xF15),1,1,Synchro.NonTuner(nil),1,99)
 	c:EnableReviveLimit()
 	--Op cannot be target
 	local e1=Effect.CreateEffect(c)
@@ -27,7 +27,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e2)
 end
 function s.indtg(e,c)
-	return c:IsSetCard(0x5F1) and (c:IsType(TYPE_FUSION) or c:IsType(TYPE_SYNCHRO) or c:IsType(TYPE_LINK))
+	return c:IsSetCard(0xF15) and (c:IsType(TYPE_FUSION) or c:IsType(TYPE_SYNCHRO) or c:IsType(TYPE_LINK))
 end
 function s.costfilter(c)
 	return c:IsType(TYPE_MONSTER) and not c:IsStatus(STATUS_BATTLE_DESTROYED)

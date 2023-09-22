@@ -30,14 +30,14 @@ function s.ffilter(c,fc,sumtype,tp)
 	return c:IsType(TYPE_MONSTER,fc,sumtype,tp) and not c:IsAttribute(ATTRIBUTE_DARK,fc,sumtype,tp) and not c:IsType(TYPE_TOKEN,fc,sumtype,tp)
 end
 function s.ffilter2(c,fc,sumtype,tp)
-	return c:IsAttribute(ATTRIBUTE_DARK,fc,sumtype,tp) and c:IsSetCard(0x5F1,fc,sumtype,tp) and not c:IsType(TYPE_TOKEN,fc,sumtype,tp)
+	return c:IsAttribute(ATTRIBUTE_DARK,fc,sumtype,tp) and c:IsSetCard(0xF15,fc,sumtype,tp) and not c:IsType(TYPE_TOKEN,fc,sumtype,tp)
 end
 function s.rmtg(e,c)
 	return c:GetOwner()~=e:GetHandlerPlayer() and Duel.IsPlayerCanRemove(e:GetHandlerPlayer(),c)
 end
 --special summon
 function s.filter(c,e,tp)
-	return c:IsSetCard(0x5F1) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
+	return c:IsSetCard(0xF15) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
 end
 function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsControler(tp) and chkc:IsLocation(LOCATION_GRAVE) and s.filter(chkc,e,tp) end

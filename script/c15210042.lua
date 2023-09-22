@@ -24,7 +24,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e1)
 end
 	function s.matcheck(g,lc,sumtype,tp)
-	return g:IsExists(Card.IsSetCard,1,nil,0x5F1,lc,sumtype,tp) and g:CheckDifferentPropertyBinary(Card.GetAttribute,lc,sumtype,tp)
+	return g:IsExists(Card.IsSetCard,1,nil,0xF15,lc,sumtype,tp) and g:CheckDifferentPropertyBinary(Card.GetAttribute,lc,sumtype,tp)
 end
 function s.atkfilter(c)
 	return c:IsAttribute(ATTRIBUTE_WATER)
@@ -32,7 +32,7 @@ end
 function s.atkval(e,c)
 	return Duel.GetMatchingGroupCount(s.atkfilter,e:GetHandlerPlayer(),LOCATION_GRAVE+LOCATION_MZONE,LOCATION_GRAVE+LOCATION_MZONE,nil)*200
 end
-s.listed_series={0x5F1}
+s.listed_series={0xF15}
 function s.tkcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.tkcostfilter,tp,LOCATION_HAND,0,1,nil,e,tp) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_CONFIRM)
@@ -41,11 +41,11 @@ function s.tkcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	e:SetLabel(g:GetFirst():GetCode())
 end
 function s.tkcostfilter(c,e,tp)
-	return c:IsSetCard(0x5F1) and c:IsType(TYPE_MONSTER) and 
+	return c:IsSetCard(0xF15) and c:IsType(TYPE_MONSTER) and 
 	Duel.IsExistingMatchingCard(s.hspfilter,tp,LOCATION_DECK,0,1,nil,e,tp,c:GetCode()) and not c:IsPublic()
 end
 function s.hspfilter(c,e,tp,code)
-	return c:IsSetCard(0x5F1) and c:IsCanBeSpecialSummoned(e,0,tp,false,false,POS_FACEUP_DEFENSE) and not c:IsCode(code)
+	return c:IsSetCard(0xF15) and c:IsCanBeSpecialSummoned(e,0,tp,false,false,POS_FACEUP_DEFENSE) and not c:IsCode(code)
 end
 function s.tktg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end

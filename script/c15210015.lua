@@ -28,7 +28,7 @@ function s.rmcon(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():IsSummonLocation(LOCATION_GRAVE)
 end
 function s.thfilter(c)
-	return c:IsSetCard(0x5F1) and not c:IsCode(id) and c:IsAbleToHand()
+	return c:IsSetCard(0xF15) and not c:IsCode(id) and c:IsAbleToHand()
 end
 function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsLocation(LOCATION_GRAVE) and chkc:IsControler(tp) and s.thfilter(chkc) end
@@ -46,7 +46,7 @@ function s.thop(e,tp,eg,ep,ev,re,r,rp)
 end
 --special sum itself
 function s.costfilter(c)
-	return c:IsSetCard(0x5F1) and c:IsDiscardable()
+	return c:IsSetCard(0xF15) and c:IsDiscardable()
 end
 function s.spcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()

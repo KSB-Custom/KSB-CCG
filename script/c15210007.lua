@@ -41,7 +41,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e4)
 end
 function s.cfilter(c)
-	return c:IsSetCard(0x5F1)
+	return c:IsSetCard(0xF15)
 end
 function s.counter(e,tp,eg,ep,ev,re,r,rp)
 	if eg:IsExists(s.cfilter,1,nil) then
@@ -50,8 +50,8 @@ function s.counter(e,tp,eg,ep,ev,re,r,rp)
 end
 --return to deck
 function s.descost(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return e:GetHandler():IsCanRemoveCounter(tp,0x1,3,REASON_COST) end
-	e:GetHandler():RemoveCounter(tp,0x1,3,REASON_COST)
+	if chk==0 then return e:GetHandler():IsCanRemoveCounter(tp,0x1,1,REASON_COST) end
+	e:GetHandler():RemoveCounter(tp,0x1,1,REASON_COST)
 end
 function s.tgtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsLocation(LOCATION_REMOVED) end
@@ -68,7 +68,7 @@ function s.tgop(e,tp,eg,ep,ev,re,r,rp)
 end
 --draw
 function s.drfilter(c)
-	return c:IsSetCard(0x5F1) and not c:IsCode(id)
+	return c:IsSetCard(0xF15) and not c:IsCode(id)
 end
 function s.drcon(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()

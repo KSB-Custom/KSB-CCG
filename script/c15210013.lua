@@ -19,10 +19,10 @@ function s.initial_effect(c)
 	e2:SetCode(EVENT_SPSUMMON_SUCCESS)
 	c:RegisterEffect(e2)
 end
-s.listed_series={0x5F1}
+s.listed_series={0xF15}
 	--If a "Salamangreat" monster is summoned to your field, besides "Salamangreat Fowl"
 function s.spfilter(c,tp)
-	return c:IsSetCard(0x5F1) and c:IsControler(tp) and c:IsFaceup()
+	return c:IsSetCard(0xF15) and c:IsControler(tp) and c:IsFaceup()
 end
 function s.spcon(e,tp,eg,ep,ev,re,r,rp)
 	return eg:IsExists(s.spfilter,1,nil,tp)
