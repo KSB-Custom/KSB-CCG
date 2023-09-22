@@ -51,7 +51,7 @@ function s.initial_effect(c)
 end
 s.listed_series={0xf14}
 s.material_setcode=0xf14
---TO DECK AND SpecialSummon
+--TO DECK AND Extra Normal
 function s.tdfilter(c)
 	return c:IsAbleToDeck()
 end
