@@ -55,17 +55,29 @@ s.material_setcode=0xf14
 function s.tdfilter(c)
 	return c:IsAbleToDeck()
 end
-function s.spfilter2(c,e,tp,lv)
-	return c:IsSetCard(0xf14) and c:IsLevelBelow(ct) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
+function s.tdfilter2(c)
+	return c:IsSetCard(0xf14) and c:IsFaceup()
 end
 function s.tdtg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return true end
-	Duel.SetOperationInfo(0,CATEGORY_TODECK,nil,1,PLAYER_ALL,LOCATION_REMOVED)
+	if chk==0 then return Duel.IsExistingMatchingCard(s.tdfilter2,tp,LOCATION_ONFIELD+LOCATION_GRAVE,0,1,nil)
+		and Duel.IsExistingMatchingCard(s.tdfilter,tp,LOCATION_REMOVED,LOCATION_REMOVED,1,nil) end
+		local g=Duel.GetMatchingGroup(s.tdfilter,tp,LOCATION_REMOVED,LOCATION_REMOVED,nil)
+		Duel.SetOperationInfo(0,CATEGORY_TODECK,g,1,0,0)
 end
 function s.tdop(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
-	local g=Duel.GetFieldGroup(tp,LOCATION_REMOVED,LOCATION_REMOVED)
+	local ct=Duel.GetMatchingGroupCount(s.tdfilter2,tp,LOCATION_ONFIELD+LOCATION_GRAVE,0,nil)
+	if ct==0 then return end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TODECK)
+	local g=Duel.SelectMatchingCard(tp,s.tdfilter,tp,LOCATION_REMOVED,LOCATION_REMOVED,1,ct,nil)
 	Duel.SendtoDeck(g,nil,SEQ_DECKSHUFFLE,REASON_EFFECT)
+	local e1=Effect.CreateEffect(e:GetHandler())
+	e1:SetType(EFFECT_TYPE_FIELD)
+	e1:SetDescription(aux.Stringid(id,2))
+	e1:SetCode(EFFECT_EXTRA_SUMMON_COUNT)
+	e1:SetTargetRange(LOCATION_HAND+LOCATION_MZONE,0)
+	e1:SetTarget(aux.TargetBoolFunction(Card.IsSetCard,0xf14))
+	e1:SetReset(RESET_PHASE+PHASE_END)
+	Duel.RegisterEffect(e1,tp)
 	end
 --no damage
 function s.regop(e,tp,eg,ep,ev,re,r,rp)
