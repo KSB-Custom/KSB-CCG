@@ -39,7 +39,7 @@ function s.lkcon(e)
 	return c:IsStatus(STATUS_SPSUMMON_TURN) and c:IsSummonType(SUMMON_TYPE_LINK)
 end
 function s.atkfilter(c)
-	return c:IsAttribute(ATTRIBUTE_WATER)
+	return c:IsAttribute(ATTRIBUTE_WATER) and (c:IsLocation(LOCATION_GRAVE) or c:IsFaceup())
 end
 function s.atkval(e,c)
 	return Duel.GetMatchingGroupCount(s.atkfilter,e:GetHandlerPlayer(),LOCATION_GRAVE+LOCATION_MZONE,LOCATION_GRAVE+LOCATION_MZONE,nil)*200
