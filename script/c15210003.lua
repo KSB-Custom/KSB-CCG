@@ -11,11 +11,11 @@ function s.counterfilter(c)
 	return c:IsSetCard(0xF15)
 end
 function s.ffilter(c)
-	return c:IsTtpe(TYPE_MONSTER)
+	return c:IsTtpe(TYPE_MONSTER) and not c:IsTtpe(TYPE_TOKEN)
 end
 function s.fextra(e,tp,mg)
 	if not Duel.IsPlayerAffectedByEffect(tp,69832741) then
-		return Duel.GetMatchingGroup(Fusion.IsMonsterFilter(Card.IsAbleToRemove),tp,LOCATION_DECK+LOCATION_HAND,0,nil)
+		return Duel.GetMatchingGroup(Fusion.IsMonsterFilter(Card.IsAbleToRemove),tp,LOCATION_DECK+LOCATION_HAND+LOCATION_ONFIELD,0,nil)
 	end
 	return nil
 end

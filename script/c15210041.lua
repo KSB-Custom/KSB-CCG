@@ -39,7 +39,7 @@ function s.lkcon(e)
 	return c:IsStatus(STATUS_SPSUMMON_TURN) and c:IsSummonType(SUMMON_TYPE_LINK)
 end
 function s.mfilter(c,lc,sumtype,tp)
-	return c:IsSetCard(0xF15,lc,sumtype,tp) and c:IsLevelBelow(4)
+	return c:IsSetCard(0xF15,lc,sumtype,tp) and c:IsLevelBelow(4) and not c:IsType(TYPE_TOKEN,lc,sumtype,tp)
 end
 --Add
 function s.thfilter(c)
