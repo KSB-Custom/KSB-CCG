@@ -3,6 +3,14 @@ local s,id=GetID()
 function s.initial_effect(c)
 	c:EnableReviveLimit()
 	Link.AddProcedure(c,nil,2,2,s.matcheck)
+	--cannot link material
+	local e1=Effect.CreateEffect(c)
+	e1:SetType(EFFECT_TYPE_SINGLE)
+	e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
+	e1:SetCode(EFFECT_CANNOT_BE_LINK_MATERIAL)
+	e1:SetCondition(s.lkcon)
+	e1:SetValue(1)
+	c:RegisterEffect(e1)
 	--Increase its own ATK
 	local e2=Effect.CreateEffect(c)
 	e2:SetType(EFFECT_TYPE_SINGLE)
@@ -25,6 +33,10 @@ function s.initial_effect(c)
 end
 	function s.matcheck(g,lc,sumtype,tp)
 	return g:IsExists(Card.IsSetCard,1,nil,0xF15,lc,sumtype,tp) and g:CheckDifferentPropertyBinary(Card.GetAttribute,lc,sumtype,tp)
+end
+function s.lkcon(e)
+	local c=e:GetHandler()
+	return c:IsStatus(STATUS_SPSUMMON_TURN) and c:IsSummonType(SUMMON_TYPE_LINK)
 end
 function s.atkfilter(c)
 	return c:IsAttribute(ATTRIBUTE_WATER)
@@ -57,5 +69,21 @@ function s.tkop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
 	local g=Duel.SelectMatchingCard(tp,s.hspfilter,tp,LOCATION_DECK,0,1,1,nil,e,tp,e:GetLabel())
 	Duel.SpecialSummon(g,0,tp,tp,false,false,POS_FACEUP)
+		local ge1=Effect.CreateEffect(c)
+	ge1:SetType(EFFECT_TYPE_FIELD)
+	ge1:SetProperty(EFFECT_FLAG_PLAYER_TARGET+EFFECT_FLAG_CLIENT_HINT)
+	ge1:SetCode(EFFECT_CANNOT_SPECIAL_SUMMON)
+	ge1:SetDescription(aux.Stringid(id,2))
+	ge1:SetTargetRange(1,0)
+	ge1:SetTarget(s.splimit)
+	ge1:SetReset(RESET_PHASE+PHASE_END)
+	Duel.RegisterEffect(ge1,tp)
+	--lizard check
+	aux.addTempLizardCheck(e:GetHandler(),tp,s.lizfilter)
 end
--- 	
+function s.splimit(e,c,sump,sumtype,sumpos,targetp,se)
+	return not c:IsSetCard(0xF15)
+end
+function s.lizfilter(e,c)
+	return not c:IsSetCard(0xF15)
+end

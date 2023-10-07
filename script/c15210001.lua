@@ -10,14 +10,25 @@ function s.initial_effect(c)
 	e1:SetCountLimit(1,id,EFFECT_COUNT_CODE_OATH)
 	e1:SetOperation(s.activate)
 	c:RegisterEffect(e1)
-	--Place in PZone
+	--Prevent the destruction by battle once
 	local e2=Effect.CreateEffect(c)
-	e2:SetType(EFFECT_TYPE_IGNITION)
+	e2:SetDescription(aux.Stringid(id,2))
+	e2:SetType(EFFECT_TYPE_FIELD)
+	e2:SetCode(EFFECT_INDESTRUCTABLE_COUNT)
 	e2:SetRange(LOCATION_FZONE)
-	e2:SetCountLimit(1,{id,2})
-	e2:SetTarget(s.thtg)
-	e2:SetOperation(s.thop)
+	e2:SetTargetRange(LOCATION_MZONE,0)
+	e2:SetValue(s.indvalue)
+	e2:SetTarget(s.indfilter)
 	c:RegisterEffect(e2)
+	--Add 1 "AZTECA" monster from your GY
+	local e3=Effect.CreateEffect(c)
+	e3:SetDescription(aux.Stringid(id,3))
+	e3:SetType(EFFECT_TYPE_IGNITION)
+	e3:SetRange(LOCATION_FZONE)
+	e3:SetCountLimit(1)
+	e3:SetTarget(s.thtg)
+	e3:SetOperation(s.thop)
+	c:RegisterEffect(e3)
 	end
 function s.thfilter(c)
 	return c:IsMonster() and c:IsSetCard(0xF15) and c:IsAbleToHand()
@@ -32,6 +43,13 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 		Duel.ConfirmCards(1-tp,sg)
 		Duel.DiscardHand(tp,aux.TRUE,1,1,REASON_EFFECT+REASON_DISCARD)
 	end
+end
+--Prevent destruction
+function s.indvalue(e,re,r,rp)
+	return r&REASON_BATTLE==REASON_BATTLE
+end
+function s.indfilter(e,c)
+	return c:IsSetCard(0xF15)
 end
 --
 function s.thfilter(c)
