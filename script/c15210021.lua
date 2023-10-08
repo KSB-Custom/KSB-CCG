@@ -11,8 +11,8 @@ function s.initial_effect(c)
 	e1:SetProperty(EFFECT_FLAG_IGNORE_IMMUNE)
 	e1:SetRange(LOCATION_MZONE)
 	e1:SetTargetRange(LOCATION_MZONE,0)
-	e1:SetTarget(s.indtg)
-	e1:SetValue(aux.tgoval)
+	e1:SetTarget(aux.TargetBoolFunction(Card.IsSetCard,0x1f15))
+	e1:SetValue(1)
 	c:RegisterEffect(e1)
 	--Disable attack
 	local e2=Effect.CreateEffect(c)
@@ -26,15 +26,12 @@ function s.initial_effect(c)
 	e2:SetOperation(s.naop)
 	c:RegisterEffect(e2)
 end
-function s.indtg(e,c)
-	return c:IsSetCard(0xF15) and (c:IsType(TYPE_FUSION) or c:IsType(TYPE_SYNCHRO) or c:IsType(TYPE_LINK))
-end
-function s.costfilter(c)
+function s.costfilter(c,e)
 	return c:IsType(TYPE_MONSTER) and not c:IsStatus(STATUS_BATTLE_DESTROYED)
 end
 function s.spcost(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.CheckReleaseGroupCost(tp,s.costfilter,1,false,nil,nil) end
-	local sg=Duel.SelectReleaseGroupCost(tp,s.costfilter,1,1,false,nil,nil)
+	if chk==0 then return Duel.CheckReleaseGroupCost(tp,s.costfilter,1,false,nil,e:GetHandler()) end
+	local sg=Duel.SelectReleaseGroupCost(tp,s.costfilter,1,1,false,nil,e:GetHandler())
 	Duel.Release(sg,REASON_COST)
 end
 function s.natg(e,tp,eg,ep,ev,re,r,rp,chk)

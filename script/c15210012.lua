@@ -25,7 +25,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e1)
 end
 function s.cfilter(c)
-	return c:IsSetCard(0xF15) and not c:IsCode(id)
+	return c:IsSetCard(0xF15) and c:IsType(TYPE_MONSTER) and not c:IsCode(id)
 end
 function s.thcon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.IsTurnPlayer(tp)

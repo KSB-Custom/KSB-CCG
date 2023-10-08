@@ -31,7 +31,7 @@ function s.initial_effect(c)
 	e3:SetOperation(s.spop)
 	c:RegisterEffect(e3)
 end
-	--Special Sum
+	--Special Sum itself
 function s.spcfilter(c)
 	return c:IsSetCard(0xF15) and c:IsType(TYPE_MONSTER) and c:IsAbleToRemoveAsCost() and aux.SpElimFilter(c,true)
 end
@@ -60,7 +60,7 @@ function s.ntcon(e,c,minc)
 end
 --special summon
 function s.costfilter(c)
-	return c:IsSetCard(0xF15) and c:IsAbleToGraveAsCost()
+	return c:IsSetCard(0xF15) and c:IsType(TYPE_MONSTER) and c:IsAbleToGraveAsCost()
 end
 function s.retcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.costfilter,tp,LOCATION_DECK,0,1,nil) end
