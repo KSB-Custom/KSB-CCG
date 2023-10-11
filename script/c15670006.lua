@@ -1,4 +1,4 @@
---Alebrije Toon
+--Alebrije Toon Beast
 local s,id=GetID()
 function s.initial_effect(c)
 	Pendulum.AddProcedure(c)
@@ -13,4 +13,27 @@ function s.initial_effect(c)
 	e1:SetTarget(Fusion.SummonEffTG(table.unpack(params)))
 	e1:SetOperation(Fusion.SummonEffOP(table.unpack(params)))
 	c:RegisterEffect(e1)
+	--Gain 100 LP each time you activate a "Fusion" Spell or effect
+	local e2=Effect.CreateEffect(c)
+	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+	e2:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
+	e2:SetCode(EVENT_CHAINING)
+	e2:SetRange(LOCATION_MZONE)
+	e2:SetOperation(aux.chainreg)
+	c:RegisterEffect(e2)
+	local e3=Effect.CreateEffect(c)
+	e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+	e3:SetProperty(EFFECT_FLAG_DELAY)
+	e3:SetCode(EVENT_CHAIN_SOLVED)
+	e3:SetRange(LOCATION_MZONE)
+	e3:SetCondition(function(e) return e:GetHandler():HasFlagEffect(1) end)
+	e3:SetOperation(s.lpop)
+	c:RegisterEffect(e3)
+end
+--Gain LP
+function s.lpop(e,tp,eg,ep,ev,re,r,rp)
+	if re:IsSpellEffect() and rp==tp and re:GetHandler():IsSetCard(0x46) then
+		Duel.Hint(HINT_CARD,0,id)
+		Duel.Recover(tp,500,REASON_EFFECT)
+	end
 end

@@ -30,6 +30,8 @@ function s.initial_effect(c)
 	e4:SetRange(LOCATION_REMOVED)
 	c:RegisterEffect(e4)
 	end
+	s.listed_names={CARD_POLYMERIZATION}
+	s.listed_series={0xf16}
 function s.tgfilter(c)
 	return c:GetType()==TYPE_SPELL and c:IsSetCard(0x46) and c:IsAbleToGrave()
 end

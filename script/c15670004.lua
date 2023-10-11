@@ -36,6 +36,8 @@ function s.initial_effect(c)
 	e4:SetOperation(s.spop)
 	c:RegisterEffect(e4)
 end
+	s.listed_names={CARD_POLYMERIZATION}
+	s.listed_series={0xf16}
 function s.cfilter(c)
 	return c:IsSetCard(0xf16) and not c:IsAttribute(ATTRIBUTE_WATER) and c:IsDiscardable()
 end
@@ -75,7 +77,7 @@ function s.operation(e,tp,eg,ep,ev,re,r,rp)
 end
 --Set directly from Deck
 function s.filter(c)
-	return c:IsCode(24094653) and c:IsSSetable()
+	return c:IsSSetable() and (c:IsCode(24094653) or c:IsCode(95286165))
 end
 function s.settg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_SZONE)>0
