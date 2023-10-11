@@ -7,8 +7,9 @@ function s.initial_effect(c)
 	e1:SetCategory(CATEGORY_SPECIAL_SUMMON)
 	e1:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e1:SetType(EFFECT_TYPE_QUICK_O)
-	e1:SetCode(EVENT_CHAINING)
+	e1:SetCode(EVENT_FREE_CHAIN)
 	e1:SetRange(LOCATION_GRAVE+LOCATION_HAND)
+	e1:SetCost(s.spcost)
 	e1:SetTarget(s.target)
 	e1:SetOperation(s.operation)
 	c:RegisterEffect(e1)
@@ -49,6 +50,11 @@ function s.sumval(e,c)
 	return not c:IsSetCard(0xf16)
 end
 --
+function s.spcost(e,tp,eg,ep,ev,re,r,rp,chk)
+	local c=e:GetHandler()
+	if chk==0 then return c:GetFlagEffect(id)==0 end
+	c:RegisterFlagEffect(id,RESET_CHAIN,0,1)
+end
 function s.filter(c)
 	return c:IsFaceup() and c:GetLevel()>=2 and (c:IsType(TYPE_FUSION) or c:IsType(TYPE_SYNCHRO))
 end
