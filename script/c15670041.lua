@@ -69,3 +69,4 @@ function s.desop(e,tp,eg,ep,ev,re,r,rp)
 		Duel.HintSelection(g,true)
 		Duel.Destroy(g,REASON_EFFECT)
 	end
+end
