@@ -30,6 +30,8 @@ function s.initial_effect(c)
 	e3:SetOperation(s.lpop)
 	c:RegisterEffect(e3)
 end
+s.listed_names={CARD_POLYMERIZATION}
+s.listed_series={0xf16}
 --Gain LP
 function s.lpop(e,tp,eg,ep,ev,re,r,rp)
 	if re:IsSpellEffect() and rp==tp and re:GetHandler():IsSetCard(0x46) then
