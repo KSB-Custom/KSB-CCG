@@ -28,6 +28,7 @@ function s.initial_effect(c)
 	e4:SetRange(LOCATION_REMOVED)
 	c:RegisterEffect(e4)
 	end
+	s.listed_names={CARD_POLYMERIZATION}
 	s.listed_series={0xf16}
 function s.desfilter(c)
 	return c:IsFaceup() and c:IsSetCard(0xf16)
