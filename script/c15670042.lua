@@ -26,6 +26,18 @@ function s.initial_effect(c)
 	e2:SetCost(s.cost)
 	e2:SetOperation(s.immop)
 	c:RegisterEffect(e2)
+	--Negate
+	local e3=Effect.CreateEffect(c)
+	e3:SetDescription(aux.Stringid(id,1))
+	e3:SetCategory(CATEGORY_DISABLE)
+	e3:SetType(EFFECT_TYPE_QUICK_O)
+	e3:SetCode(EVENT_FREE_CHAIN)
+	e3:SetProperty(EFFECT_FLAG_CARD_TARGET)
+	e3:SetCountLimit(1,{id,2})
+	e3:SetHintTiming(0,TIMINGS_CHECK_MONSTER|TIMING_END_PHASE)
+	e3:SetTarget(s.target)
+	e3:SetOperation(s.operation)
+	c:RegisterEffect(e3)
 	end
 function s.matfilter(c,lc,st,tp)
 	return c:IsSetCard(0xf16) 
@@ -86,4 +98,46 @@ end
 function s.remtg(e,c,rp,r,re)
 	local tp=e:GetHandlerPlayer()
 	return c:IsFaceup() and ((c:IsControler(tp) and c:IsLocation(LOCATION_MZONE)) or c:IsLocation(LOCATION_GRAVE)) and rp==1-tp and r==REASON_EFFECT
+end
+--Negate
+function s.negfilter(c)
+	return c:IsType(TYPE_EFFECT) and c:IsNegatableMonster() or c:IsNegatableSpellTrap()
+end
+function s.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+	if chkc then return false end
+	if chk==0 then return true end
+	if Duel.IsExistingTarget(aux.FaceupFilter(s.negfilter),tp,LOCATION_ONFIELD,0,1,nil)
+		and Duel.IsExistingTarget(aux.FaceupFilter(s.negfilter),tp,0,LOCATION_ONFIELD,1,nil) then
+		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_NEGATE)
+		local g1=Duel.SelectTarget(tp,aux.FaceupFilter(s.negfilter),tp,LOCATION_ONFIELD,0,1,1,nil)
+		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_NEGATE)
+		local g2=Duel.SelectTarget(tp,aux.FaceupFilter(s.negfilter),tp,0,LOCATION_ONFIELD,1,1,nil)
+		g1:Merge(g2)
+		Duel.SetOperationInfo(0,CATEGORY_DISABLE,g1,2,0,0)
+	end
+end
+function s.hfilter(c,e)
+	return c:IsRelateToEffect(e) and c:IsFaceup()
+end
+function s.operation(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
+	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS)
+	if not g then return end
+	g=g:Filter(s.hfilter,nil,e)
+	if #g>0 then
+		Duel.NegateRelatedChain(g,RESET_TURN_SET)
+		for tc in g:Iter() do
+		local e1=Effect.CreateEffect(e:GetHandler())
+		e1:SetType(EFFECT_TYPE_SINGLE)
+		e1:SetCode(EFFECT_DISABLE)
+		e1:SetReset(RESET_EVENT+RESETS_STANDARD)
+		tc:RegisterEffect(e1)
+		local e2=Effect.CreateEffect(e:GetHandler())
+		e2:SetType(EFFECT_TYPE_SINGLE)
+		e2:SetCode(EFFECT_DISABLE_EFFECT)
+		e2:SetValue(RESET_TURN_SET)
+		e2:SetReset(RESET_EVENT+RESETS_STANDARD)
+		tc:RegisterEffect(e2)
+		end
+	end
 end
