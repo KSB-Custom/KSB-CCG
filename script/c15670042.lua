@@ -24,7 +24,6 @@ function s.initial_effect(c)
 	e2:SetCountLimit(1,id)
 	e2:SetHintTiming(0,TIMINGS_CHECK_MONSTER|TIMING_MAIN_END)
 	e2:SetCost(s.cost)
-	e2:SetTarget(s.immtg)
 	e2:SetOperation(s.immop)
 	c:RegisterEffect(e2)
 	end
