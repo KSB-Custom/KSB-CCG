@@ -42,13 +42,32 @@ function s.initial_effect(c)
 	e7:SetCode(EFFECT_UNRELEASABLE_SUM)
 	e7:SetValue(s.sumval)
 	c:RegisterEffect(e7)
+	--atkup
+	local e8=Effect.CreateEffect(c)
+	e8:SetType(EFFECT_TYPE_SINGLE)
+	e8:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
+	e8:SetCode(EFFECT_UPDATE_DEFENSE)
+	e8:SetRange(LOCATION_MZONE)
+	e8:SetValue(s.defval)
+	c:RegisterEffect(e8)
 end
+	s.listed_names={CARD_POLYMERIZATION}
+	s.listed_series={0xf16}
+	s.listed_series={0x46}
+	--Material
 function s.matlimit(e,c)
 	if not c then return false end
 	return not c:IsSetCard(0xf16)
 end
 function s.sumval(e,c)
 	return not c:IsSetCard(0xf16)
+end
+--DEF
+function s.deffilter(c)
+	return c:IsSpell() and c:IsSetCard(0x46)
+end
+function s.defval(e,c)
+	return Duel.GetMatchingGroupCount(s.deffilter,c:GetControler(),LOCATION_GRAVE,0,nil)*100
 end
 --
 function s.spcost(e,tp,eg,ep,ev,re,r,rp,chk)

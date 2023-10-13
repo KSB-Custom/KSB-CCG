@@ -12,12 +12,13 @@ function s.initial_effect(c)
 	e1:SetTarget(s.sptg)
 	e1:SetOperation(s.spop)
 	c:RegisterEffect(e1)
---search
+--Special summon non-effect monster
 	local e2=Effect.CreateEffect(c)
 	e2:SetCategory(CATEGORY_SPECIAL_SUMMON)
 	e2:SetType(EFFECT_TYPE_TRIGGER_O+EFFECT_TYPE_SINGLE)
 	e2:SetCode(EVENT_SUMMON_SUCCESS)
 	e2:SetCountLimit(1,{id,2})
+	e2:SetCost(s.spcost)
 	e2:SetTarget(s.sptg2)
 	e2:SetOperation(s.spop2)
 	c:RegisterEffect(e2)
@@ -25,6 +26,20 @@ function s.initial_effect(c)
 	e3:SetCode(EVENT_SPSUMMON_SUCCESS)
 	c:RegisterEffect(e3)
 	end
+	s.listed_names={CARD_POLYMERIZATION}
+	s.listed_series={0xf16}
+	--Check banish
+function s.spfilter2(c,tp)
+	return c:IsAbleToRemoveAsCost() and (c:IsSetCard(0x46) or c:ListsCode(CARD_POLYMERIZATION)) and (c:IsFaceup() or c:IsLocation(LOCATION_HAND) or c:IsLocation(LOCATION_GRAVE))
+end
+	--Cost of banishing from field/GY
+function s.spcost(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return e:GetHandler():GetFlagEffect(id)==0
+		and Duel.IsExistingMatchingCard(s.spfilter2,tp,LOCATION_ONFIELD+LOCATION_GRAVE+LOCATION_HAND,0,1,nil,tp) end
+	e:GetHandler():RegisterFlagEffect(id,RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END,0,1)
+	local g=Duel.SelectMatchingCard(tp,s.spfilter2,tp,LOCATION_ONFIELD+LOCATION_GRAVE+LOCATION_HAND,0,1,1,nil,tp)
+	Duel.Remove(g,POS_FACEUP,REASON_COST)
+end
 function s.spfilter(c,e,tp)
 	return c:IsType(TYPE_TUNER) and c:IsDefense(c:GetAttack()) and c:IsAttackAbove(0) and c:IsDefenseAbove(0)
 		and c:IsCanBeSpecialSummoned(e,0,tp,false,false) and not c:IsType(TYPE_EFFECT)
