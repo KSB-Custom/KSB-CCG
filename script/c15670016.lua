@@ -56,7 +56,7 @@ function s.desop(e,tp,eg,ep,ev,re,r,rp)
 end
 --Add itself to the hand
 function s.cfilter(c)
-	return c:IsDiscardable() and c:IsSetCard(0x46) or c:ListsCode(CARD_POLYMERIZATION)
+	return c:IsDiscardable() and (c:IsSetCard(0x46) or c:ListsCode(CARD_POLYMERIZATION)) and not c:IsCode(id)
 end
 function s.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.cfilter,tp,LOCATION_HAND,0,1,e:GetHandler()) end
