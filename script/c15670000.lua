@@ -36,13 +36,17 @@ function s.descon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.GetFieldGroupCount(tp,0,LOCATION_ONFIELD)>Duel.GetFieldGroupCount(tp,LOCATION_ONFIELD,0)
 end
 function s.thfilter(c)
-	return c:IsAbleToHand() and (c:IsMonster() and c:IsSetCard(0xF16)) or (c:IsSpell() and c:IsSetCard(0x46))
+	return c:IsAbleToHand() and (c:IsMonster() and c:IsSetCard(0xF16)) or c:IsCode(CARD_POLYMERIZATION)
 end
 function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	if not e:GetHandler():IsRelateToEffect(e) then return end
-	local g=Duel.GetMatchingGroup(s.thfilter,tp,LOCATION_DECK,0,nil)
+	local g=Duel.GetMatchingGroup(s.thfilter,tp,LOCATION_DECK+LOCATION_GRAVE,0,nil)
 	if #g>0  then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
+		local sg=g:Select(tp,1,1,nil)
+		Duel.SendtoHand(sg,nil,REASON_EFFECT)
+		Duel.ConfirmCards(1-tp,sg)
+		end
 end
 function s.costchange(e,re,rp,val)
 	if re and re:IsHasType(EFFECT_TYPE_ACTIVATE) and re:GetHandler():IsSpell() and re:GetHandler():IsSetCard(0x46) then
