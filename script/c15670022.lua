@@ -36,7 +36,6 @@ function s.initial_effect(c)
 	e4:SetValue(s.matlimit)
 	e4:SetRange(LOCATION_MZONE)
 	e4:SetCode(EFFECT_CANNOT_BE_LINK_MATERIAL)
-	e4:SetValue(1)
 	c:RegisterEffect(e4)
 	end
 function s.matlimit(e,c)
