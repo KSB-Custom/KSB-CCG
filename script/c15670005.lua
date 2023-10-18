@@ -33,7 +33,7 @@ function s.initial_effect(c)
 	s.listed_names={CARD_POLYMERIZATION}
 	s.listed_series={0xf16}
 function s.tgfilter(c)
-	return c:GetType()==TYPE_SPELL and c:IsSetCard(0x46) and c:IsAbleToGrave()
+	return c:IsSpell() and c:IsSetCard(0x46) and c:IsAbleToGrave()
 end
 function s.thcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return e:GetHandler():IsDiscardable() end
