@@ -49,8 +49,11 @@ function s.initial_effect(c)
 	e3:SetValue(s.value)
 	c:RegisterEffect(e3)
 	end
+function s.filter2(c)
+	return c:IsFaceup() and c:IsSetCard(0xf16) and c:IsMonster()
+end
 function s.value(e,c)
-	return Duel.GetMatchingGroupCount(aux.FaceupFilter(Card.IsMonster),e:GetHandlerPlayer(),LOCATION_GRAVE+LOCATION_REMOVED,0,nil,0xf16)*400
+	return Duel.GetMatchingGroupCount(s.filter2,e:GetHandlerPlayer(),LOCATION_GRAVE+LOCATION_REMOVED,0,nil)*400
 end
 function s.valcheck(e,c)
 	local c=e:GetHandler()
