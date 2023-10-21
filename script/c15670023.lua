@@ -3,7 +3,7 @@ local s,id=GetID()
 function s.initial_effect(c)
 	--fusion material
 	c:EnableReviveLimit()
-	Fusion.AddProcMixN(c,true,true,s.ffilter,2)
+	Fusion.AddProcMix(c,true,true,aux.FilterBoolFunctionEx(Card.IsSetCard,0xf16),aux.FilterBoolFunctionEx(Card.IsType,TYPE_EFFECT))
 	--Banish 1 card
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(id,0))
@@ -49,6 +49,7 @@ function s.initial_effect(c)
 	e3:SetValue(s.value)
 	c:RegisterEffect(e3)
 	end
+	--
 function s.filter2(c)
 	return c:IsFaceup() and c:IsSetCard(0xf16) and c:IsMonster()
 end
@@ -77,9 +78,6 @@ function s.rmvop(e,tp,eg,ep,ev,re,r,rp)
 	if #g>0 then
 		Duel.Remove(g,POS_FACEUP,REASON_EFFECT)
 	end
-end
-function s.ffilter(c,fc,sumtype,sp,sub,mg,sg)
-	return not sg or sg:FilterCount(aux.TRUE,c)==0 or not (sg:IsExists(Card.IsAttribute,1,c,c:GetAttribute(),fc,sumtype,sp))
 end
 --
 function s.cfilter(c)
