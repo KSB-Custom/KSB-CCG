@@ -84,18 +84,20 @@ function s.thop(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 --Destroy
-function s.desfilter(c,e,tp)
-	return c:IsCanBeEffectTarget(e) and (c:IsControler(1-tp)
-		or (c:IsFaceup() and (c:IsSetCard(0xf15) or c:IsSetCard(0xf16))))
+function s.desfilter1(c,e,tp)
+	return c:IsCanBeEffectTarget(e) and c:IsControler(1-tp)
+end
+function s.desfilter2(c,e,tp)
+	return c:IsCanBeEffectTarget(e) and c:IsFaceup() and (c:IsSetCard(0xf15) or c:IsSetCard(0xf16))
 end
 function s.destg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return false end
-	if chk==0 then return Duel.IsExistingTarget(s.desfilter,tp,LOCATION_MZONE,0,1,nil)
-		and Duel.IsExistingTarget(s.desfilter,tp,0,LOCATION_ONFIELD,1,nil) end
+	if chk==0 then return Duel.IsExistingTarget(aux.TRUE,tp,LOCATION_MZONE,0,1,nil)
+		and Duel.IsExistingTarget(aux.TRUE,tp,0,LOCATION_ONFIELD,1,nil) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DESTROY)
-	local g1=Duel.SelectTarget(tp,s.desfilter,tp,LOCATION_MZONE,0,1,1,nil)
+	local g1=Duel.SelectTarget(tp,aux.TRUE,tp,LOCATION_MZONE,0,1,1,nil)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DESTROY)
-	local g2=Duel.SelectTarget(tp,s.desfilter,tp,0,LOCATION_ONFIELD,1,1,nil)
+	local g2=Duel.SelectTarget(tp,aux.TRUE,tp,0,LOCATION_ONFIELD,1,1,nil)
 	g1:Merge(g2)
 	Duel.SetOperationInfo(0,CATEGORY_DESTROY,g1,2,0,0)
 end
@@ -151,8 +153,5 @@ end
 function s.spop1(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if not c:IsRelateToEffect(e) then return end
-	if Duel.SpecialSummon(c,0,tp,tp,false,false,POS_FACEUP)~=0 then
-		Duel.BreakEffect()
-		Duel.Damage(tp,500,REASON_EFFECT)
-	end
+	Duel.SpecialSummon(c,0,tp,tp,false,false,POS_FACEUP)
 end
