@@ -86,7 +86,7 @@ end
 --Destroy
 function s.desfilter(c,e,tp)
 	return c:IsCanBeEffectTarget(e) and (c:IsControler(1-tp)
-		or (c:IsFaceup() and (c:IsSetCard(0xf15) or c:IsSetCard(0xf16)))
+		or (c:IsFaceup() and (c:IsSetCard(0xf15) or c:IsSetCard(0xf16))))
 end
 function s.destg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return false end
@@ -137,7 +137,7 @@ function s.pcop(e,tp,eg,ep,ev,re,r,rp)
 end
 --SP Summon
 function s.cfilter(c,tp)
-	return c:IsFaceup() and c:IsSummonPlayer(tp) and (c:IsSetCard(0xf15) or c:IsSetCard(0xf16)
+	return c:IsFaceup() and c:IsSummonPlayer(tp) and (c:IsSetCard(0xf15) or c:IsSetCard(0xf16))
 end
 function s.spcon1(e,tp,eg,ep,ev,re,r,rp)
 	return eg:IsExists(s.cfilter,1,nil,tp)
