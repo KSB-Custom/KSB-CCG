@@ -45,7 +45,7 @@ function s.thop(e,tp,eg,ep,ev,re,r,rp)
 end
 --
 function s.rfilter(c)
-	return c:IsSetCard(0xf21) and c:IsAbleToRemove()
+	return c:IsSetCard(0xf20) and c:IsAbleToRemove()
 end
 function s.rtarget(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsLocation(LOCATION_GRAVE) and chkc:IsControler(1-tp) and chkc:IsAbleToRemove() end
