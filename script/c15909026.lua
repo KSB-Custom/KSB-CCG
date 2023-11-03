@@ -22,6 +22,13 @@ function s.initial_effect(c)
 	e2:SetTarget(s.drtg)
 	e2:SetOperation(s.drop)
 	c:RegisterEffect(e2)
+	-- Attack while in defense position
+	local e3=Effect.CreateEffect(c)
+	e3:SetType(EFFECT_TYPE_EQUIP)
+	e3:SetCode(EFFECT_DEFENSE_ATTACK)
+	e3:SetCondition(s.eqcon)
+	e3:SetValue(1)
+	c:RegisterEffect(e3)
 end
 s.listed_series={0xf20}
 function s.thcost(e,tp,eg,ep,ev,re,r,rp,chk)
@@ -62,4 +69,8 @@ function s.drop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.SendtoDeck(tg,nil,0,REASON_EFFECT)
 	local g=Duel.GetOperatedGroup()
 	if g:IsExists(Card.IsLocation,1,nil,LOCATION_DECK) then Duel.ShuffleDeck(tp) end
+end
+--
+function s.eqcon(e)
+	return e:GetHandler():GetEquipTarget():IsSetCard(0x1f20)
 end

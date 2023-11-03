@@ -43,8 +43,11 @@ function s.fuscond(e)
 	return Duel.IsBattlePhase()
 end
 --
+function s.filter(c)
+	return c:IsFaceup() and (c:IsSetCard(0xf20) or c:IsSetCard(0xf21))
+end
 function s.atkcond(e)
-	return Duel.IsExistingMatchingCard(aux.FaceupFilter(Card.IsSetCard,0xf21),e:GetHandlerPlayer(),LOCATION_MZONE,0,1,e:GetHandler())
+	return Duel.IsExistingMatchingCard(s.filter,e:GetHandlerPlayer(),LOCATION_MZONE,0,1,e:GetHandler())
 end
 --
 function s.descon(e,tp,eg,ep,ev,re,r,rp)

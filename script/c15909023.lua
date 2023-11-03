@@ -27,8 +27,20 @@ function s.initial_effect(c)
 	e3:SetType(EFFECT_TYPE_EQUIP)
 	e3:SetCode(EFFECT_CANNOT_BE_EFFECT_TARGET)
 	e3:SetProperty(EFFECT_FLAG_IGNORE_IMMUNE)
-	e3:SetValue(s.efilter1)
+	e3:SetCondition(s.eqcon)
+	e3:SetValue(aux.tgoval)
 	c:RegisterEffect(e3)
+	--cannot release
+	local e4=Effect.CreateEffect(c)
+	e3:SetType(EFFECT_TYPE_EQUIP)
+	e4:SetRange(LOCATION_MZONE)
+	e4:SetCode(EFFECT_UNRELEASABLE_SUM)
+	e4:SetCondition(s.eqcon)
+	e4:SetValue(1)
+	c:RegisterEffect(e4)
+	local e5=e4:Clone()
+	e5:SetCode(EFFECT_UNRELEASABLE_NONSUM)
+	c:RegisterEffect(e5)
 end
 s.listed_names={15909013}
 function s.thcost(e,tp,eg,ep,ev,re,r,rp,chk)
@@ -70,4 +82,8 @@ end
 --
 function s.efilter1(e,re,rp)
 	return rp==1-e:GetHandlerPlayer() and re:IsActiveType(TYPE_MONSTER)
+end
+--
+function s.eqcon(e)
+	return e:GetHandler():GetEquipTarget():IsSetCard(0x1f20)
 end

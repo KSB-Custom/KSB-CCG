@@ -22,6 +22,13 @@ function s.initial_effect(c)
 	e2:SetTarget(s.drtg)
 	e2:SetOperation(s.drop)
 	c:RegisterEffect(e2)
+	--Cannot be used as material for a Fusion/Synchro/Xyz/Link Summon
+	local e7=Effect.CreateEffect(c)
+	e7:SetType(EFFECT_TYPE_EQUIP)
+	e7:SetCode(EFFECT_CANNOT_BE_MATERIAL)
+	e7:SetCondition(s.eqcon)
+	e7:SetValue(aux.cannotmatfilter(SUMMON_TYPE_FUSION,SUMMON_TYPE_SYNCHRO,SUMMON_TYPE_XYZ,SUMMON_TYPE_LINK))
+	c:RegisterEffect(e7)
 end
 s.listed_names={15909014}
 function s.thcost(e,tp,eg,ep,ev,re,r,rp,chk)
@@ -61,4 +68,8 @@ function s.drop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.SendtoDeck(tg,nil,0,REASON_EFFECT)
 	local g=Duel.GetOperatedGroup()
 	if g:IsExists(Card.IsLocation,1,nil,LOCATION_DECK) then Duel.ShuffleDeck(tp) end
+end
+--
+function s.eqcon(e)
+	return e:GetHandler():GetEquipTarget():IsSetCard(0x1f20)
 end

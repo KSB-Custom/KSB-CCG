@@ -22,6 +22,16 @@ function s.initial_effect(c)
 	e2:SetTarget(s.rtarget)
 	e2:SetOperation(s.roperation)
 	c:RegisterEffect(e2)
+	--get effect
+	local e3=Effect.CreateEffect(c)
+	e3:SetDescription(aux.Stringid(id,1))
+	e3:SetCategory(CATEGORY_REMOVE)
+	e3:SetType(EFFECT_TYPE_EQUIP+EFFECT_TYPE_TRIGGER_F)
+	e3:SetCode(EVENT_BATTLED)
+	e3:SetCondition(s.rmcon)
+	e3:SetTarget(s.rmtg)
+	e3:SetOperation(s.rmop)
+	c:RegisterEffect(e3)
 end
 s.listed_names={15909015}
 function s.thcost(e,tp,eg,ep,ev,re,r,rp,chk)
@@ -58,5 +68,24 @@ function s.roperation(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
 	if tc and tc:IsRelateToEffect(e) then
 		Duel.Remove(tc,POS_FACEUP,REASON_EFFECT)
+	end
+end
+--
+function s.rmcon(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
+	local bc=c:GetBattleTarget()
+	e:SetLabelObject(bc)
+	return c:GetEquipTarget():IsSetCard(0x1f20)
+		and bc and bc:IsStatus(STATUS_OPPO_BATTLE) and bc:IsRelateToBattle()
+end
+function s.rmtg(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return e:GetLabelObject():IsAbleToRemove() end
+	Duel.Hint(HINT_OPSELECTED,1-tp,e:GetDescription())
+	Duel.SetOperationInfo(0,CATEGORY_REMOVE,e:GetLabelObject(),1,0,0)
+end
+function s.rmop(e,tp,eg,ep,ev,re,r,rp)
+	local bc=e:GetLabelObject()
+	if bc:IsRelateToBattle() and bc:IsControler(1-tp) then
+		Duel.Remove(bc,POS_FACEUP,REASON_EFFECT)
 	end
 end

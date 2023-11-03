@@ -26,6 +26,7 @@ function s.initial_effect(c)
 	local e3=Effect.CreateEffect(c)
 	e3:SetType(EFFECT_TYPE_EQUIP)
 	e3:SetCode(EFFECT_PIERCE)
+	e3:SetCondition(s.eqcon)
 	c:RegisterEffect(e3)
 end
 s.listed_names={15909011}
@@ -68,4 +69,8 @@ function s.atkop(e,tp,eg,ep,ev,re,r,rp,chk)
 		e1:SetReset(RESET_EVENT+RESETS_STANDARD)
 		tc:RegisterEffect(e1)
 	end
+end
+--
+function s.eqcon(e)
+	return e:GetHandler():GetEquipTarget():IsSetCard(0x1f20)
 end

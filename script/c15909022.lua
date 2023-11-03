@@ -25,6 +25,7 @@ function s.initial_effect(c)
 	e3:SetType(EFFECT_TYPE_EQUIP)
 	e3:SetProperty(EFFECT_FLAG_IGNORE_IMMUNE)
 	e3:SetCode(EFFECT_DESTROY_SUBSTITUTE)
+	e3:SetCondition(s.eqcon)
 	e3:SetValue(1)
 	c:RegisterEffect(e3)
 end
@@ -57,4 +58,8 @@ function s.operation(e,tp,eg,ep,ev,re,r,rp)
 	e1:SetTargetRange(1,0)
 	e1:SetReset(RESET_PHASE+PHASE_DAMAGE_CAL+PHASE_END)
 	Duel.RegisterEffect(e1,tp)
+end
+--
+function s.eqcon(e)
+	return e:GetHandler():GetEquipTarget():IsSetCard(0x1f20)
 end
