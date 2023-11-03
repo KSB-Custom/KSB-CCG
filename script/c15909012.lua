@@ -18,7 +18,6 @@ function s.initial_effect(c)
 	e2:SetProperty(EFFECT_FLAG_CARD_TARGET+EFFECT_FLAG_DELAY)
 	e2:SetCode(EVENT_SUMMON_SUCCESS)
 	e2:SetCountLimit(1,{id,1})
-	e2:SetCondition(s.poscon)
 	e2:SetTarget(s.postg)
 	e2:SetOperation(s.posop)
 	c:RegisterEffect(e2)
@@ -30,12 +29,6 @@ function s.indct(e,re,r,rp)
 	return (r&REASON_BATTLE+REASON_EFFECT)~=0
 end
 --Change Position
-function s.cfilter(c)
-	return c:IsFaceup() and c:IsSetCard(0xf21)
-end
-function s.poscon(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.IsExistingMatchingCard(s.cfilter,tp,LOCATION_MZONE,0,1,e:GetHandler())
-end
 function s.pfilter(c)
 	return c:IsFaceup() and c:IsCanTurnSet()
 end
