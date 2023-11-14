@@ -49,7 +49,7 @@ function s.cfilter(c,e,tp)
 	return c:IsMonster() and c:IsSetCard(0x759)
 end
 function s.regtg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return not e:GetHandler():IsLocation(LOCATION_DECK)
+	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and not e:GetHandler():IsLocation(LOCATION_DECK)
 		and Duel.IsExistingMatchingCard(s.cfilter,tp,LOCATION_DECK,0,3,nil) end
 	local g=Duel.GetMatchingGroup(s.cfilter,tp,LOCATION_DECK,0,3,nil)
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,g,1,0,0)
