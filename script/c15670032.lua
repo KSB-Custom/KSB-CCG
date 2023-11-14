@@ -139,7 +139,8 @@ function s.pcop(e,tp,eg,ep,ev,re,r,rp)
 end
 --SP Summon
 function s.cfilter(c,tp)
-	return c:IsFaceup() and c:IsSummonPlayer(tp) and (c:IsSetCard(0xf15) or c:IsSetCard(0xf16))
+	return c:IsControler(tp) and c:IsType(TYPE_FUSION)
+		and c:IsSummonType(SUMMON_TYPE_FUSION) and (c:IsSetCard(0xf15) or c:IsSetCard(0xf16))
 end
 function s.spcon1(e,tp,eg,ep,ev,re,r,rp)
 	return eg:IsExists(s.cfilter,1,nil,tp)
