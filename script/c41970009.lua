@@ -40,10 +40,9 @@ end
 s.listed_series={0xf14}
 --Special summon
 function s.spfilter(c,e,tp)
-	if c:IsLocation(LOCATION_HAND) and Duel.GetLocationCount(tp,LOCATION_MZONE)<=0 then return false end
-	if c:IsLocation(LOCATION_GRAVE) and Duel.GetLocationCount(tp,LOCATION_MZONE)<=0 then return false end
+	if (c:IsLocation(LOCATION_HAND) or c:IsLocation(LOCATION_GRAVE)) and Duel.GetLocationCount(tp,LOCATION_MZONE)<=0 then return false end
 	if c:IsLocation(LOCATION_EXTRA) and c:IsFaceup() and Duel.GetLocationCountFromEx(tp,tp,nil,c)<=0 then return false end
-	return c:IsSetCard(0xf14) and c:IsCanBeSpecialSummoned(e,0,tp,false,false,POS_FACEUP)
+	return c:IsSetCard(0xf14) and c:IsCanBeSpecialSummoned(e,0,tp,false,false,POS_FACEUP) and not (c:IsLocation(LOCATION_EXTRA) and c:IsFacedown())
 end
 function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.spfilter,tp,LOCATION_GRAVE+LOCATION_EXTRA+LOCATION_HAND,0,1,nil,e,tp) end
