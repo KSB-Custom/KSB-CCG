@@ -25,20 +25,19 @@ function s.initial_effect(c)
 	c:RegisterEffect(e1)
 	--gain 100 lp
 	local e4=Effect.CreateEffect(c)
-	e4:SetDescription(aux.Stringid(id,0))
+	e4:SetDescription(aux.Stringid(id,1))
 	e4:SetCategory(CATEGORY_RECOVER)
 	e4:SetType(EFFECT_TYPE_QUICK_F)
 	e4:SetCode(EVENT_CHAINING)
 	e4:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
 	e4:SetRange(LOCATION_MZONE)
-	e4:SetCountLimit(1)
 	e4:SetTarget(s.rectg)
 	e4:SetCondition(s.gcon)
 	e4:SetOperation(s.gop)
 	c:RegisterEffect(e4)
 	--discarded place in Pzone
 	local e7=Effect.CreateEffect(c)
-	e7:SetDescription(aux.Stringid(id,1))
+	e7:SetDescription(aux.Stringid(id,2))
 	e7:SetProperty(EFFECT_FLAG_DELAY)
 	e7:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e7:SetCode(EVENT_TO_GRAVE)
@@ -60,7 +59,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e9)
 	--Search 1 Ritual Spell from your Deck
 	local e0=Effect.CreateEffect(c)
-	e0:SetDescription(aux.Stringid(id,0))
+	e0:SetDescription(aux.Stringid(id,3))
 	e0:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH)
 	e0:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
 	e0:SetCode(EVENT_PHASE+PHASE_END)
@@ -97,7 +96,7 @@ end
 --once per chain Gain 100 lp
 function s.gcon(e,tp,eg,ep,ev,re,r,rp)
 	local c=re:GetHandler()
-	return ((re:IsHasType(EFFECT_TYPE_ACTIVATE) or re:IsActiveType(TYPE_MONSTER)))
+	return ((re:IsHasType(EFFECT_TYPE_ACTIVATE) or Duel.IsChainNegatable(ev)))
 		and c:IsSetCard(0xf14)
 		end
 function s.rectg(e,tp,eg,ep,ev,re,r,rp,chk)
@@ -109,6 +108,19 @@ end
 function s.gop(e,tp,eg,ep,ev,re,r,rp)
 	local p,d=Duel.GetChainInfo(0,CHAININFO_TARGET_PLAYER,CHAININFO_TARGET_PARAM)
 	Duel.Recover(p,d,REASON_EFFECT)
+	local c=e:GetHandler()
+	if c:HasLevel() and c:IsRelateToEffect(e) and c:IsFaceup() and Duel.SelectYesNo(tp,aux.Stringid(id,4)) then
+		Duel.BreakEffect()
+		-- Increase its Level by 2
+		local e3=Effect.CreateEffect(c)
+		e3:SetType(EFFECT_TYPE_SINGLE)
+		e3:SetCode(EFFECT_UPDATE_LEVEL)
+		e3:SetValue(2)
+		e3:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
+		e3:SetRange(LOCATION_MZONE)
+		e3:SetReset(RESET_EVENT+RESETS_STANDARD_DISABLE)
+		c:RegisterEffect(e3)
+	end
 end
 	--Gain 1500 LP
 	function s.tg(e,tp,eg,ep,ev,re,r,rp,chk)

@@ -87,7 +87,7 @@ function s.atkop(e,tp,eg,ep,ev,re,r,rp)
 		e3:SetType(EFFECT_TYPE_SINGLE)
 		e3:SetCode(EFFECT_UPDATE_LEVEL)
 		e3:SetValue(2)
-		e3:SetReset(RESET_EVENT|RESETS_STANDARD+RESET_PHASE+PHASE_END)
+		e3:SetReset(RESET_EVENT+RESETS_STANDARD)
 		tc:RegisterEffect(e3)
 		end
 	end

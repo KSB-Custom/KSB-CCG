@@ -171,16 +171,34 @@ function s.rcfilter(c)
 	return c:IsFaceup() and c:GetAttack()>0
 end
 function s.rctg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsControler(1-tp) and s.rcfilter(chkc) end
-	if chk==0 then return Duel.IsExistingTarget(s.rcfilter,tp,0,LOCATION_MZONE,1,nil) end
+	if chkc then return chkc:IsLocation(LOCATION_MZONE) and s.rcfilter(chkc) end
+	if chk==0 then return Duel.IsExistingTarget(s.rcfilter,tp,LOCATION_MZONE,LOCATION_MZONE,1,nil) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TARGET)
-	local g=Duel.SelectTarget(tp,s.rcfilter,tp,0,LOCATION_MZONE,1,1,nil)
+	local g=Duel.SelectTarget(tp,s.rcfilter,tp,LOCATION_MZONE,LOCATION_MZONE,1,1,nil)
 	Duel.SetOperationInfo(0,CATEGORY_RECOVER,nil,0,tp,g:GetFirst():GetAttack())
 end
 function s.rcop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
-	if e:GetHandler():IsRelateToEffect(e) and tc:IsFaceup() and tc:IsRelateToEffect(e) then
-		Duel.Recover(tp,tc:GetAttack(),REASON_EFFECT)
+	local c=e:GetHandler()
+	if c:IsRelateToEffect(e) and tc:IsFaceup() and tc:IsRelateToEffect(e) and
+		Duel.Recover(tp,tc:GetAttack(),REASON_EFFECT)~=0 and c:IsFaceup() and Duel.SelectYesNo(tp,aux.Stringid(id,4)) then
+		Duel.BreakEffect()
+		local op=0
+		if c:GetLevel()<=2 then
+			op=Duel.SelectOption(tp,aux.Stringid(id,5))
+		else
+			op=Duel.SelectOption(tp,aux.Stringid(id,5),aux.Stringid(id,6))
+		end
+		local e1=Effect.CreateEffect(e:GetHandler())
+		e1:SetType(EFFECT_TYPE_SINGLE)
+		e1:SetCode(EFFECT_UPDATE_LEVEL)
+		e1:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END)
+		if op==0 then
+			e1:SetValue(2)
+		else
+			e1:SetValue(-2)
+		end
+		c:RegisterEffect(e1)
 	end
 end
 --Add ritual spell
