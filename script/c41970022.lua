@@ -155,15 +155,24 @@ function s.lvop(e,tp,eg,ep,ev,re,r,rp,chk)
 			op=Duel.SelectOption(tp,aux.Stringid(id,5),aux.Stringid(id,6))
 		end
 		local e1=Effect.CreateEffect(e:GetHandler())
-		e1:SetType(EFFECT_TYPE_SINGLE)
-		e1:SetCode(EFFECT_UPDATE_LEVEL)
-		e1:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END)
+			e1:SetType(EFFECT_TYPE_SINGLE)
+			e1:SetCode(EFFECT_UPDATE_LEVEL)
+			e1:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END)
 		if op==0 then
 			e1:SetValue(2)
 		else
 			e1:SetValue(-2)
 		end
 		tc:RegisterEffect(e1)
+		Duel.BreakEffect()
+		if tc:IsFaceup() and not tc:IsType(TYPE_TUNER) and Duel.SelectYesNo(tp,aux.Stringid(id,7)) then
+			local e2=Effect.CreateEffect(e:GetHandler())
+			e2:SetType(EFFECT_TYPE_SINGLE)
+			e2:SetCode(EFFECT_ADD_TYPE)
+			e2:SetValue(TYPE_TUNER)
+			e2:SetReset(RESET_EVENT+RESETS_STANDARD)
+			tc:RegisterEffect(e2)	
+		end
 	end
 end
 --Gain LP
