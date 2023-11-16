@@ -83,6 +83,12 @@ function s.initial_effect(c)
 	e12:SetCondition(s.hcondition)
 	e12:SetOperation(s.hoperation)
 	c:RegisterEffect(e12)
+	local e13=e12:Clone()
+	e13:SetCode(EVENT_SUMMON_SUCCESS)
+	c:RegisterEffect(e13)
+	local e14=e12:Clone()
+	e14:SetCode(EVENT_FLIP_SUMMON_SUCCESS)
+	c:RegisterEffect(e14)
 end
 s.listed_series={0xf14}
 --draw and recover

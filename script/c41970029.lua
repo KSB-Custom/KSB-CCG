@@ -5,7 +5,7 @@ function s.initial_effect(c)
 	Ritual.AddProcGreater({handler=c,filter=s.ritualfil,lvtype=RITPROC_GREATER,nil,nil,matfilter=s.forcedgroup,location=LOCATION_HAND+LOCATION_PZONE+LOCATION_GRAVE+LOCATION_EXTRA})
 	--To hand
 	local e1=Effect.CreateEffect(c)
-	e1:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH)
+	e1:SetCategory(CATEGORY_TOHAND)
 	e1:SetType(EFFECT_TYPE_IGNITION)
 	e1:SetRange(LOCATION_GRAVE)
 	e1:SetCountLimit(1,{id,1})
