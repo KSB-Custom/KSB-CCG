@@ -25,31 +25,18 @@ function s.initial_effect(c)
 	local e7=e2:Clone()
 	e7:SetCode(EFFECT_CANNOT_ATTACK_ANNOUNCE)
 	c:RegisterEffect(e7)
-	--Change Type
+	--Change Type or Attribute
 	local e3=Effect.CreateEffect(c)
 	e3:SetDescription(aux.Stringid(id,1))
 	e3:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e3:SetType(EFFECT_TYPE_QUICK_O)
 	e3:SetRange(LOCATION_MZONE)
-	e3:SetCountLimit(1,{id,3})
+	e3:SetCountLimit(2)
 	e3:SetCode(EVENT_FREE_CHAIN)
 	e3:SetHintTiming(0,TIMINGS_CHECK_MONSTER|TIMING_END_PHASE)
 	e3:SetTarget(s.artg1)
 	e3:SetOperation(s.arop1)
 	c:RegisterEffect(e3)
-	--Change Atribute
-	local e6=Effect.CreateEffect(c)
-	e6:SetDescription(aux.Stringid(id,2))
-	e6:SetProperty(EFFECT_FLAG_CARD_TARGET)
-	e6:SetType(EFFECT_TYPE_QUICK_O)
-	e6:SetRange(LOCATION_MZONE)
-	e6:SetCountLimit(1,{id,5})
-	e6:SetCode(EVENT_FREE_CHAIN)
-	e6:SetHintTiming(0,TIMINGS_CHECK_MONSTER|TIMING_END_PHASE)
-	e6:SetCost(s.ctcost)
-	e6:SetTarget(s.artg2)
-	e6:SetOperation(s.arop2)
-	c:RegisterEffect(e6)
 	--Draw and gain LP
 	local e4=Effect.CreateEffect(c)
 	e4:SetDescription(aux.Stringid(id,3))
@@ -157,37 +144,34 @@ function s.ctcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(Card.IsDiscardable,tp,LOCATION_HAND,0,1,exc) end
 	Duel.DiscardHand(tp,Card.IsDiscardable,1,1,REASON_COST+REASON_DISCARD,exc)
 end
---type 
-function s.artg1(e,tp,eg,ep,ev,re,r,rp,chk)
+--Change type or Attribute
+function s.artg1(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chk==0 then return true end
-	local rc=e:GetHandler():AnnounceAnotherRace(tp)
-	e:SetLabel(rc)
+	if Duel.SelectOption(tp,aux.Stringid(id,1),aux.Stringid(id,2))==0 then
+		local rc=e:GetHandler():AnnounceAnotherRace(tp)
+		e:SetLabel(0,rc)
+	else
+		local aat=e:GetHandler():AnnounceAnotherAttribute(tp)
+		e:SetLabel(1,aat)
+	end
 end
 function s.arop1(e,tp,eg,ep,ev,re,r,rp)
-	local rc=e:GetLabel()
-	local c=e:GetHandler()
-	if c:IsRelateToEffect(e) and c:IsFaceup() then
+local c=e:GetHandler()
+if not c:IsRelateToEffect(e) or c:IsFacedown() then return end
+local op,dec=e:GetLabel()
+	if op==0 and c:IsDifferentRace(dec) then
+		-- Change monster type
 		local e1=Effect.CreateEffect(e:GetHandler())
 		e1:SetType(EFFECT_TYPE_SINGLE)
 		e1:SetCode(EFFECT_CHANGE_RACE)
-		e1:SetValue(rc)
+		e1:SetValue(dec)
 		c:RegisterEffect(e1)
-	end
-end
---Atribute
-function s.artg2(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return true end
-	local aat=e:GetHandler():AnnounceAnotherAttribute(tp)
-	e:SetLabel(aat)
-end
-function s.arop2(e,tp,eg,ep,ev,re,r,rp)
-	local att=e:GetLabel()
-	local c=e:GetHandler()
-	if c:IsRelateToEffect(e) and c:IsFaceup() then
+	elseif op==1 and c:IsAttributeExcept(dec) then
+		-- Change attribute
 		local e1=Effect.CreateEffect(e:GetHandler())
 		e1:SetType(EFFECT_TYPE_SINGLE)
 		e1:SetCode(EFFECT_CHANGE_ATTRIBUTE)
-		e1:SetValue(att)
+		e1:SetValue(dec)
 		c:RegisterEffect(e1)
 	end
 end

@@ -20,7 +20,7 @@ function s.initial_effect(c)
 	e1:SetTarget(s.target)
 	e1:SetOperation(s.operation)
 	c:RegisterEffect(e1,false,REGISTER_FLAG_DETACH_XMAT)
-	--Search polymerization
+	--Search "FNO" card
 	local e2=Effect.CreateEffect(c)
 	e2:SetDescription(aux.Stringid(id,1))
 	e2:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH)
@@ -47,7 +47,6 @@ function s.initial_effect(c)
 end
 s.listed_series={0xf14}
 s.pendulum_level=6
-s.listed_names={CARD_POLYMERIZATION}
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsOnField() and chkc:IsSpellTrap() end
 	if chk==0 then return Duel.IsExistingTarget(Card.IsType,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,nil,TYPE_SPELL+TYPE_TRAP) end
@@ -61,9 +60,9 @@ function s.operation(e,tp,eg,ep,ev,re,r,rp)
 		Duel.Destroy(tc,REASON_EFFECT)
 	end
 end
---Add polymerization
+--Add FNO Spell/Trap
 function s.filter(c)
-	return c:IsCode(CARD_POLYMERIZATION) and c:IsAbleToHand()
+	return c:IsSetCard(0xf14) and c:IsSpellTrap() and c:IsAbleToHand()
 end
 function s.tg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.filter,tp,LOCATION_DECK+LOCATION_GRAVE,0,1,nil)  end
