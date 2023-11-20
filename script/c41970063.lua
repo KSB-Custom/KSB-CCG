@@ -42,6 +42,15 @@ function s.initial_effect(c)
 	e5:SetRange(LOCATION_MZONE)
 	e5:SetValue(s.val)
 	c:RegisterEffect(e5)
+	--indestructable
+	local e6=Effect.CreateEffect(c)
+	e6:SetType(EFFECT_TYPE_SINGLE)
+	e6:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
+	e6:SetRange(LOCATION_MZONE)
+	e6:SetCode(EFFECT_INDESTRUCTABLE_BATTLE)
+	e6:SetCondition(s.incon)
+	e6:SetValue(1)
+	c:RegisterEffect(e6)
 	end
 --Ritual
 function s.effectfilter(e,c)
@@ -74,4 +83,8 @@ function s.val(e,c)
 end
 function s.filter(c)
 	return c:IsFaceup() and c:IsSetCard(0xf14)
+end
+--
+function s.incon(e)
+	return e:GetHandler():GetOverlayCount()>0
 end
