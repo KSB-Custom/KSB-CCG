@@ -39,6 +39,18 @@ function s.initial_effect(c)
 	e5:SetTarget(s.target)
 	e5:SetOperation(s.operation)
 	c:RegisterEffect(e5)
+	--Destroy 1 card on the field
+	local e4=Effect.CreateEffect(c)
+	e4:SetDescription(aux.Stringid(id,1))
+	e4:SetCategory(CATEGORY_DESTROY)
+	e4:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
+	e4:SetCountLimit(1)
+	e4:SetRange(LOCATION_MZONE)
+	e4:SetCode(EVENT_TO_DECK)
+	e4:SetCondition(s.descon)
+	e4:SetTarget(s.destg)
+	e4:SetOperation(s.desop)
+	c:RegisterEffect(e4)
 end
 s.listed_series={0x759}
 --Gain LP
@@ -60,4 +72,21 @@ end
 function s.operation(e,tp,eg,ep,ev,re,r,rp)
 	local p,d=Duel.GetChainInfo(0,CHAININFO_TARGET_PLAYER,CHAININFO_TARGET_PARAM)
 	Duel.Recover(p,d,REASON_EFFECT)
+end
+--Destroy 
+function s.descon(e,tp,eg,ep,ev,re,r,rp)
+	return c:IsSetCard(0x759) and c:IsLocation(LOCATION_DECK)
+		and c:IsPreviousControler(tp) and (c:IsPreviousLocation(LOCATION_GRAVE) or c:IsPreviousLocation(LOCATION_FIELD))
+end
+function s.destg(e,tp,eg,ep,ev,re,r,rp,chk)
+	local g=Duel.GetMatchingGroup(nil,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,nil)
+	if chk==0 then return #g>0 end
+	Duel.SetOperationInfo(0,CATEGORY_DESTROY,g,1,PLAYER_ALL,LOCATION_ONFIELD)
+end
+function s.desop(e,tp,eg,ep,ev,re,r,rp)
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DESTROY)
+	local g=Duel.SelectMatchingCard(tp,nil,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,1,nil)
+	if #g>0 then
+		Duel.Destroy(g,REASON_EFFECT)
+	end
 end
