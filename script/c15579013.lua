@@ -44,6 +44,7 @@ function s.initial_effect(c)
 	e4:SetDescription(aux.Stringid(id,1))
 	e4:SetCategory(CATEGORY_DESTROY)
 	e4:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
+	e4:SetProperty(EFFECT_FLAG_DELAY)
 	e4:SetCountLimit(1)
 	e4:SetRange(LOCATION_MZONE)
 	e4:SetCode(EVENT_TO_DECK)
@@ -74,9 +75,12 @@ function s.operation(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Recover(p,d,REASON_EFFECT)
 end
 --Destroy 
-function s.descon(e,tp,eg,ep,ev,re,r,rp)
+function s.cfilter(c,tp)
 	return c:IsSetCard(0x759) and c:IsLocation(LOCATION_DECK)
-		and c:IsPreviousControler(tp) and (c:IsPreviousLocation(LOCATION_GRAVE) or c:IsPreviousLocation(LOCATION_FIELD))
+		and c:IsPreviousControler(tp) and (c:IsPreviousLocation(LOCATION_GRAVE) or c:IsPreviousLocation(LOCATION_ONFIELD))
+end
+function s.descon(e,tp,eg,ep,ev,re,r,rp)
+	return eg:IsExists(s.cfilter,1,nil,tp)
 end
 function s.destg(e,tp,eg,ep,ev,re,r,rp,chk)
 	local g=Duel.GetMatchingGroup(nil,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,nil)

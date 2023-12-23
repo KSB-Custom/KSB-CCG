@@ -28,6 +28,18 @@ function s.initial_effect(c)
 	e2:SetTarget(s.atktg)
 	e2:SetOperation(s.atkop)
 	c:RegisterEffect(e2)
+	--Gain LP
+	local e5=Effect.CreateEffect(c)
+	e5:SetDescription(aux.Stringid(id,2))
+	e5:SetCategory(CATEGORY_RECOVER)
+	e5:SetRange(LOCATION_MZONE)
+	e5:SetCode(EVENT_TO_DECK)
+	e5:SetCountLimit(1,{id,3})
+	e5:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_F)
+	e5:SetCondition(s.condition)
+	e5:SetTarget(s.target)
+	e5:SetOperation(s.operation)
+	c:RegisterEffect(e5)
 end
 s.listed_series={0x759}
 --TO DECK
@@ -55,13 +67,31 @@ function s.atktg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsLocation(LOCATION_GRAVE) and s.filter(chkc) end
 	if chk==0 then return Duel.IsExistingTarget(s.filter,tp,LOCATION_GRAVE,0,1,nil) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TODECK)
-	local g=Duel.SelectTarget(tp,s.filter,tp,LOCATION_GRAVE,0,2,2,nil)
-	Duel.SetOperationInfo(0,CATEGORY_TODECK,g,2,0,0)
+	local g=Duel.SelectTarget(tp,s.filter,tp,LOCATION_GRAVE,0,3,3,nil)
+	Duel.SetOperationInfo(0,CATEGORY_TODECK,g,3,0,0)
 end
 function s.atkop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
-	if tc:IsRelateToEffect(e) and Duel.SendtoDeck(tc,nil,2,REASON_EFFECT)
+	if tc:IsRelateToEffect(e) and Duel.SendtoDeck(tc,nil,3,REASON_EFFECT)
 	then Duel.BreakEffect()
 	Duel.Draw(tp,1,REASON_EFFECT)
 	end
+end
+--Gain LP
+function s.cfilter(c,tp)
+	return c:IsSetCard(0x759) and c:IsLocation(LOCATION_DECK)
+		and c:IsPreviousControler(tp) and (c:IsPreviousLocation(LOCATION_GRAVE) or c:IsPreviousLocation(LOCATION_ONFIELD))
+end
+function s.condition(e,tp,eg,ep,ev,re,r,rp)
+	return eg:IsExists(s.cfilter,1,nil,tp)
+end
+function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return true end
+	Duel.SetTargetPlayer(tp)
+	Duel.SetTargetParam(1000)
+	Duel.SetOperationInfo(0,CATEGORY_RECOVER,nil,0,tp,1000)
+end
+function s.operation(e,tp,eg,ep,ev,re,r,rp)
+	local p,d=Duel.GetChainInfo(0,CHAININFO_TARGET_PLAYER,CHAININFO_TARGET_PARAM)
+	Duel.Recover(p,d,REASON_EFFECT)
 end
