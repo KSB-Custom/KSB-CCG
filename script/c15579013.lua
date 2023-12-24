@@ -10,7 +10,7 @@ function s.initial_effect(c)
 	e1:SetCode(EFFECT_CANNOT_BE_EFFECT_TARGET)
 	e1:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
 	e1:SetRange(LOCATION_MZONE)
-	e1:SetValue(1)
+	e1:SetValue(aux.tgoval)
 	c:RegisterEffect(e1)
 	--Cannot be destroyed by effects
 	local e2=Effect.CreateEffect(c)
@@ -18,7 +18,7 @@ function s.initial_effect(c)
 	e2:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
 	e2:SetRange(LOCATION_MZONE)
 	e2:SetCode(EFFECT_INDESTRUCTABLE_EFFECT)
-	e2:SetValue(1)
+	e2:SetValue(s.indval)
 	c:RegisterEffect(e2)
 	--Spells cannot be destroyed
 	local e3=Effect.CreateEffect(c)
@@ -54,6 +54,10 @@ function s.initial_effect(c)
 	c:RegisterEffect(e4)
 end
 s.listed_series={0x759}
+--Indes
+function s.indval(e,re,tp)
+	return tp~=e:GetHandlerPlayer()
+end
 --Gain LP
 function s.condition(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()

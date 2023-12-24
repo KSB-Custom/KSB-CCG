@@ -70,6 +70,7 @@ function s.spop(e,tp,eg,ep,ev,re,r,rp)
 	for tc in aux.Next(g) do
 		if Duel.SpecialSummonStep(tc,0,tp,tp,false,false,POS_FACEUP) then
 			local e1=Effect.CreateEffect(c)
+			--Negate their effects
 			e1:SetType(EFFECT_TYPE_SINGLE)
 			e1:SetCode(EFFECT_DISABLE)
 			e1:SetReset(RESET_EVENT+RESETS_STANDARD)
@@ -79,9 +80,14 @@ function s.spop(e,tp,eg,ep,ev,re,r,rp)
 			e2:SetCode(EFFECT_DISABLE_EFFECT)
 			e2:SetReset(RESET_EVENT+RESETS_STANDARD)
 			tc:RegisterEffect(e2,true)
+			--Cannot be tributed for a tribute summon
 			local e3=Effect.CreateEffect(c)
+			e3:SetDescription(3304)
+			e3:SetProperty(EFFECT_FLAG_SINGLE_RANGE+EFFECT_FLAG_CLIENT_HINT)
 			e3:SetType(EFFECT_TYPE_SINGLE)
-			e3:SetCode(EFFECT_UNRESEABLE_SUM)
+			e3:SetCode(EFFECT_UNRELEASABLE_SUM)
+			e3:SetRange(LOCATION_MZONE)
+			e3:SetValue(1)
 			e3:SetReset(RESET_EVENT+RESETS_STANDARD)
 			tc:RegisterEffect(e3,true)
 		end

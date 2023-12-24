@@ -35,7 +35,8 @@ function s.initial_effect(c)
 	e5:SetRange(LOCATION_MZONE)
 	e5:SetCode(EVENT_TO_DECK)
 	e5:SetCountLimit(1,{id,3})
-	e5:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_F)
+	e5:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_F)
+	e5:SetProperty(EFFECT_FLAG_DELAY)
 	e5:SetCondition(s.condition)
 	e5:SetTarget(s.target)
 	e5:SetOperation(s.operation)
@@ -80,7 +81,7 @@ end
 --Gain LP
 function s.cfilter(c,tp)
 	return c:IsSetCard(0x759) and c:IsLocation(LOCATION_DECK)
-		and c:IsPreviousControler(tp) and (c:IsPreviousLocation(LOCATION_GRAVE) or c:IsPreviousLocation(LOCATION_ONFIELD))
+		and c:IsPreviousControler(tp) and c:IsPreviousLocation(LOCATION_ONFIELD)
 end
 function s.condition(e,tp,eg,ep,ev,re,r,rp)
 	return eg:IsExists(s.cfilter,1,nil,tp)

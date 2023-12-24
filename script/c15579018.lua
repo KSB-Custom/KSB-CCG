@@ -24,7 +24,7 @@ function s.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.SendtoDeck(g,nil,0,REASON_COST)
 end
 function s.filter2(c)
-	return c:IsSetCard(0x759)
+	return c:IsCode(15579021) or c:IsCode(15579022)
 end
 function s.filter(c)
 	return c:IsSummonType(SUMMON_TYPE_SPECIAL)
@@ -39,5 +39,8 @@ function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 function s.operation(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.GetMatchingGroup(s.filter,tp,0,LOCATION_MZONE,nil)
-	Duel.Destroy(g,REASON_EFFECT)
+	ct=Duel.Destroy(g,REASON_EFFECT)
+	if ct>0 then
+		Duel.Draw(tp,ct,REASON_EFFECT)
+	end
 end
