@@ -7,7 +7,7 @@ function s.initial_effect(c)
 	e1:SetCode(EFFECT_SPSUMMON_PROC)
 	e1:SetProperty(EFFECT_FLAG_UNCOPYABLE)
 	e1:SetRange(LOCATION_HAND)
-	e1:SetCountLimit(2,{id,2})
+	e1:SetCountLimit(1,{id,1})
 	e1:SetCondition(s.spcon)
 	e1:SetValue(1)
 	c:RegisterEffect(e1)
@@ -47,7 +47,9 @@ function s.operation(e,tp,eg,ep,ev,re,r,rp)
 		e1:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END)
 		e1:SetValue(0)
 		tc:RegisterEffect(e1)
+		if e:GetHandler():IsRelateToEffect(e) then
 		Duel.BreakEffect()
-				Duel.SendtoHand(c,nil,REASON_EFFECT)
+		Duel.SendtoHand(e:GetHandler(),nil,REASON_EFFECT)
+		end
 	end
 end
