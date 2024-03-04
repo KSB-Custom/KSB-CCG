@@ -27,7 +27,7 @@ function s.initial_effect(c)
 	e3:SetOperation(s.stop)
 	c:RegisterEffect(e3)
 end
-s.listed_names={231099}
+s.listed_names={16230099}
 --tokens
 function s.stcon(e,tp,eg,ep,ev,re,r,rp)
 	local types=TYPE_FUSION|TYPE_SYNCHRO|TYPE_LINK
@@ -38,16 +38,16 @@ function s.stcon(e,tp,eg,ep,ev,re,r,rp)
 end
 function s.sttg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and
-			Duel.IsPlayerCanSpecialSummonMonster(tp,231099,nil,TYPES_TOKEN+TYPE_TUNER,0,0,1,RACE_FIEND,ATTRIBUTE_DARK)
+			Duel.IsPlayerCanSpecialSummonMonster(tp,16230099,nil,TYPES_TOKEN+TYPE_TUNER,0,0,1,RACE_FIEND,ATTRIBUTE_DARK)
 	end
 	Duel.SetOperationInfo(0,CATEGORY_TOKEN,nil,2,0,0)
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,2,tp,0)
 end
 function s.stop(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.IsPlayerAffectedByEffect(tp,CARD_BLUEEYES_SPIRIT) or Duel.GetLocationCount(tp,LOCATION_MZONE)<1 --summon as many as possibe?
-		or not Duel.IsPlayerCanSpecialSummonMonster(tp,231099,nil,TYPES_TOKEN+TYPE_TUNER,0,0,1,RACE_FIEND,ATTRIBUTE_DARK) then return end
+		or not Duel.IsPlayerCanSpecialSummonMonster(tp,16230099,nil,TYPES_TOKEN+TYPE_TUNER,0,0,1,RACE_FIEND,ATTRIBUTE_DARK) then return end
 	for i=1,2 do
-		local token=Duel.CreateToken(tp,231099)
+		local token=Duel.CreateToken(tp,16230099)
 		Duel.SpecialSummonStep(token,0,tp,tp,false,false,POS_FACEUP)
 	end
 	Duel.SpecialSummonComplete()
@@ -55,14 +55,14 @@ end
 --
 function s.tktg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
-		and Duel.IsPlayerCanSpecialSummonMonster(tp,231099,nil,TYPES_TOKEN+TYPE_TUNER,0,0,1,RACE_FIEND,ATTRIBUTE_DARK) end
+		and Duel.IsPlayerCanSpecialSummonMonster(tp,16230099,nil,TYPES_TOKEN+TYPE_TUNER,0,0,1,RACE_FIEND,ATTRIBUTE_DARK) end
 	Duel.SetOperationInfo(0,CATEGORY_TOKEN,nil,1,0,0)
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,0)
 end
 function s.tkop(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.GetLocationCount(tp,LOCATION_MZONE)>0
-		and Duel.IsPlayerCanSpecialSummonMonster(tp,231099,nil,TYPES_TOKEN+TYPE_TUNER,0,0,1,RACE_FIEND,ATTRIBUTE_DARK) then
-		local token=Duel.CreateToken(tp,231099)
+		and Duel.IsPlayerCanSpecialSummonMonster(tp,16230099,nil,TYPES_TOKEN+TYPE_TUNER,0,0,1,RACE_FIEND,ATTRIBUTE_DARK) then
+		local token=Duel.CreateToken(tp,16230099)
 		Duel.SpecialSummonStep(token,0,tp,tp,false,false,POS_FACEUP)
 	end
 	Duel.SpecialSummonComplete()
