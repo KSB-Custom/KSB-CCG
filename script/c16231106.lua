@@ -80,7 +80,7 @@ function s.matcon(e,tp,eg,ep,ev,re,r,rp)
 	return c:IsLocation(LOCATION_GRAVE) and r==REASON_SYNCHRO
 end
 function s.matfilter(c)
-	return c:IsSpellTrap() and c:IsSetCard(0xf19) and c:IsAbleToHand()
+	return c:IsSpellTrap() and c:IsAbleToHand() and (c:IsSetCard(0xf19) or c:IsSetCard(0xf18))
 end
 function s.mattg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.matfilter,tp,LOCATION_GRAVE,0,1,nil) end
