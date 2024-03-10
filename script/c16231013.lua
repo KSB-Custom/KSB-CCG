@@ -32,7 +32,7 @@ function s.spcon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.GetFieldGroupCount(tp,0,LOCATION_MZONE)>Duel.GetFieldGroupCount(tp,LOCATION_MZONE,0)
 end
 function s.cfilter(c)
-	return c:IsSetCard(0xf19) and c:HasLevel() and c:IsAbleToGraveAsCost() and c:IsLocation(LOCATION_HAND|LOCATION_DECK)
+	return c:IsSetCard(0xf19) and c:HasLevel() and c:IsAbleToGraveAsCost() and c:IsLocation(LOCATION_HAND|LOCATION_DECK) and not c:IsCode(id)
 end
 function s.spcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local g=Duel.GetMatchingGroup(s.cfilter,tp,LOCATION_HAND|LOCATION_DECK,0,nil)
