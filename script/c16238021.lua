@@ -11,6 +11,18 @@ function s.initial_effect(c)
 	e1:SetTarget(s.target)
 	e1:SetOperation(s.activate)
 	c:RegisterEffect(e1)
+	--Fusion Summon 1 Fiend Fusion Monster
+	local params={aux.FilterBoolFunction(Card.IsRace,RACE_FIEND)}
+	local e2=Effect.CreateEffect(c)
+	e2:SetDescription(aux.Stringid(id,1))
+	e2:SetCategory(CATEGORY_SPECIAL_SUMMON+CATEGORY_FUSION_SUMMON)
+	e2:SetType(EFFECT_TYPE_IGNITION)
+	e2:SetRange(LOCATION_GRAVE)
+	e2:SetCountLimit(1,{id,1})
+	e2:SetCost(aux.bfgcost)
+	e2:SetTarget(Fusion.SummonEffTG(table.unpack(params)))
+	e2:SetOperation(Fusion.SummonEffOP(table.unpack(params)))
+	c:RegisterEffect(e2)
 end
 function s.filter(c)
 	return c:IsRace(RACE_FIEND) and c:IsAbleToDeck() and not c:IsPublic()

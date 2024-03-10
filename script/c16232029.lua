@@ -6,7 +6,7 @@ function s.initial_effect(c)
 	-----------------------MONSTER EFFECTS
 	--Fusion material
 	c:EnableReviveLimit()
-	Fusion.AddProcMix(c,true,true,231034,aux.FilterBoolFunctionEx(Card.IsRace,RACE_SPELLCASTER))
+	Fusion.AddProcMix(c,true,true,{16231053,16231011},{16233034,16233035})
 	--must first be fusion summoned
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_SINGLE)
@@ -84,7 +84,6 @@ function s.initial_effect(c)
 	c:RegisterEffect(e7)
 end
 s.listed_series={0x231}
-s.listed_names={231034}
 --must first be fusion summoned
 function s.splimit(e,se,sp,st)
 	return not e:GetHandler():IsLocation(LOCATION_EXTRA) or aux.fuslimit(e,se,sp,st)
