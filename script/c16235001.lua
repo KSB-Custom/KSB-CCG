@@ -21,7 +21,7 @@ function s.initial_effect(c)
 	end
 --link filter
 function s.mfilter(c,lc,sumtype,tp)
-	return c:IsRace(RACE_FIEND,lc,sumtype,tp) and c:IsLevelAbove(4)
+	return c:IsRace(RACE_FIEND,lc,sumtype,tp) and c:IsLevelBelow(4)
 end
 function s.spcon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.GetTurnPlayer()==1-tp and Duel.IsMainPhase()
