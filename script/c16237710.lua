@@ -59,6 +59,9 @@ function s.spop(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 --Draw
+function s.sumatk(tp)
+	return Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_MZONE,0,nil):GetSum(Card.GetAttack)
+end
 function s.drcon(e,c)
 	if c==nil then return true end
 	local tp=c:GetControler()
