@@ -13,7 +13,7 @@ function s.initial_effect(c)
 	e1:SetTarget(s.thtg)
 	e1:SetOperation(s.thop)
 	c:RegisterEffect(e1)
-	--Provide an effect to a WIND Xyz monster
+		--Provide an effect to a WIND Xyz monster
 	local e2=Effect.CreateEffect(c)
 	e2:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
 	e2:SetCode(EVENT_BE_MATERIAL)
@@ -28,7 +28,7 @@ function s.thcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.SendtoGrave(c,REASON_COST|REASON_DISCARD)
 end
 function s.thfilter(c)
-	return c:IsCode(16237702) and c:IsAbleToHand()
+	return c:IsCode(16237705) and c:IsAbleToHand()
 end
 function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK|LOCATION_GRAVE,0,1,nil) end
@@ -72,11 +72,21 @@ end
 function s.xyzcon(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():IsSummonType(SUMMON_TYPE_XYZ)
 end
-function s.xyztg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return true end
-	Duel.SetTargetPlayer(1-tp)
-	Duel.SetOperationInfo(0,CATEGORY_DAMAGE,nil,0,1-tp,800)
+function s.xyzfilter(c)
+	return c:IsSetCard(0xf19) and c:IsMonster()
+end
+function s.xyztg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+	if chkc then return chkc:IsControler(tp) and chkc:IsLocation(LOCATION_GRAVE) and s.xyzfilter(chkc) end
+	if chk==0 then return Duel.IsExistingTarget(s.xyzfilter,tp,LOCATION_GRAVE,0,1,nil) end
+	Duel.Hint(HINT_OPSELECTED,1-tp,e:GetDescription())
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATTACH)
+	local g=Duel.SelectTarget(tp,s.xyzfilter,tp,LOCATION_GRAVE,0,1,1,nil)
+	Duel.SetOperationInfo(0,CATEGORY_LEAVE_GRAVE,g,1,0,0)
 end
 function s.xyzop(e,tp,eg,ep,ev,re,r,rp)
-		Duel.Damage(1-tp,800,REASON_EFFECT)
+	local c=e:GetHandler()
+	local tc=Duel.GetFirstTarget()
+	if c:IsFaceup() and c:IsRelateToEffect(e) and tc:IsRelateToEffect(e) then
+		Duel.Overlay(c,tc)
+	end
 end

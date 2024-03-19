@@ -13,14 +13,13 @@ function s.initial_effect(c)
 	e1:SetTarget(s.thtg)
 	e1:SetOperation(s.thop)
 	c:RegisterEffect(e1)
-	--Provide an effect to a WIND Xyz monster
-	local e2=Effect.CreateEffect(c)
-	e2:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
-	e2:SetCode(EVENT_BE_MATERIAL)
-	e2:SetProperty(EFFECT_FLAG_EVENT_PLAYER)
-	e2:SetCondition(s.efcon)
-	e2:SetOperation(s.efop)
-	c:RegisterEffect(e2)
+	--An Xyz monster using this card as material gains 700 ATK/DEF
+	local e3=Effect.CreateEffect(c)
+	e3:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
+	e3:SetCode(EVENT_BE_MATERIAL)
+	e3:SetCondition(s.efcon)
+	e3:SetOperation(s.efop)
+	c:RegisterEffect(e3)
 end
 function s.thcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
@@ -28,7 +27,7 @@ function s.thcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.SendtoGrave(c,REASON_COST|REASON_DISCARD)
 end
 function s.thfilter(c)
-	return c:IsCode(16237702) and c:IsAbleToHand()
+	return c:IsCode(16237703) and c:IsAbleToHand()
 end
 function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK|LOCATION_GRAVE,0,1,nil) end
@@ -43,40 +42,30 @@ function s.thop(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 --
+--If used as Xyz material from field
 function s.efcon(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
-	return r==REASON_XYZ and c:GetReasonCard():IsSetCard(0xf19)
+	return (r&REASON_XYZ)~=0
+		and e:GetHandler():IsPreviousLocation(LOCATION_ONFIELD) and e:GetHandler():GetReasonCard():IsSetCard(0xf19)
 end
+	--Gains 700 ATK/DEF
 function s.efop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local rc=c:GetReasonCard()
-	local e1=Effect.CreateEffect(rc)
-	e1:SetDescription(aux.Stringid(id,1))
-	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
-	e1:SetCode(EVENT_SPSUMMON_SUCCESS)
-	e1:SetProperty(EFFECT_FLAG_DELAY+EFFECT_FLAG_CARD_TARGET)
-	e1:SetCondition(s.xyzcon)
-	e1:SetTarget(s.xyztg)
-	e1:SetOperation(s.xyzop)
-	e1:SetReset(RESET_EVENT|RESETS_STANDARD)
+	local e1=Effect.CreateEffect(c)
+	e1:SetType(EFFECT_TYPE_SINGLE)
+	e1:SetCode(EFFECT_UPDATE_ATTACK)
+	e1:SetValue(700)
+	e1:SetReset(RESET_EVENT+RESETS_STANDARD)
 	rc:RegisterEffect(e1,true)
+	local e2=e1:Clone()
+	e2:SetCode(EFFECT_UPDATE_DEFENSE)
+	rc:RegisterEffect(e2,true)
 	if not rc:IsType(TYPE_EFFECT) then
-		local e2=Effect.CreateEffect(c)
-		e2:SetType(EFFECT_TYPE_SINGLE)
-		e2:SetCode(EFFECT_ADD_TYPE)
-		e2:SetValue(TYPE_EFFECT)
-		e2:SetReset(RESET_EVENT|RESETS_STANDARD)
-		rc:RegisterEffect(e2,true)
+		local e3=Effect.CreateEffect(c)
+		e3:SetType(EFFECT_TYPE_SINGLE)
+		e3:SetCode(EFFECT_ADD_TYPE)
+		e3:SetValue(TYPE_EFFECT)
+		e3:SetReset(RESET_EVENT+RESETS_STANDARD)
+		rc:RegisterEffect(e3,true)
 	end
-end
-function s.xyzcon(e,tp,eg,ep,ev,re,r,rp)
-	return e:GetHandler():IsSummonType(SUMMON_TYPE_XYZ)
-end
-function s.xyztg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return true end
-	Duel.SetTargetPlayer(1-tp)
-	Duel.SetOperationInfo(0,CATEGORY_DAMAGE,nil,0,1-tp,800)
-end
-function s.xyzop(e,tp,eg,ep,ev,re,r,rp)
-		Duel.Damage(1-tp,800,REASON_EFFECT)
 end
