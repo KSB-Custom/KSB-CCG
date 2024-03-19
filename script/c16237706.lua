@@ -1,5 +1,4 @@
---Impish Dancer 1st
---scripted by Naim
+--Impish Dancer 6th Essence
 local s,id=GetID()
 function s.initial_effect(c)
 --Add 1 "Light Barrier" to the hand

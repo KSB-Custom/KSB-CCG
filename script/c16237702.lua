@@ -1,8 +1,7 @@
---Impish Dancer 1st
---scripted by Naim
+--Impish Dancer 2nd Essence
 local s,id=GetID()
 function s.initial_effect(c)
---Add 1 "Light Barrier" to the hand
+--Add the next Essence to the hand
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(id,0))
 	e1:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH)
@@ -13,7 +12,7 @@ function s.initial_effect(c)
 	e1:SetTarget(s.thtg)
 	e1:SetOperation(s.thop)
 	c:RegisterEffect(e1)
-	--An Xyz monster using this card as material gains 700 ATK/DEF
+	--An "Impish" Xyz monster using this card as material gains 700 ATK/DEF
 	local e3=Effect.CreateEffect(c)
 	e3:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
 	e3:SetCode(EVENT_BE_MATERIAL)
