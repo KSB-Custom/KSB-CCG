@@ -11,7 +11,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e1)
 end
 function s.unfilter(c)
-	return c:IsRace(RACE_FIEND) and c:IsType(TYPE_XYZ)
+	return c:IsRace(RACE_FIEND)
 end
 function s.spfilter(c,e,tp)
 	return c:IsType(TYPE_UNION) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
