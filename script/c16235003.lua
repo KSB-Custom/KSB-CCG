@@ -18,7 +18,7 @@ function s.initial_effect(c)
 	local e2=Effect.CreateEffect(c)
 	e2:SetType(EFFECT_TYPE_SINGLE)
 	e2:SetCode(EFFECT_CANNOT_ATTACK)
-	e2:SetCondition(s.atkcon)
+	e2:SetCondition(s.atkcon2)
 	c:RegisterEffect(e2)
 	--atkup
 	local e5=Effect.CreateEffect(c)
@@ -42,8 +42,8 @@ function s.efilter(e,re)
 	return re:GetOwnerPlayer()~=e:GetHandlerPlayer()
 end
 --Cannot attack
-function s.atkcon(e,tp,eg,ep,ev,re,r,rp)
-	return not e:GetHandler():GetMutualLinkedGroupCount()>0
+function s.atkcon2(e,tp,eg,ep,ev,re,r,rp)
+	return e:GetHandler():GetMutualLinkedGroupCount()==0
 end
 --atk
 function s.atkcon(e,tp,eg,ep,ev,re,r,rp)
