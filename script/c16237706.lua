@@ -1,7 +1,7 @@
 --Impish Dancer 6th Essence
 local s,id=GetID()
 function s.initial_effect(c)
---Add 1 "Light Barrier" to the hand
+--Add 1 "1st Essence" to the hand
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(id,0))
 	e1:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH)
@@ -19,6 +19,20 @@ function s.initial_effect(c)
 	e2:SetCondition(s.efcon)
 	e2:SetOperation(s.efop)
 	c:RegisterEffect(e2)
+	--Draw 2 cards and discard 1
+	local e3=Effect.CreateEffect(c)
+	e3:SetDescription(aux.Stringid(id,0))
+	e3:SetCategory(CATEGORY_DAMAGE)
+	e3:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_F)
+	e3:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
+	e3:SetCode(EVENT_SPSUMMON_SUCCESS)
+	e3:SetCountLimit(1,id)
+	e3:SetTarget(s.dmgtg)
+	e3:SetOperation(s.dmgop)
+	c:RegisterEffect(e3)
+	local e4=e3:Clone()
+	e4:SetCode(EVENT_SUMMON_SUCCESS)
+	c:RegisterEffect(e4)
 end
 function s.thcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
@@ -79,4 +93,20 @@ end
 function s.drop(e,tp,eg,ep,ev,re,r,rp)
 	local p,d=Duel.GetChainInfo(0,CHAININFO_TARGET_PLAYER,CHAININFO_TARGET_PARAM)
 	Duel.Draw(p,d,REASON_EFFECT)
+end
+--
+function s.dmgtg(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return Duel.IsExistingMatchingCard(aux.FaceupFilter(Card.IsCode,16237701),tp,LOCATION_REMOVED|LOCATION_GRAVE,0,1,nil) 
+	and Duel.IsExistingMatchingCard(aux.FaceupFilter(Card.IsCode,16237702),tp,LOCATION_REMOVED|LOCATION_GRAVE,0,1,nil)
+	and Duel.IsExistingMatchingCard(aux.FaceupFilter(Card.IsCode,16237703),tp,LOCATION_REMOVED|LOCATION_GRAVE,0,1,nil) 
+	and Duel.IsExistingMatchingCard(aux.FaceupFilter(Card.IsCode,16237704),tp,LOCATION_REMOVED|LOCATION_GRAVE,0,1,nil) 
+	and Duel.IsExistingMatchingCard(aux.FaceupFilter(Card.IsCode,16237705),tp,LOCATION_REMOVED|LOCATION_GRAVE,0,1,nil) 
+	end
+	Duel.SetTargetPlayer(1-tp)
+	Duel.SetTargetParam(6000)
+	Duel.SetOperationInfo(0,CATEGORY_DAMAGE,nil,0,1-tp,6000)
+end
+function s.dmgop(e,tp,eg,ep,ev,re,r,rp)
+	local p,d=Duel.GetChainInfo(0,CHAININFO_TARGET_PLAYER,CHAININFO_TARGET_PARAM)
+	Duel.Damage(p,d,REASON_EFFECT)
 end
