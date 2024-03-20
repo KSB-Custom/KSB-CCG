@@ -42,7 +42,7 @@ function s.efilter(e,re)
 	return re:GetOwnerPlayer()~=e:GetHandlerPlayer()
 end
 --Cannot attack
-function s.atkcon(e)
+function s.atkcon(e,tp,eg,ep,ev,re,r,rp)
 	return not e:GetHandler():GetMutualLinkedGroupCount()>0
 end
 --atk

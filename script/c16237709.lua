@@ -1,4 +1,4 @@
---Impish Dancer III
+--Impish Dancer Blocker
 local s,id=GetID()
 function s.initial_effect(c)
 	--Special summon itself from hand, then end the Battle Phase
@@ -7,6 +7,7 @@ function s.initial_effect(c)
 	e1:SetCategory(CATEGORY_SPECIAL_SUMMON)
 	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
 	e1:SetCode(EVENT_ATTACK_ANNOUNCE)
+	e1:SetCost(s.discost)
 	e1:SetRange(LOCATION_HAND)
 	e1:SetCondition(s.condition)
 	e1:SetTarget(s.target)
@@ -26,11 +27,11 @@ function s.initial_effect(c)
 	e2:SetOperation(s.spop)
 	c:RegisterEffect(e2)
 end
-function s.spfilter(c)
+function s.filter(c)
 	return c:IsSetCard(0xf19) and c:IsMonster() and c:IsAbleToRemoveAsCost()
 end
 function s.discost(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(s.spfilter,tp,LOCATION_GRAVE,0,1,nil) end
+	if chk==0 then return Duel.IsExistingMatchingCard(s.filter,tp,LOCATION_GRAVE,0,1,nil) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
 	local g=Duel.SelectMatchingCard(tp,s.spfilter,tp,LOCATION_GRAVE,0,1,1,nil)
 	Duel.Remove(g,POS_FACEUP,REASON_COST)
