@@ -12,7 +12,7 @@ function s.initial_effect(c)
 	e1:SetTarget(s.thtg)
 	e1:SetOperation(s.thop)
 	c:RegisterEffect(e1)
-	--An "Impish" Xyz monster using this card as material gains 700 ATK/DEF
+	--An "Impish" monster using this card as material gains 700 ATK/DEF
 	local e3=Effect.CreateEffect(c)
 	e3:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
 	e3:SetCode(EVENT_BE_MATERIAL)
@@ -43,8 +43,9 @@ end
 --
 --If used as Xyz material from field
 function s.efcon(e,tp,eg,ep,ev,re,r,rp)
-	return (r&REASON_XYZ)~=0
-		and e:GetHandler():IsPreviousLocation(LOCATION_ONFIELD) and e:GetHandler():GetReasonCard():IsSetCard(0xf19)
+	local p=e:GetHandler()
+	return (r&REASON_FUSION+REASON_SYNCHRO+REASON_XYZ+REASON_LINK)~=0
+		and p:GetReasonCard():IsSetCard(0xf19)
 end
 	--Gains 700 ATK/DEF
 function s.efop(e,tp,eg,ep,ev,re,r,rp)

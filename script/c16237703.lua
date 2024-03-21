@@ -42,7 +42,9 @@ function s.thop(e,tp,eg,ep,ev,re,r,rp)
 end
 --
 function s.effcon(e,tp,eg,ep,ev,re,r,rp)
-	return (r&REASON_XYZ)==REASON_XYZ and e:GetHandler():GetReasonCard():IsSetCard(0xf19) and e:GetHandler():IsPreviousLocation(LOCATION_ONFIELD)
+	local p=e:GetHandler()
+	return (r&REASON_FUSION+REASON_SYNCHRO+REASON_XYZ+REASON_LINK)~=0
+		and p:GetReasonCard():IsSetCard(0xf19)
 end
 function s.effop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
