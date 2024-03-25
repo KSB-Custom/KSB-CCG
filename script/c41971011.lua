@@ -3,12 +3,24 @@ local s,id=GetID()
 function s.initial_effect(c)
 --pendulum summon
 	Pendulum.AddProcedure(c)
---You take no battle damage from battles involving this cards
-local e2=Effect.CreateEffect(c)
-	e2:SetType(EFFECT_TYPE_SINGLE)
-	e2:SetCode(EFFECT_AVOID_BATTLE_DAMAGE)
-	e2:SetValue(1)
+	--Add 1 "Constellar" monster from the Deck to the hand
+	local e1=Effect.CreateEffect(c)
+	e1:SetDescription(aux.Stringid(id,0))
+	e1:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH)
+	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
+	e1:SetCode(EVENT_SUMMON_SUCCESS)
+	e1:SetTarget(s.target)
+	e1:SetOperation(s.operation)
+	c:RegisterEffect(e1,false,REGISTER_FLAG_TELLAR)
+	local e2=e1:Clone()
+	e2:SetCode(EVENT_SPSUMMON_SUCCESS)
 	c:RegisterEffect(e2)
+--You take no battle damage from battles involving this cards
+local e6=Effect.CreateEffect(c)
+	e6:SetType(EFFECT_TYPE_SINGLE)
+	e6:SetCode(EFFECT_AVOID_BATTLE_DAMAGE)
+	e6:SetValue(1)
+	c:RegisterEffect(e6)
 --Draw
 local e3=Effect.CreateEffect(c)
 	e3:SetDescription(aux.Stringid(id,2))
@@ -26,18 +38,18 @@ local e4=e3:Clone()
 	e4:SetRange(LOCATION_REMOVED)
 	c:RegisterEffect(e4)
 --Special Summon
-	local e1=Effect.CreateEffect(c)
-	e1:SetDescription(aux.Stringid(id,0))
-	e1:SetCategory(CATEGORY_SPECIAL_SUMMON)
-	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
-	e1:SetProperty(EFFECT_FLAG_DELAY)
-	e1:SetCode(EVENT_SPSUMMON_SUCCESS)
-	e1:SetRange(LOCATION_PZONE)
-	e1:SetCountLimit(2,id)
-	e1:SetCondition(function(e,tp,eg) return eg:IsExists(Card.IsSummonPlayer,1,nil,1-tp) end)
-	e1:SetTarget(s.sptg)
-	e1:SetOperation(s.spop)
-	c:RegisterEffect(e1)
+	local e7=Effect.CreateEffect(c)
+	e7:SetDescription(aux.Stringid(id,0))
+	e7:SetCategory(CATEGORY_SPECIAL_SUMMON)
+	e7:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
+	e7:SetProperty(EFFECT_FLAG_DELAY)
+	e7:SetCode(EVENT_SPSUMMON_SUCCESS)
+	e7:SetRange(LOCATION_PZONE)
+	e7:SetCountLimit(2,id)
+	e7:SetCondition(function(e,tp,eg) return eg:IsExists(Card.IsSummonPlayer,1,nil,1-tp) end)
+	e7:SetTarget(s.sptg)
+	e7:SetOperation(s.spop)
+	c:RegisterEffect(e7)
 	-- Add to hand
 	local e5=Effect.CreateEffect(c)
 	e5:SetDescription(aux.Stringid(id,1))
@@ -95,5 +107,22 @@ end
 function s.rthop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if c:IsRelateToEffect(e) then Duel.SendtoHand(c,nil,REASON_EFFECT)
+	end
+end
+--
+function s.thfilter(c)
+	return c:IsSetCard(0xf25) and c:IsMonster() and c:IsAbleToHand() and (c:IsType(TYPE_NORMAL) or c:IsType(TYPE_RITUAL))
+end
+function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
+	--Excluding itself for a proper interaction with "Tellarknight Constellar Caduceus" [58858807]
+	if chk==0 then return Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK,0,1,e:GetHandler()) end
+	Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_DECK)
+end
+function s.operation(e,tp,eg,ep,ev,re,r,rp)
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
+	local g=Duel.SelectMatchingCard(tp,s.thfilter,tp,LOCATION_DECK,0,1,1,nil)
+	if #g>0 then
+		Duel.SendtoHand(g,nil,REASON_EFFECT)
+		Duel.ConfirmCards(1-tp,g)
 	end
 end

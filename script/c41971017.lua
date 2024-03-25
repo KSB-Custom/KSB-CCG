@@ -26,7 +26,7 @@ function s.filter(c,e,tp)
 	return c:IsSetCard(0xf25) and c:IsType(TYPE_NORMAL) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
 end
 function s.costfilter(c)
-	return c:IsSetCard(0xf25) and c:IsMonster() and not c:IsPublic()
+	return c:IsSetCard(0xf25) and (c:IsType(TYPE_NORMAL) or c:IsType(TYPE_RITUAL)) and not c:IsPublic()
 end
 function s.spcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.costfilter,tp,LOCATION_HAND,0,1,nil) end

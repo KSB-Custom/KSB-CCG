@@ -37,10 +37,7 @@ function s.filter1(c)
 	return c:IsFaceup() and c:IsSetCard(0xf25)
 end
 function s.condition(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
-	return c:IsReason(REASON_DESTROY) and c:IsPreviousLocation(LOCATION_ONFIELD)
-		and c:IsPreviousPosition(POS_FACEUP) and c:IsPreviousControler(tp)
-		and Duel.IsExistingMatchingCard(s.filter,tp,LOCATION_GRAVE|LOCATION_ONFIELD,0,3,nil)
+	return Duel.IsExistingMatchingCard(s.filter,tp,LOCATION_GRAVE+LOCATION_ONFIELD,0,3,nil)
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()

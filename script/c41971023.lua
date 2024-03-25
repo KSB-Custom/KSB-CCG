@@ -8,6 +8,25 @@ local e2=Effect.CreateEffect(c)
 	e2:SetCode(EFFECT_AVOID_BATTLE_DAMAGE)
 	e2:SetValue(1)
 	c:RegisterEffect(e2)
+	--atkup
+	local e4=Effect.CreateEffect(c)
+	e4:SetType(EFFECT_TYPE_SINGLE)
+	e4:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
+	e4:SetCode(EFFECT_UPDATE_ATTACK)
+	e4:SetRange(LOCATION_MZONE)
+	e4:SetValue(s.atkval)
+	c:RegisterEffect(e4)
+	--tograve
+	local e3=Effect.CreateEffect(c)
+	e3:SetDescription(aux.Stringid(id,1))
+	e3:SetCategory(CATEGORY_TOGRAVE)
+	e3:SetType(EFFECT_TYPE_IGNITION)
+	e3:SetRange(LOCATION_MZONE)
+	e3:SetProperty(EFFECT_FLAG_CARD_TARGET+EFFECT_FLAG_DELAY)
+	e3:SetCountLimit(1,{id,1})
+	e3:SetTarget(s.tgtg)
+	e3:SetOperation(s.tgop)
+	c:RegisterEffect(e3)
 --tohand
 	local e6=Effect.CreateEffect(c)
 	e6:SetDescription(aux.Stringid(id,0))
@@ -24,15 +43,11 @@ local e2=Effect.CreateEffect(c)
 	e7:SetCategory(CATEGORY_TOHAND)
 	e7:SetProperty(EFFECT_FLAG_DELAY)
 	e7:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
-	e7:SetCode(EVENT_TO_GRAVE)
+	e7:SetCode(EVENT_REMOVE)
 	e7:SetCountLimit(1,{id,3})
-	e7:SetCondition(s.thcon2)
 	e7:SetTarget(s.thtg2)
 	e7:SetOperation(s.thop2)
 	c:RegisterEffect(e7)
-	local e8=e7:Clone()
-	e8:SetCode(EVENT_REMOVE)
-	c:RegisterEffect(e8)
 	local e9=Effect.CreateEffect(c)
 	e9:SetProperty(EFFECT_FLAG_DELAY)
 	e9:SetCategory(CATEGORY_TOHAND)
@@ -63,9 +78,6 @@ function s.thop(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 --
-function s.thcon2(e,tp,eg,ep,ev,re,r,rp)
-	return e:GetHandler():GetPreviousLocation()==LOCATION_HAND and (r&REASON_DISCARD)~=0
-end
 function s.thtg2(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
 	if chk==0 then return c:IsAbleToHand() end
@@ -75,5 +87,27 @@ function s.thop2(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if c:IsRelateToEffect(e) then
 		Duel.SendtoHand(c,nil,REASON_EFFECT)
+	end
+end
+--
+function s.atkfilter(c)
+	return c:IsSpellTrap() and c:IsSetCard(0xf25)
+end
+function s.atkval(e,c)
+	return Duel.GetMatchingGroupCount(s.atkfilter,c:GetControler(),LOCATION_GRAVE,0,nil)*300
+end
+--
+function s.tgtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+	if chkc then return chkc:IsLocation(LOCATION_REMOVED) end
+	if chk==0 then return Duel.IsExistingTarget(nil,tp,LOCATION_REMOVED,LOCATION_REMOVED,1,nil) end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
+	local g=Duel.SelectTarget(tp,nil,tp,LOCATION_REMOVED,LOCATION_REMOVED,1,3,nil)
+	Duel.SetOperationInfo(0,CATEGORY_TOGRAVE,g,#g,0,0)
+end
+function s.tgop(e,tp,eg,ep,ev,re,r,rp)
+	local tg=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS)
+	local sg=tg:Filter(Card.IsRelateToEffect,nil,e)
+	if #sg>0 then
+		Duel.SendtoGrave(sg,REASON_EFFECT+REASON_RETURN)
 	end
 end
