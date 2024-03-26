@@ -37,7 +37,8 @@ function s.filter(c,tp)
 		and (c:IsControler(tp) or c:IsAbleToChangeControler())
 end
 --
-function s.mcon(e,c)
+function s.mcon(e)
+	local tp=e:GetHandlerPlayer()
 	return Duel.GetFieldGroupCount(tp,LOCATION_MZONE,0)<Duel.GetFieldGroupCount(tp,0,LOCATION_MZONE)
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
