@@ -23,6 +23,14 @@ function s.initial_effect(c)
 	e2:SetCondition(function(e) return Duel.IsExistingMatchingCard(s.selfspcostfilter,e:GetHandlerPlayer(),LOCATION_HAND,0,1,nil) end)
 	c:RegisterEffect(e2)
 	e1:SetLabelObject(e2)
+	--banish this card and cannot be destroyed by battle
+	local e3=Effect.CreateEffect(c)
+	e3:SetType(EFFECT_TYPE_QUICK_O)
+	e3:SetCode(EVENT_FREE_CHAIN)
+	e3:SetRange(LOCATION_GRAVE)
+	e3:SetCost(aux.bfgcost)
+	e3:SetOperation(s.activate)
+	c:RegisterEffect(e3)
 end
 	function s.selfspcostfilter(c)
 	return c:IsSetCard(0xf25) and c:IsDiscardable()
@@ -34,6 +42,17 @@ function s.selfspcost(e,tp,eg,ep,ev,re,r,rp,chk)
 		label_obj:SetLabel(0)
 		Duel.DiscardHand(tp,s.selfspcostfilter,1,1,REASON_COST|REASON_DISCARD)
 	end
+end
+--Cannot be destroyed
+function s.activate(e,tp,eg,ep,ev,re,r,rp)
+	local e2=Effect.CreateEffect(e:GetHandler())
+	e2:SetType(EFFECT_TYPE_FIELD)
+	e2:SetCode(EFFECT_INDESTRUCTABLE_BATTLE)
+	e2:SetTargetRange(LOCATION_MZONE,0)
+	e2:SetTarget(aux.TargetBoolFunction(Card.IsSetCard,0xf25))
+	e2:SetReset(RESET_PHASE+PHASE_END)
+	e2:SetValue(1)
+	Duel.RegisterEffect(e2,tp)
 end
 --
 function s.tgfilter(c)

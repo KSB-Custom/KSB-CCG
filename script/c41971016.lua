@@ -37,7 +37,7 @@ function s.filter1(c)
 	return c:IsFaceup() and c:IsSetCard(0xf25)
 end
 function s.condition(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.IsExistingMatchingCard(s.filter,tp,LOCATION_GRAVE+LOCATION_ONFIELD,0,nil)>2
+	return Duel.GetFieldGroupCount(s.filter,tp,LOCATION_GRAVE+LOCATION_ONFIELD,0,nil)>2
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()

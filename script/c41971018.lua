@@ -42,7 +42,7 @@ function s.spquickcon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.GetFieldGroupCount(tp,0,LOCATION_MZONE)>0
 end
 function s.cfilter(c,tp)
-	return c:IsSetCard(0xf25) and c:IsAbleToRemoveAsCost() and c:IsMonster() and aux.SpElimFilter(c,true) 
+	return c:IsSetCard(0xf25) and c:IsAbleToRemoveAsCost() and aux.SpElimFilter(c,true) 
 		and (Duel.GetLocationCount(tp,LOCATION_MZONE)>0 or (c:IsLocation(LOCATION_MZONE) and c:GetSequence()<5))
 end
 function s.cost(e,tp,eg,ep,ev,re,r,rp,chk)
