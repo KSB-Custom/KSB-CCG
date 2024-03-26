@@ -5,11 +5,11 @@ c:EnableReviveLimit()
 --pendulum summon
 	Pendulum.AddProcedure(c)
 --You take no battle damage from battles involving this cards
-local e6=Effect.CreateEffect(c)
-	e6:SetType(EFFECT_TYPE_SINGLE)
-	e6:SetCode(EFFECT_AVOID_BATTLE_DAMAGE)
-	e6:SetValue(1)
-	c:RegisterEffect(e6)
+local e4=Effect.CreateEffect(c)
+	e4:SetType(EFFECT_TYPE_SINGLE)
+	e4:SetCode(EFFECT_AVOID_BATTLE_DAMAGE)
+	e4:SetValue(1)
+	c:RegisterEffect(e4)
 	--direct attack
 	local e3=Effect.CreateEffect(c)
 	e3:SetType(EFFECT_TYPE_SINGLE)
@@ -21,10 +21,18 @@ local e6=Effect.CreateEffect(c)
 	e2:SetType(EFFECT_TYPE_IGNITION)
 	e2:SetRange(LOCATION_HAND)
 	e2:SetCountLimit(1,id)
+	e2:SetCondition(aux.NOT(s.spquickcon))
 	e2:SetCost(s.thcost)
 	e2:SetTarget(s.settg)
 	e2:SetOperation(s.setop)
 	c:RegisterEffect(e2)
+	--(Quick if the opponent controls more monsters
+	local e6=e1:Clone()
+	e6:SetType(EFFECT_TYPE_QUICK_O)
+	e6:SetCode(EVENT_FREE_CHAIN)
+	e6:SetHintTiming(0,TIMINGS_CHECK_MONSTER_E)
+	e6:SetCondition(s.spquickcon)
+	c:RegisterEffect(e6)
 	--to hand
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(id,1))
@@ -37,6 +45,11 @@ local e6=Effect.CreateEffect(c)
 	e1:SetOperation(s.thop)
 	c:RegisterEffect(e1)
 end
+--
+function s.spquickcon(e,tp,eg,ep,ev,re,r,rp)
+	return Duel.GetFieldGroupCount(tp,0,LOCATION_MZONE)>0
+end
+--
 function s.thcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return e:GetHandler():IsDiscardable() end
 	Duel.SendtoGrave(e:GetHandler(),REASON_COST+REASON_DISCARD)
@@ -72,16 +85,16 @@ function s.setop(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 --
-function s.filter(c)
+function s.filter2(c)
 	return c:IsSetCard(0xf25) and c:IsMonster() and c:IsAbleToHand()
 end
 function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(s.filter,tp,LOCATION_DECK,0,1,nil) end
+	if chk==0 then return Duel.IsExistingMatchingCard(s.filter2,tp,LOCATION_DECK,0,1,nil) end
 	Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_DECK)
 end
 function s.thop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
-	local g=Duel.SelectMatchingCard(tp,s.filter,tp,LOCATION_DECK,0,1,1,nil)
+	local g=Duel.SelectMatchingCard(tp,s.filter2,tp,LOCATION_DECK,0,1,1,nil)
 	if #g>0 and Duel.SendtoHand(g,nil,REASON_EFFECT)>0 then
 		Duel.ConfirmCards(1-tp,g)
 		Duel.ShuffleHand(tp)

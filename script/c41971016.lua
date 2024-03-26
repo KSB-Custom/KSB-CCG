@@ -34,10 +34,10 @@ function s.spcon(e,c)
 	return Duel.GetFieldGroupCount(tp,LOCATION_MZONE,0,nil)==0 and Duel.GetLocationCount(tp,LOCATION_MZONE)>0
 end
 function s.filter1(c)
-	return c:IsFaceup() and c:IsSetCard(0xf25)
+	return c:IsSetCard(0xf25)
 end
 function s.condition(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.GetFieldGroupCount(s.filter,tp,LOCATION_GRAVE+LOCATION_ONFIELD,0,nil)>2
+	return Duel.IsExistingMatchingCard(s.filter1,tp,LOCATION_GRAVE,0,3,nil)
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()

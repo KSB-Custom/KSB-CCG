@@ -3,11 +3,12 @@ local s,id=GetID()
 function s.initial_effect(c)
 --pendulum summon
 	Pendulum.AddProcedure(c)
-	--Add 1 "Constellar" monster from the Deck to the hand
+	--Add 1 Ritual or Normal monster from the Deck to the hand
 	local e1=Effect.CreateEffect(c)
-	e1:SetDescription(aux.Stringid(id,0))
+	e1:SetDescription(aux.Stringid(id,3))
 	e1:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH)
 	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
+	e1:SetProperty(EFFECT_FLAG_DELAY)
 	e1:SetCode(EVENT_SUMMON_SUCCESS)
 	e1:SetTarget(s.target)
 	e1:SetOperation(s.operation)

@@ -16,10 +16,18 @@ local e1=Effect.CreateEffect(c)
 	e2:SetType(EFFECT_TYPE_IGNITION)
 	e2:SetRange(LOCATION_HAND)
 	e2:SetCountLimit(1,{id,1})
+	e2:SetCondition(aux.NOT(s.spquickcon))
 	e2:SetCost(s.ppcost)
 	e2:SetTarget(s.pctg)
 	e2:SetOperation(s.pcop)
 	c:RegisterEffect(e2)
+--(Quick if the opponent controls more monsters
+	local e6=e1:Clone()
+	e6:SetType(EFFECT_TYPE_QUICK_O)
+	e6:SetCode(EVENT_FREE_CHAIN)
+	e6:SetHintTiming(0,TIMINGS_CHECK_MONSTER_E)
+	e6:SetCondition(s.spquickcon)
+	c:RegisterEffect(e6)
 	--Equip 1 face-up monster on field to this card
 	local e3=Effect.CreateEffect(c)
 	e3:SetDescription(aux.Stringid(id,2))
@@ -38,6 +46,9 @@ function s.ppcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.SendtoGrave(e:GetHandler(),REASON_COST+REASON_DISCARD)
 end
 --
+function s.spquickcon(e,tp,eg,ep,ev,re,r,rp)
+	return Duel.GetFieldGroupCount(tp,0,LOCATION_MZONE)>0
+end
 --place in PZ
 function s.pcfilter(c)
 	return c:IsSetCard(0xf25) and c:IsType(TYPE_PENDULUM)
