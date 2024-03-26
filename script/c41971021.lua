@@ -22,9 +22,10 @@ local e1=Effect.CreateEffect(c)
 	e2:SetOperation(s.pcop)
 	c:RegisterEffect(e2)
 --(Quick if the opponent controls more monsters
-	local e6=e1:Clone()
+	local e6=e2:Clone()
 	e6:SetType(EFFECT_TYPE_QUICK_O)
 	e6:SetCode(EVENT_FREE_CHAIN)
+	e6:SetCountLimit(1,{id,1})
 	e6:SetHintTiming(0,TIMINGS_CHECK_MONSTER_E)
 	e6:SetCondition(s.spquickcon)
 	c:RegisterEffect(e6)
@@ -40,6 +41,17 @@ local e1=Effect.CreateEffect(c)
 	e3:SetOperation(s.eqop)
 	c:RegisterEffect(e3)
 	aux.AddEREquipLimit(c,s.eqcon,function(ec,_,tp) return ec:IsControler(1-tp) end,s.equipop,e2)
+	--Add 
+	local e5=Effect.CreateEffect(c)
+	e5:SetDescription(aux.Stringid(id,2))
+	e5:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH)
+	e5:SetType(EFFECT_TYPE_IGNITION)
+	e5:SetRange(LOCATION_PZONE)
+	e5:SetCountLimit(1,{id,1})
+	e5:SetCost(s.thcost)
+	e5:SetTarget(s.thtg)
+	e5:SetOperation(s.thop)
+	c:RegisterEffect(e5)
 end
 function s.ppcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return e:GetHandler():IsDiscardable() end
@@ -95,5 +107,28 @@ function s.eqop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.SelectMatchingCard(tp,s.eqfilter,tp,LOCATION_MZONE,LOCATION_MZONE,1,1,c,tp):GetFirst()
 	if tc then
 		s.equipop(c,e,tp,tc)
+	end
+end
+--
+--TO HAND
+function s.thfilter(c)
+	return c:IsSetCard(0xf25) and c:IsMonster() and c:IsAbleToHand()
+end
+function s.thcost(e,tp,eg,ep,ev,re,r,rp,chk)
+	local exc=(e:GetHandler():IsLocation(LOCATION_HAND) and not e:GetHandler():IsAbleToGraveAsCost()) and e:GetHandler() or nil
+	if chk==0 then return Duel.IsExistingMatchingCard(Card.IsDiscardable,tp,LOCATION_HAND,0,1,exc) end
+	Duel.DiscardHand(tp,Card.IsDiscardable,1,1,REASON_COST+REASON_DISCARD,exc)
+end
+function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK,0,1,nil) end
+	Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_DECK)
+end
+function s.thop(e,tp,eg,ep,ev,re,r,rp)
+	if not e:GetHandler():IsRelateToEffect(e) then return end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
+	local g=Duel.SelectMatchingCard(tp,s.thfilter,tp,LOCATION_DECK,0,1,1,nil)
+	if #g>0 then
+		Duel.SendtoHand(g,nil,REASON_EFFECT)
+		Duel.ConfirmCards(1-tp,g)
 	end
 end

@@ -27,7 +27,7 @@ local e4=Effect.CreateEffect(c)
 	e2:SetOperation(s.setop)
 	c:RegisterEffect(e2)
 	--(Quick if the opponent controls more monsters
-	local e6=e1:Clone()
+	local e6=e2:Clone()
 	e6:SetType(EFFECT_TYPE_QUICK_O)
 	e6:SetCode(EVENT_FREE_CHAIN)
 	e6:SetHintTiming(0,TIMINGS_CHECK_MONSTER_E)
