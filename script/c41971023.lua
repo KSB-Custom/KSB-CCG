@@ -34,10 +34,18 @@ local e2=Effect.CreateEffect(c)
 	e6:SetType(EFFECT_TYPE_IGNITION)
 	e6:SetRange(LOCATION_HAND)
 	e6:SetCountLimit(1,id)
+	e6:SetCondition(aux.NOT(s.spquickcon))
 	e6:SetCost(s.thcost)
 	e6:SetTarget(s.thtg)
 	e6:SetOperation(s.thop)
 	c:RegisterEffect(e6)
+--Quick if the opponent controls a monster
+	local e8=e6:Clone()
+	e8:SetType(EFFECT_TYPE_QUICK_O)
+	e8:SetCode(EVENT_FREE_CHAIN)
+	e8:SetHintTiming(0,TIMINGS_CHECK_MONSTER_E)
+	e8:SetCondition(s.spquickcon)
+	c:RegisterEffect(e8)
 --Add itself
 	local e7=Effect.CreateEffect(c)
 	e7:SetCategory(CATEGORY_TOHAND)
@@ -57,6 +65,12 @@ local e2=Effect.CreateEffect(c)
 	e9:SetTarget(s.thtg2)
 	e9:SetOperation(s.thop2)
 	c:RegisterEffect(e9)
+end
+function s.spquickcon(e,tp,eg,ep,ev,re,r,rp)
+	local g=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_MZONE,LOCATION_MZONE,nil)
+	if #g==0 then return false end
+		local tg=g:GetMaxGroup(Card.GetAttack)
+	return tg:IsExists(Card.IsControler,1,nil,1-tp)
 end
 function s.thcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return e:GetHandler():IsDiscardable() end

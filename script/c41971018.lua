@@ -19,7 +19,7 @@ local e6=Effect.CreateEffect(c)
 	e1:SetTarget(s.target)
 	e1:SetOperation(s.operation)
 	c:RegisterEffect(e1)
---Special Summon itself(Quick if the opponent controls monsters)
+--Special Summon itself(Quick if the opponent controls a monster with highest ATK
 	local e2=e1:Clone()
 	e2:SetType(EFFECT_TYPE_QUICK_O)
 	e2:SetCode(EVENT_FREE_CHAIN)
@@ -39,7 +39,10 @@ local e6=Effect.CreateEffect(c)
 	c:RegisterEffect(e3)
 end
 function s.spquickcon(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.GetFieldGroupCount(tp,0,LOCATION_MZONE)>0
+	local g=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_MZONE,LOCATION_MZONE,nil)
+	if #g==0 then return false end
+		local tg=g:GetMaxGroup(Card.GetAttack)
+	return tg:IsExists(Card.IsControler,1,nil,1-tp)
 end
 function s.cfilter(c,tp)
 	return c:IsSetCard(0xf25) and c:IsAbleToRemoveAsCost() and aux.SpElimFilter(c,true) 

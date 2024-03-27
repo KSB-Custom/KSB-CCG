@@ -1,4 +1,4 @@
---JellyBean Ship
+--JellyBeans WhirlWind
 local s,id=GetID()
 function s.initial_effect(c)
 	--Activate
@@ -23,10 +23,20 @@ function s.initial_effect(c)
 	e2:SetProperty(EFFECT_FLAG_DELAY)
 	e2:SetCode(EVENT_TO_GRAVE)
 	e2:SetCountLimit(1,{id,2})
-	e2:SetCondition(function(e) return e:GetHandler():IsPreviousLocation(LOCATION_HAND+LOCATION_DECK) end)
+	e2:SetCondition(s.condition)
 	e2:SetTarget(Fusion.SummonEffTG(params))
 	e2:SetOperation(Fusion.SummonEffOP(params))
 	c:RegisterEffect(e2)
+	local e3=Effect.CreateEffect(c)
+	e3:SetDescription(aux.Stringid(id,3))
+	e3:SetCategory(CATEGORY_TOHAND)
+	e3:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
+	e3:SetProperty(EFFECT_FLAG_DELAY)
+	e3:SetCode(EVENT_REMOVE)
+	e3:SetCountLimit(1,{id,2})
+	e3:SetTarget(Fusion.SummonEffTG(params))
+	e3:SetOperation(Fusion.SummonEffOP(params))
+	c:RegisterEffect(e3)
 end
 --
 function s.spcost(e,tp,eg,ep,ev,re,r,rp,chk)
@@ -58,6 +68,12 @@ function s.extratg(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.SetOperationInfo(0,CATEGORY_TODECK,nil,1,tp,LOCATION_HAND|LOCATION_MZONE|LOCATION_GRAVE|LOCATION_REMOVED)
 end
 --
+function s.condition(e,tp,eg,ep,ev,re,r,rp)
+	local g=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_MZONE,LOCATION_MZONE,nil)
+	if #g==0 then return false end
+		local tg=g:GetMaxGroup(Card.GetAttack)
+	return e:GetHandler():IsPreviousLocation(LOCATION_HAND+LOCATION_DECK) and tg:IsExists(Card.IsControler,1,nil,1-tp)
+end
 s.listed_series={0xf25}
 function s.regtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end

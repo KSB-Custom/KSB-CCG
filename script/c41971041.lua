@@ -35,7 +35,10 @@ local e6=Effect.CreateEffect(c)
 end
 function s.thcon(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	return c:IsSummonType(SUMMON_TYPE_SYNCHRO) and c:GetMaterial():IsExists(s.pmfilter,1,nil,c)
+	local g=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_MZONE,LOCATION_MZONE,nil)
+	if #g==0 then return false end
+	local tg=g:GetMaxGroup(Card.GetAttack)
+	return c:IsSummonType(SUMMON_TYPE_SYNCHRO) and c:GetMaterial():IsExists(s.pmfilter,1,nil,c) and tg:IsExists(Card.IsControler,1,nil,1-tp)
 end
 function s.pmfilter(c,sc)
 	return c:IsSetCard(0xf25) and (c:IsType(TYPE_SYNCHRO,sc,SUMMON_TYPE_SYNCHRO) or c:IsType(TYPE_FUSION,sc,SUMMON_TYPE_SYNCHRO)

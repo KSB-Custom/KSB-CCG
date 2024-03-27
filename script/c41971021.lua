@@ -10,7 +10,7 @@ local e1=Effect.CreateEffect(c)
 	e1:SetCode(EFFECT_AVOID_BATTLE_DAMAGE)
 	e1:SetValue(1)
 	c:RegisterEffect(e1)
---pendulum place
+--Discard it and pendulum place
 	local e2=Effect.CreateEffect(c)
 	e2:SetDescription(aux.Stringid(id,1))
 	e2:SetType(EFFECT_TYPE_IGNITION)
@@ -21,7 +21,7 @@ local e1=Effect.CreateEffect(c)
 	e2:SetTarget(s.pctg)
 	e2:SetOperation(s.pcop)
 	c:RegisterEffect(e2)
---(Quick if the opponent controls more monsters
+--Quick if the opponent controls more monsters
 	local e6=e2:Clone()
 	e6:SetType(EFFECT_TYPE_QUICK_O)
 	e6:SetCode(EVENT_FREE_CHAIN)
@@ -40,14 +40,14 @@ local e1=Effect.CreateEffect(c)
 	e3:SetTarget(s.eqtg)
 	e3:SetOperation(s.eqop)
 	c:RegisterEffect(e3)
-	aux.AddEREquipLimit(c,s.eqcon,function(ec,_,tp) return ec:IsControler(1-tp) end,s.equipop,e2)
-	--Add 
+	aux.AddEREquipLimit(c,s.eqcon,function(ec,_,tp) return ec:IsControler(1-tp) end,s.equipop,e3)
+	--Discard and add to hand
 	local e5=Effect.CreateEffect(c)
-	e5:SetDescription(aux.Stringid(id,2))
+	e5:SetDescription(aux.Stringid(id,3))
 	e5:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH)
 	e5:SetType(EFFECT_TYPE_IGNITION)
 	e5:SetRange(LOCATION_PZONE)
-	e5:SetCountLimit(1,{id,1})
+	e5:SetCountLimit(1,{id,3})
 	e5:SetCost(s.thcost)
 	e5:SetTarget(s.thtg)
 	e5:SetOperation(s.thop)
@@ -59,7 +59,10 @@ function s.ppcost(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 --
 function s.spquickcon(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.GetFieldGroupCount(tp,0,LOCATION_MZONE)>0
+	local g=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_MZONE,LOCATION_MZONE,nil)
+	if #g==0 then return false end
+		local tg=g:GetMaxGroup(Card.GetAttack)
+	return tg:IsExists(Card.IsControler,1,nil,1-tp)
 end
 --place in PZ
 function s.pcfilter(c)

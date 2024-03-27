@@ -36,12 +36,25 @@ function s.initial_effect(c)
 	local e6=Effect.CreateEffect(c)
 	e6:SetDescription(aux.Stringid(id,2))
 	e6:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
-	e6:SetCode(EVENT_DESTROYED)
+	e6:SetCode(EVENT_LEAVE_FIELD)
 	e6:SetProperty(EFFECT_FLAG_DELAY)
 	e6:SetCondition(s.pencon)
 	e6:SetTarget(s.pentg)
 	e6:SetOperation(s.penop)
 	c:RegisterEffect(e6)
+--Special Summon
+	local e7=Effect.CreateEffect(c)
+	e7:SetDescription(aux.Stringid(id,0))
+	e7:SetCategory(CATEGORY_SPECIAL_SUMMON)
+	e7:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
+	e7:SetProperty(EFFECT_FLAG_DELAY)
+	e7:SetCode(EVENT_SPSUMMON_SUCCESS)
+	e7:SetRange(LOCATION_PZONE)
+	e7:SetCountLimit(1,{id,3})
+	e7:SetCondition(s.spcon)
+	e7:SetTarget(s.sptg)
+	e7:SetOperation(s.spop)
+	c:RegisterEffect(e7)
 end
 function s.atkval(e,c)
 	return c:GetOverlayCount()*200
@@ -85,5 +98,25 @@ function s.penop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if c:IsRelateToEffect(e) then
 		Duel.MoveToField(c,tp,tp,LOCATION_PZONE,POS_FACEUP,true)
+	end
+end
+--SpecialSummon from the PZone
+function s.cfilter(c,tp)
+	return c:IsReason(REASON_BATTLE+REASON_EFFECT) and c:IsPreviousSetCard(0xf25)
+		and c:IsPreviousControler(tp) and c:IsPreviousLocation(LOCATION_ONFIELD) and c:IsPreviousPosition(POS_FACEUP)
+end
+function s.spcon(e,tp,eg,ep,ev,re,r,rp)
+	return eg:IsExists(s.cfilter,1,nil,tp)
+end
+function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
+	local c=e:GetHandler()
+	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
+		and c:IsCanBeSpecialSummoned(e,0,tp,false,false) end
+	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,c,1,0,0)
+end
+function s.spop(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
+	if Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and c:IsRelateToEffect(e) then
+		Duel.SpecialSummon(c,0,tp,tp,false,false,POS_FACEUP)
 	end
 end

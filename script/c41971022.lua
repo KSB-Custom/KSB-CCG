@@ -26,7 +26,7 @@ local e4=Effect.CreateEffect(c)
 	e2:SetTarget(s.settg)
 	e2:SetOperation(s.setop)
 	c:RegisterEffect(e2)
-	--(Quick if the opponent controls more monsters
+	--Quick if the opponent controls a monster
 	local e6=e2:Clone()
 	e6:SetType(EFFECT_TYPE_QUICK_O)
 	e6:SetCode(EVENT_FREE_CHAIN)
@@ -47,7 +47,10 @@ local e4=Effect.CreateEffect(c)
 end
 --
 function s.spquickcon(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.GetFieldGroupCount(tp,0,LOCATION_MZONE)>0
+	local g=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_MZONE,LOCATION_MZONE,nil)
+	if #g==0 then return false end
+		local tg=g:GetMaxGroup(Card.GetAttack)
+	return tg:IsExists(Card.IsControler,1,nil,1-tp)
 end
 --
 function s.thcost(e,tp,eg,ep,ev,re,r,rp,chk)
