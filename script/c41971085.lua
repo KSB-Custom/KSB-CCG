@@ -47,15 +47,8 @@ function s.splimit(e,c)
 	return not c:IsSetCard(0xf25)
 end
 --
-function s.fextra(e,tp,mg)
-	return Duel.GetMatchingGroup(aux.NecroValleyFilter(Fusion.IsMonsterFilter(Card.IsFaceup,Card.IsAbleToDeck)),tp,LOCATION_GRAVE+LOCATION_REMOVED,0,nil)
-end
-function s.extratg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return true end
-	Duel.SetOperationInfo(0,CATEGORY_TODECK,nil,0,tp,LOCATION_PUBLIC)
-end
 function s.exfilter(c)
-	return c:IsSetCard(0xf25) and c:IsAbleToDeck()
+	return c:IsSetCard(0xf25) and c:IsFaceup() and c:IsAbleToDeck()
 end
 function s.extrafil(e,tp,mg)
 	return Duel.GetMatchingGroup(s.exfilter,tp,LOCATION_GRAVE|LOCATION_REMOVED,0,nil)

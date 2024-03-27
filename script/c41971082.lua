@@ -1,4 +1,4 @@
---JellyBean Ship
+--JellyBean Ship's Company
 local s,id=GetID()
 function s.initial_effect(c)
 	--Activate
@@ -13,6 +13,18 @@ function s.initial_effect(c)
 	Duel.AddCustomActivityCounter(id,ACTIVITY_SUMMON,s.counterfilter)
 	Duel.AddCustomActivityCounter(id,ACTIVITY_SPSUMMON,s.counterfilter)
 	Duel.AddCustomActivityCounter(id,ACTIVITY_FLIPSUMMON,s.counterfilter)
+	--Shuffle
+	local e2=Effect.CreateEffect(c)
+	e2:SetDescription(aux.Stringid(id,1))
+	e2:SetCategory(CATEGORY_TOHAND)
+	e2:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
+	e2:SetProperty(EFFECT_FLAG_DELAY)
+	e2:SetCode(EVENT_TO_GRAVE)
+	e2:SetCountLimit(1,{id,1})
+	e2:SetCondition(function(e) return e:GetHandler():IsPreviousLocation(LOCATION_HAND+LOCATION_DECK) end)
+	e2:SetTarget(s.tgtg)
+	e2:SetOperation(s.tgop)
+	c:RegisterEffect(e2)
 end
 s.listed_names={41971000}
 function s.counterfilter(c)
@@ -67,5 +79,19 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 			token:RegisterEffect(e1,true)
 		end
 		Duel.SpecialSummonComplete()
+	end
+end
+--
+function s.tgtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+	if chkc then return chkc:IsLocation(LOCATION_REMOVED) end
+	if chk==0 then return Duel.IsExistingTarget(nil,tp,LOCATION_REMOVED,LOCATION_REMOVED,1,nil) end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TODECK)
+	local g=Duel.SelectTarget(tp,nil,tp,LOCATION_REMOVED,LOCATION_REMOVED,1,3,nil)
+	Duel.SetOperationInfo(0,CATEGORY_TODECK,g,#g,0,0)
+end
+function s.tgop(e,tp,eg,ep,ev,re,r,rp)
+	local tg=Duel.GetTargetCards(e)
+	if #tg>0 then
+		Duel.SendtoDeck(tg,nil,SEQ_DECKSHUFFLE,REASON_EFFECT)
 	end
 end

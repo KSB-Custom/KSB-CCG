@@ -24,7 +24,7 @@ function s.initial_effect(c)
 end
 s.listed_series={0xf25}
 function s.filter(c)
-	return c:IsSetCard(0xf25) and c:IsMonster() and c:IsAbleToHand()
+	return c:IsSetCard(0xf25) and (c:IsMonster() or (c:IsSpell() and c:IsType(TYPE_RITUAL))) and c:IsAbleToHand()
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.filter,tp,LOCATION_DECK,0,1,nil) end
