@@ -37,7 +37,7 @@ function s.filter1(c)
 	return c:IsSetCard(0xf25)
 end
 function s.condition(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.IsExistingMatchingCard(s.filter1,tp,LOCATION_GRAVE,0,3,nil)
+	return Duel.IsExistingMatchingCard(s.filter1,tp,LOCATION_GRAVE+LOCATION_ONFIELD,0,3,nil)
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
