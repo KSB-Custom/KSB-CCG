@@ -23,14 +23,14 @@ function s.initial_effect(c)
 	e3:SetTarget(s.atktg)
 	c:RegisterEffect(e3)
 	end
-	s.counter_place_list={0x501}
+	s.counter_place_list={0x1501}
 function s.cop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local g=Duel.GetMatchingGroup(Card.IsFaceup,tp,0,LOCATION_MZONE,nil)
 	for tc in aux.Next(g) do
-		tc:AddCounter(0x501,1)
+		tc:AddCounter(0x1501,1)
 	end
 end
 function s.atktg(e,c)
-	return c:GetCounter(0x501)>0
+	return c:GetCounter(0x1501)>0
 end
