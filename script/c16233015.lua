@@ -28,13 +28,14 @@ function s.initial_effect(c)
 	c:RegisterEffect(e3)
 		--special summon
 	local e4=Effect.CreateEffect(c)
-	e4:SetDescription(aux.Stringid(id,0))
+	e4:SetDescription(aux.Stringid(id,1))
 	e4:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
-	e4:SetCode(EVENT_TO_GRAVE)
+	e4:SetCode(EVENT_LEAVE_FIELD)
 	e4:SetCondition(s.condition)
 	e4:SetOperation(s.operation)
 	c:RegisterEffect(e4)
 	end
+		s.counter_place_list={0x1501}
 --link filter
 function s.mfilter(c,lc,sumtype,tp)
 	return c:IsRace(RACE_FIEND,lc,sumtype,tp)
@@ -65,6 +66,6 @@ end
 function s.operation(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.GetMatchingGroup(Card.IsFaceup,tp,0,LOCATION_MZONE,nil)
 	for tc in g:Iter() do
-		tc:AddCounter(0xf19,1)
+		tc:AddCounter(0x1501,1)
 	end
 end
