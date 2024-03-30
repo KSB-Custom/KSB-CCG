@@ -1,47 +1,34 @@
---Impish Dancer 
+--Impish Makeshift Act
 local s,id=GetID()
 function s.initial_effect(c)
+c:SetSPSummonOnce(id)
 	--xyz summon
-	c:EnableReviveLimit()
-	Xyz.AddProcedure(c,s.xyzfilter,nil,2,nil,nil,nil,nil,false,s.xyzcheck)
-	--You can also use 1 monster your opponent controls as material to Link Summon this card
-	local e0=Effect.CreateEffect(c)
-	e0:SetType(EFFECT_TYPE_FIELD)
-	e0:SetProperty(EFFECT_FLAG_PLAYER_TARGET|EFFECT_FLAG_CANNOT_DISABLE|EFFECT_FLAG_SET_AVAILABLE)
-	e0:SetCode(EFFECT_EXTRA_MATERIAL)
-	e0:SetRange(LOCATION_EXTRA)
-	e0:SetTargetRange(1,1)
-	e0:SetOperation(s.extracon)
-	e0:SetValue(s.extraval)
-	c:RegisterEffect(e0)
+	Xyz.AddProcedure(c,nil,1,2,s.ovfilter,aux.Stringid(id,0),2,s.xyzop)
+	--Disable attack
+	local e1=Effect.CreateEffect(c)
+	e1:SetDescription(aux.Stringid(id,1))
+	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
+	e1:SetRange(LOCATION_MZONE)
+	e1:SetCode(EVENT_ATTACK_ANNOUNCE)
+	e1:SetCost(aux.dxmcostgen(1,1,nil))
+	e1:SetOperation(function() Duel.NegateAttack() end)
+	c:RegisterEffect(e1,false,REGISTER_FLAG_DETACH_XMAT)
 end
 s.xyz_number=0
-function s.xyzfilter(c,xyz,sumtype,tp)
-	return c:IsType(TYPE_XYZ,xyz,sumtype,tp) and not c:IsSetCard(0x48,xyz,sumtype,tp)
+--
+function s.cfilter(c)
+	return c:IsMonster()
 end
-function s.xyzcheck(g,tp,xyz)
-	local mg=g:Filter(function(c) return not c:IsHasEffect(511001175) end,nil)
-	return mg:GetClassCount(Card.GetRank)==1
+function s.ovfilter(c,tp,xyzc)
+	return c:IsFaceup() and c:IsSetCard(0xf19,xyzc,SUMMON_TYPE_XYZ,tp) and c:IsType(TYPE_XYZ,xyzc,SUMMON_TYPE_XYZ,tp)
 end
-function s.extracon(c,e,tp,sg,mg,lc,og,chk)
-	if not s.curgroup then return true end
-	local g=s.curgroup:Filter(s.closed_sky_filter,nil)
-	return #(sg&g)<2
+function s.xyzop(e,tp,chk,mc)
+	if chk==0 then return Duel.IsExistingMatchingCard(s.cfilter,tp,0,LOCATION_MZONE,1,nil) end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
+	local tc=Duel.GetMatchingGroup(s.cfilter,tp,0,LOCATION_MZONE,nil):SelectUnselect(Group.CreateGroup(),tp,false,Xyz.ProcCancellable)
+	if tc then
+		Duel.Release(tc,REASON_COST)
+		return true
+	else return false end
 end
-function s.extraval(chk,summon_type,e,...)
-	if chk==0 then
-		local tp,sc=...
-		if summon_type~=SUMMON_TYPE_XYZ or sc~=e:GetHandler() then
-			return Group.CreateGroup()
-		else
-			s.curgroup=Duel.GetMatchingGroup(Card.IsFaceup,tp,0,LOCATION_MZONE,nil)
-			s.curgroup:KeepAlive()
-			return s.curgroup
-		end
-	elseif chk==2 then
-		if s.curgroup then
-			s.curgroup:DeleteGroup()
-		end
-		s.curgroup=nil
-	end
-end
+--

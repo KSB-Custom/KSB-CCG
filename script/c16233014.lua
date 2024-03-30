@@ -2,7 +2,7 @@
 local s,id=GetID()
 function s.initial_effect(c)
 	c:EnableReviveLimit()
-	Synchro.AddProcedure(c,nil,1,1,nil,1,1)
+	Synchro.AddProcedure(c,nil,1,1,nil,1,99)
 	--add counter
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(id,0))
