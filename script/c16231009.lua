@@ -1,5 +1,4 @@
---Llamarada Diablillo
---Scripted by EP Custom Cards
+--Impish Flare
 local s,id=GetID()
 function s.initial_effect(c)
 	--atk/def
@@ -13,27 +12,27 @@ function s.initial_effect(c)
 	c:RegisterEffect(e2)
 	--atk/def
 	local e2=Effect.CreateEffect(c)
-	e2:SetDescription(aux.Stringid(95100120,0))
 	e2:SetType(EFFECT_TYPE_IGNITION)
 	e2:SetRange(LOCATION_MZONE)
-	e2:SetCountLimit(1)
+	e2:SetCountLimit(1,{id,2})
 	e2:SetTarget(s.adtg)
 	e2:SetOperation(s.adop)
 	c:RegisterEffect(e2)
-	--draw
+	--Destroy
 	local e3=Effect.CreateEffect(c)
 	e3:SetDescription(aux.Stringid(id,1))
-	e3:SetCategory(CATEGORY_DRAW)
+	e3:SetCategory(CATEGORY_DESTROY)
 	e3:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_F)
 	e3:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
 	e3:SetCode(EVENT_DESTROYED)
+	e3:SetCountLimit(1,{id,1})
 	e3:SetTarget(s.target)
 	e3:SetOperation(s.activate)
 	c:RegisterEffect(e3)
 end
 --atk double
 function s.cfilter(c)
-	return c:IsFaceup() and c:IsCode(231024)
+	return c:IsFaceup() and c:IsCode(16238024)
 end
 function s.adcon(e)
 	return Duel.IsExistingMatchingCard(s.cfilter,e:GetHandlerPlayer(),LOCATION_FZONE,0,1,nil)

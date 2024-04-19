@@ -1,6 +1,14 @@
 --Impish Dancer Double Essence
 local s,id=GetID()
 function s.initial_effect(c)
+--Attribute change
+	local e3=Effect.CreateEffect(c)
+	e3:SetType(EFFECT_TYPE_FIELD)
+	e3:SetCode(EFFECT_CHANGE_ATTRIBUTE)
+	e3:SetRange(LOCATION_MZONE)
+	e3:SetTargetRange(0,LOCATION_MZONE)
+	e3:SetValue(ATTRIBUTE_DARK)
+	c:RegisterEffect(e3)
 --Add 1 "Essence" to the hand
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(id,0))
