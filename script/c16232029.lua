@@ -1,5 +1,4 @@
---Hechicero Diablillo
---Scripted by EP Custom Cards
+--Impish Eldery the master sorcerer
 local s,id=GetID()
 function s.initial_effect(c)
 	Pendulum.AddProcedure(c,false)
@@ -38,6 +37,22 @@ function s.initial_effect(c)
 	e3:SetTarget(s.pentg)
 	e3:SetOperation(s.penop)
 	c:RegisterEffect(e3)
+	--cannot target
+	local e8=Effect.CreateEffect(c)
+	e8:SetType(EFFECT_TYPE_SINGLE)
+	e8:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
+	e8:SetRange(LOCATION_MZONE)
+	e8:SetCode(EFFECT_CANNOT_BE_EFFECT_TARGET)
+	e8:SetValue(aux.tgoval)
+	c:RegisterEffect(e8)
+	--indes
+	local e9=Effect.CreateEffect(c)
+	e9:SetType(EFFECT_TYPE_SINGLE)
+	e9:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
+	e9:SetCode(EFFECT_INDESTRUCTABLE_EFFECT)
+	e9:SetRange(LOCATION_MZONE)
+	e9:SetValue(s.indval)
+	c:RegisterEffect(e9)
 	---------------------PENDULUM EFFECTS
 	--Shuffle Deck
 	local e4=Effect.CreateEffect(c)
@@ -84,6 +99,9 @@ function s.initial_effect(c)
 	c:RegisterEffect(e7)
 end
 s.listed_series={0x231}
+function s.indval(e,re,tp)
+	return tp~=e:GetHandlerPlayer()
+end
 --must first be fusion summoned
 function s.splimit(e,se,sp,st)
 	return not e:GetHandler():IsLocation(LOCATION_EXTRA) or aux.fuslimit(e,se,sp,st)

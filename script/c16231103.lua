@@ -1,5 +1,4 @@
---Diablillo Albino
---Scripted by EP Custom Cards
+--Impish Albino
 local s,id=GetID()
 function s.initial_effect(c)
 	--Special Summon copies
@@ -8,6 +7,7 @@ function s.initial_effect(c)
 	e1:SetCategory(CATEGORY_SPECIAL_SUMMON)
 	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e1:SetCost(s.cost)
+	e1:SetCountLimit(1,id)
 	e1:SetCode(EVENT_SUMMON_SUCCESS)
 	e1:SetTarget(s.target)
 	e1:SetOperation(s.operation)
@@ -19,7 +19,7 @@ function s.initial_effect(c)
 	e4:SetCategory(CATEGORY_DAMAGE)
 	e4:SetCost(s.spcost)
 	e4:SetType(EFFECT_TYPE_QUICK_O)
-	e4:SetCode(EVENT_CHAINING)
+	e4:SetCode(EVENT_BECOME_TARGET)
 	e4:SetRange(LOCATION_MZONE)
 	e4:SetCondition(s.discon)
 	e4:SetTarget(s.damtg)
@@ -74,12 +74,8 @@ function s.operation(e,tp,eg,ep,ev,re,r,rp)
 end
 --
 function s.discon(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
-	if c:IsStatus(STATUS_BATTLE_DESTROYED) then return false end
-	if not re:IsHasProperty(EFFECT_FLAG_CARD_TARGET) then return end
-	local loc,tg=Duel.GetChainInfo(ev,CHAININFO_TRIGGERING_LOCATION,CHAININFO_TARGET_CARDS)
-	if not tg or not tg:IsContains(c) then return false end
-	end
+	return eg:IsContains(e:GetHandler())
+end
 function s.spcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
 	if chk==0 then return c:IsAbleToDeckAsCost() end

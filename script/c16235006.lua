@@ -5,47 +5,57 @@ function s.initial_effect(c)
 	c:EnableReviveLimit()
 	--Link summon procedure
 	Link.AddProcedure(c,nil,2,2)
-	--
-	local e1=Effect.CreateEffect(c)
-		e1:SetDescription(aux.Stringid(id,0))
-		e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
-		e1:SetProperty(EFFECT_FLAG_DELAY)
-		e1:SetCode(EVENT_SUMMON_SUCCESS)
-		e1:SetCountLimit(1,id)
-		e1:SetRange(LOCATION_MZONE)
-		e1:SetCondition(aux.zptcon(IsRace,RACE_FIEND))
-		e1:SetOperation(s.atkop)
-		c:RegisterEffect(e1)
-	local e2=e1:Clone()
-		e2:SetCode(EVENT_SPSUMMON_SUCCESS)
-		c:RegisterEffect(e2)
 	--If special summoned, opponent take 500 damage, then you gain 500 LP
 	local e3=Effect.CreateEffect(c)
 	e3:SetCategory(CATEGORY_RECOVER)
 	e3:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_F)
 	e3:SetCode(EVENT_SPSUMMON_SUCCESS)
 	e3:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
+	e3:SetCountLimit(1,{id,2})
 	e3:SetTarget(s.rectg)
 	e3:SetOperation(s.recop)
 	c:RegisterEffect(e3)
+	--Special Summon itself from the GY
+	local e4=Effect.CreateEffect(c)
+	e4:SetCategory(CATEGORY_SPECIAL_SUMMON)
+	e4:SetType(EFFECT_TYPE_IGNITION)
+	e4:SetRange(LOCATION_GRAVE)
+	e4:SetCountLimit(1,id)
+	e4:SetCost(s.spcost)
+	e4:SetTarget(s.sptg)
+	e4:SetOperation(s.spop)
+	c:RegisterEffect(e4)
+	--link limit
+	local e1=Effect.CreateEffect(c)
+	e1:SetType(EFFECT_TYPE_SINGLE)
+	e1:SetProperty(EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_CANNOT_DISABLE)
+	e1:SetCode(EFFECT_CANNOT_BE_LINK_MATERIAL)
+	e1:SetValue(s.linklimit)
+	c:RegisterEffect(e1)
 	end
---
-function s.atktg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(Card.IsFaceup,tp,LOCATION_MZONE,0,1,nil) end
+	--link limit
+function s.linklimit(e,c)
+	if not c then return false end
+	return not c:IsSetCard(0xf19)
 end
-function s.atkop(e,tp,eg,ep,ev,re,r,rp)
+--Special Summon itself
+function s.cfilter(c,ft,tp)
+	return c:IsSetCard(0xf19) and c:IsType(TYPE_NORMAL)
+end
+function s.spcost(e,tp,eg,ep,ev,re,r,rp,chk)
+	local ft=Duel.GetLocationCount(tp,LOCATION_MZONE)
+	if chk==0 then return Duel.CheckReleaseGroupCost(tp,s.cfilter,1,false,nil,nil,ft,tp) end
+	local g=Duel.SelectReleaseGroupCost(tp,s.cfilter,1,1,false,nil,nil,ft,tp)
+	Duel.Release(g,REASON_COST)
+end
+function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return e:GetHandler():IsCanBeSpecialSummoned(e,0,tp,false,false) end
+	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,e:GetHandler(),1,0,0)
+end
+function s.spop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	local g=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_MZONE,0,nil)
-	if #g==0 then return end
-	for tc in g:Iter() do
-		--Increase ATK
-		local e1=Effect.CreateEffect(c)
-		e1:SetType(EFFECT_TYPE_SINGLE)
-		e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
-		e1:SetCode(EFFECT_UPDATE_ATTACK)
-		e1:SetValue(500)
-		e1:SetReset(RESET_EVENT|RESETS_STANDARD)
-		tc:RegisterEffect(e1)
+	if c:IsRelateToEffect(e) then 
+		Duel.SpecialSummon(c,0,tp,tp,false,false,POS_FACEUP)
 	end
 end
 --

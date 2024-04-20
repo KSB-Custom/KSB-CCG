@@ -23,7 +23,6 @@ function s.initial_effect(c)
 	local e4=e2:Clone()
 	e4:SetCode(EVENT_FLIP_SUMMON_SUCCESS)
 	c:RegisterEffect(e4)
-	
 	--add 2 counters
 	local e5=e2:Clone()
 	e5:SetCode(EVENT_FLIP_SUMMON_SUCCESS)
@@ -46,9 +45,23 @@ function s.initial_effect(c)
 	e7:SetTarget(s.sptg)
 	e7:SetOperation(s.spop)
 	c:RegisterEffect(e7)
+	--Can be activated the turn it was Set by discarding 1 Impish card
+	local e2=Effect.CreateEffect(c)
+	e2:SetDescription(aux.Stringid(id,1))
+	e2:SetType(EFFECT_TYPE_SINGLE)
+	e2:SetProperty(EFFECT_FLAG_SET_AVAILABLE)
+	e2:SetCode(EFFECT_TRAP_ACT_IN_SET_TURN)
+	e2:SetValue(function(e,c) e:SetLabel(1) end)
+	e2:SetCondition(function(e) return Duel.IsExistingMatchingCard(s.selfspcostfilter,e:GetHandlerPlayer(),LOCATION_HAND,0,1,nil) end)
+	c:RegisterEffect(e2)
+	e1:SetLabelObject(e2)
 end
 s.listed_card_types={TYPE_SYNCHRO}
 s.counter_place_list={0x231}
+--
+function s.selfspcostfilter(c)
+	return c:IsSetCard(0xf19) and c:IsDiscardable()
+end
 --place 1 counter
 function s.ctfilter(c,tp)
 	return c:IsFaceup() and c:IsType(TYPE_TUNER) and c:IsControler(tp)

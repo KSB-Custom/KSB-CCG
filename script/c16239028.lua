@@ -1,5 +1,4 @@
---Travesuras Diablillo
---Scripted by EP Custom Cards
+--Impish Trick
 local s,id=GetID()
 function s.initial_effect(c)
 	--Activate
@@ -8,6 +7,7 @@ function s.initial_effect(c)
 	e1:SetType(EFFECT_TYPE_ACTIVATE)
 	e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL)
 	e1:SetCode(EVENT_CHAINING)
+	e1:SetCountLimit(1,{id,1})
 	e1:SetCondition(s.condition)
 	e1:SetCost(s.cost)
 	e1:SetTarget(s.target)
@@ -20,6 +20,7 @@ function s.initial_effect(c)
 	e2:SetProperty(EFFECT_FLAG_DELAY)
 	e2:SetRange(LOCATION_GRAVE)
 	e2:SetCode(EVENT_BE_MATERIAL)
+	e2:SetCountLimit(1,{id,2})
 	e2:SetCondition(s.thcon)
 	e2:SetTarget(s.thtg)
 	e2:SetOperation(s.thop)

@@ -1,5 +1,4 @@
---Diablillo de la Canción
---scripted by Naim
+--Impish of the Song
 local s,id=GetID()
 function s.initial_effect(c)
 	--Special Summon it from the hand if you DONT control a Tuner

@@ -4,7 +4,7 @@ function s.initial_effect(c)
 	--Must be properly summoned before reviving
 	c:EnableReviveLimit()
 	--Link summon procedure
-	Link.AddProcedure(c,nil,4,4)
+	Link.AddProcedure(c,nil,2,4)
 	--
 	local e1=Effect.CreateEffect(c)
 		e1:SetDescription(aux.Stringid(id,0))
@@ -75,7 +75,7 @@ function s.atkop(e,tp,eg,ep,ev,re,r,rp)
 		e1:SetType(EFFECT_TYPE_SINGLE)
 		e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
 		e1:SetCode(EFFECT_UPDATE_ATTACK)
-		e1:SetValue(1500)
+		e1:SetValue(500)
 		e1:SetReset(RESET_EVENT|RESETS_STANDARD)
 		tc:RegisterEffect(e1)
 		end

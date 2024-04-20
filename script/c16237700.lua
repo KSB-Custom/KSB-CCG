@@ -29,7 +29,7 @@ function s.initial_effect(c)
 	e2:SetRange(LOCATION_REMOVED)
 end
 function s.filter(c)
-	return c:IsSetCard(0x3f19) and c:IsAbleToHand()
+	return c:IsSetCard(0x3f19) and c:IsAbleToHand() and not c:IsCode(id)
 end
 function s.tg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.filter,tp,LOCATION_DECK,0,1,nil) end

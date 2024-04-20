@@ -1,5 +1,4 @@
---Bazar del Diablillo
---Scripted by EP Custom Cards
+--Impish Bazaar
 local s,id=GetID()
 function s.initial_effect(c)
 	c:SetUniqueOnField(1,0,id)
@@ -22,11 +21,12 @@ function s.initial_effect(c)
 	e1:SetTarget(s.drtg)
 	e1:SetOperation(s.drop)
 	c:RegisterEffect(e1)
-	--draw 2
+	--draw 2 and check
 	local e2=e1:Clone()
 	e2:SetDescription(aux.Stringid(id,1))
 	e2:SetCost(s.cost2)
 	e2:SetTarget(s.target)
+	e2:SetOperation(s.activate)
 	c:RegisterEffect(e2)
 	--search s/t
 	local e3=e1:Clone()
@@ -81,8 +81,8 @@ function s.drop(e,tp,eg,ep,ev,re,r,rp)
 end
 --draw 2
 function s.cost2(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.CheckLPCost(tp,6000) end
-	Duel.PayLPCost(tp,6000)
+	if chk==0 then return Duel.CheckLPCost(tp,4000) end
+	Duel.PayLPCost(tp,4000)
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsPlayerCanDraw(tp,2) end
@@ -90,13 +90,24 @@ function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.SetTargetParam(2)
 	Duel.SetOperationInfo(0,CATEGORY_DRAW,nil,0,tp,2)
 end
+function s.activate(e,tp,eg,ep,ev,re,r,rp)
+	local p,d=Duel.GetChainInfo(0,CHAININFO_TARGET_PLAYER,CHAININFO_TARGET_PARAM)
+	Duel.Draw(p,d,REASON_EFFECT)
+	local dg=Duel.GetOperatedGroup()
+	Duel.ConfirmCards(1-p,dg)
+	local rct=dg:FilterCount(Card.IsSetCard,nil,0xf19)
+	if rct~=2 then
+		Duel.SendtoGrave(dg,REASON_EFFECT)
+	end
+	Duel.ShuffleHand(p)
+end
 --search st
 function s.cost3(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.CheckLPCost(tp,2500) end
-	Duel.PayLPCost(tp,2500)
+	if chk==0 then return Duel.CheckLPCost(tp,2000) end
+	Duel.PayLPCost(tp,2000)
 end
 function s.stfilter(c)
-	return c:IsSpellTrap() and c:IsSetCard(0xf19) and c:IsAbleToHand()
+	return c:IsSpellTrap() and (c:IsSetCard(0xf19) or c:IsSetCard(0xf18)) and c:IsAbleToHand() and not c:IsCode(id)
 end
 function s.sttg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.stfilter,tp,LOCATION_DECK,0,1,nil) end
@@ -112,8 +123,8 @@ function s.stop(e,tp,eg,ep,ev,re,r,rp)
 end
 --search monster
 function s.cost4(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.CheckLPCost(tp,2000) end
-	Duel.PayLPCost(tp,2000)
+	if chk==0 then return Duel.CheckLPCost(tp,1000) end
+	Duel.PayLPCost(tp,1000)
 end
 function s.monfilter(c)
 	return c:IsMonster() and c:IsSetCard(0xf19) and c:IsAbleToHand()

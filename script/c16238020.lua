@@ -1,5 +1,4 @@
---Ascención Infernal
---EP Custom Cards
+--Impfernal Ascension
 local s,id=GetID()
 function s.initial_effect(c)
 	--Activate
@@ -12,12 +11,12 @@ function s.initial_effect(c)
 	e1:SetOperation(s.activate)
 	c:RegisterEffect(e1)
 end
-s.listed_names={321032}
+s.listed_names={16323032}
 function s.filter(c)
 	return c:IsFaceup() and c:IsRace(RACE_FIEND) and c:IsLevelBelow(6)
 end
 function s.cfilter(c)
-	return c:IsFaceup() and c:IsCode(231032)
+	return c:IsFaceup() and c:IsCode(16233032)
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsControler(tp) and s.filter(chkc) end
@@ -34,17 +33,17 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 		local e1=Effect.CreateEffect(e:GetHandler())
 		e1:SetType(EFFECT_TYPE_SINGLE)
 		e1:SetCode(EFFECT_UPDATE_ATTACK)
-		e1:SetReset(RESET_EVENT+RESETS_STANDARD)
-		e1:SetValue(3000)
+		e1:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END)
+		e1:SetValue(1500)
 		tc:RegisterEffect(e1)
 		local e2=e1:Clone()
 		e2:SetCode(EFFECT_UPDATE_DEFENSE)
-		e2:SetValue(3000)
+		e2:SetValue(1500)
 		tc:RegisterEffect(e2)
 		local e3=Effect.CreateEffect(e:GetHandler())
 		e3:SetType(EFFECT_TYPE_SINGLE)
 		e3:SetCode(EFFECT_UPDATE_LEVEL)
-		e3:SetReset(RESET_EVENT+RESETS_STANDARD)
+		e3:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END)
 		e3:SetValue(lv)
 		tc:RegisterEffect(e3)
 		if Duel.IsExistingMatchingCard(s.cfilter,e:GetHandlerPlayer(),LOCATION_MZONE,0,1,nil) then

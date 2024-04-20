@@ -5,61 +5,75 @@ function s.initial_effect(c)
 c:EnableReviveLimit()
 --Link summon procedure
 Link.AddProcedure(c,nil,3,3)
---
-local e1=Effect.CreateEffect(c)
-	e1:SetDescription(aux.Stringid(id,0))
-	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
-	e1:SetProperty(EFFECT_FLAG_DELAY)
-	e1:SetCode(EVENT_SUMMON_SUCCESS)
-	e1:SetCountLimit(1,id)
-	e1:SetRange(LOCATION_MZONE)
-	e1:SetCondition(aux.zptcon(IsRace,RACE_FIEND))
-	e1:SetOperation(s.atkop)
-	c:RegisterEffect(e1)
-local e2=e1:Clone()
-	e2:SetCode(EVENT_SPSUMMON_SUCCESS)
-	c:RegisterEffect(e2)
---destroy
-local e3=Effect.CreateEffect(c)
-e3:SetDescription(aux.Stringid(id,1))
-e3:SetCategory(CATEGORY_DESTROY)
-e3:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
-e3:SetCondition(s.tdcon)
-e3:SetCode(EVENT_SPSUMMON_SUCCESS)
-e3:SetProperty(EFFECT_FLAG_CARD_TARGET+EFFECT_FLAG_DELAY)
-e3:SetTarget(s.destg)
-e3:SetOperation(s.desop)
-c:RegisterEffect(e3)
---damage
-local e1=Effect.CreateEffect(c)
-	e1:SetDescription(aux.Stringid(id,2))
-	e1:SetCategory(CATEGORY_DAMAGE)
-	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_F)
-	e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
-	e1:SetCode(EVENT_DESTROYED)
-	e1:SetCondition(s.damcon)
-	e1:SetTarget(s.damtg)
-	e1:SetOperation(s.damop)
-	c:RegisterEffect(e1)
+	--Special summon 1 "Impish" from deck
+	local e3=Effect.CreateEffect(c)
+	e3:SetDescription(aux.Stringid(id,1))
+	e3:SetCategory(CATEGORY_SPECIAL_SUMMON)
+	e3:SetType(EFFECT_TYPE_IGNITION)
+	e3:SetRange(LOCATION_MZONE)
+	e3:SetCountLimit(1,{id,)
+	e3:SetTarget(s.sptg)
+	e3:SetOperation(s.spop)
+	c:RegisterEffect(e3)
+	--destroy
+	local e4=Effect.CreateEffect(c)
+	e4:SetDescription(aux.Stringid(id,1))
+	e4:SetCategory(CATEGORY_DESTROY)
+	e4:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
+	e4:SetCondition(s.tdcon)
+	e4:SetCode(EVENT_SPSUMMON_SUCCESS)
+	e4:SetProperty(EFFECT_FLAG_CARD_TARGET+EFFECT_FLAG_DELAY)
+	e4:SetTarget(s.destg)
+	e4:SetOperation(s.desop)
+	c:RegisterEffect(e4)
+	--damage
+	local e5=Effect.CreateEffect(c)
+	e5:SetDescription(aux.Stringid(id,2))
+	e5:SetCategory(CATEGORY_DAMAGE)
+	e5:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_F)
+	e5:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
+	e5:SetCode(EVENT_DESTROYED)
+	e5:SetCondition(s.damcon)
+	e5:SetTarget(s.damtg)
+	e5:SetOperation(s.damop)
+	c:RegisterEffect(e5)
 	end
---
-function s.atktg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(Card.IsFaceup,tp,LOCATION_MZONE,0,1,nil) end
+--Special summon
+function s.spfilter(c,e,tp)
+	return c:IsSetCard(0xf19) and c:IsType(TYPE_NORMAL) and c:IsCanBeSpecialSummoned(e,0,tp,false,false,POS_FACEUP_DEFENSE)
 end
-function s.atkop(e,tp,eg,ep,ev,re,r,rp)
+function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
+		and Duel.IsExistingMatchingCard(s.spfilter,tp,0x13,0,1,nil,e,tp) end
+	Duel.Hint(HINT_OPSELECTED,1-tp,e:GetDescription())
+	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,0x13)
+end
+function s.spop(e,tp,eg,ep,ev,re,r,rp)
+	if Duel.GetLocationCount(tp,LOCATION_MZONE)<=0 then return end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
+	local g=Duel.SelectMatchingCard(tp,aux.NecroValleyFilter(s.spfilter),tp,0x13,0,1,1,nil,e,tp)
+	local tc=g:GetFirst()
+	if tc then
+		Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_FACEUP_DEFENSE)
+	end
+end
+function s.operation(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	local g=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_MZONE,0,nil)
-	if #g==0 then return end
-	for tc in g:Iter() do
-		--Increase ATK
-		local e1=Effect.CreateEffect(c)
-		e1:SetType(EFFECT_TYPE_SINGLE)
-		e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
-		e1:SetCode(EFFECT_UPDATE_ATTACK)
-		e1:SetValue(1000)
-		e1:SetReset(RESET_EVENT|RESETS_STANDARD)
-		tc:RegisterEffect(e1)
-		end
+	if Duel.GetLocationCount(tp,LOCATION_MZONE)<=0 then return end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
+	local g=Duel.SelectMatchingCard(tp,,tp,0x13,0,1,1,nil,e,tp)
+	if c:IsRelateToEffect(e) and Duel.SpecialSummon(g,0,tp,tp,false,false,POS_FACEUP)>0 then
+	--Restricted to level/rank 3+ monsters
+		local e3=Effect.CreateEffect(e:GetHandler())
+		e3:SetDescription(aux.Stringid(id,2))
+		e3:SetType(EFFECT_TYPE_FIELD)
+		e3:SetProperty(EFFECT_FLAG_PLAYER_TARGET+EFFECT_FLAG_CLIENT_HINT)
+		e3:SetCode(EFFECT_CANNOT_SPECIAL_SUMMON)
+		e3:SetTargetRange(1,0)
+		e3:SetTarget(s.splimit)
+		e3:SetReset(RESET_PHASE+PHASE_END)
+		Duel.RegisterEffect(e3,tp)
+	end
 end
 --
 function s.tdcon(e,tp,eg,ep,ev,re,r,rp)

@@ -1,5 +1,4 @@
---Mandala Infernal
---Scripted by EP Custom Cards
+--Impfernal Mandala
 local s,id=GetID()
 function s.initial_effect(c)
 	--Activate
@@ -36,8 +35,9 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	local p=Duel.GetChainInfo(0,CHAININFO_TARGET_PLAYER)
 	--Duel.Hint(HINT_SELECTMSG,p,HINTMSG_TODECK)
 	local g=Duel.GetMatchingGroup(s.filter,p,LOCATION_HAND,0,nil)
+	local cg=Duel.GetFieldGroup(p,LOCATION_HAND,0)
 	if #g>0 then
-		Duel.ConfirmCards(1-p,g)
+		Duel.ConfirmCards(1-p,cg)
 		Duel.Draw(p,#g,REASON_EFFECT)
 		Duel.ShuffleHand(p)
 		Duel.BreakEffect()

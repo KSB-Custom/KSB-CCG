@@ -1,5 +1,4 @@
---Diablillo Rey de Blanco
---Scripted by EP Custom Cards
+--Royal Impish Albino King
 local s,id=GetID()
 function s.initial_effect(c)
 	--xyz summon

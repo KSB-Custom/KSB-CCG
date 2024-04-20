@@ -1,7 +1,6 @@
 --Impish Makeshift Act
 local s,id=GetID()
 function s.initial_effect(c)
-c:SetSPSummonOnce(id)
 	--xyz summon
 	Xyz.AddProcedure(c,nil,1,2,s.ovfilter,aux.Stringid(id,0),2,s.xyzop)
 	--Disable attack
@@ -23,7 +22,8 @@ function s.ovfilter(c,tp,xyzc)
 	return c:IsFaceup() and c:IsSetCard(0xf19,xyzc,SUMMON_TYPE_XYZ,tp) and c:IsType(TYPE_XYZ,xyzc,SUMMON_TYPE_XYZ,tp)
 end
 function s.xyzop(e,tp,chk,mc)
-	if chk==0 then return Duel.IsExistingMatchingCard(s.cfilter,tp,0,LOCATION_MZONE,1,nil) end
+	if chk==0 then return Duel.GetFlagEffect(tp,id)==0 and Duel.IsExistingMatchingCard(s.cfilter,tp,0,LOCATION_MZONE,1,nil) end
+	Duel.RegisterFlagEffect(tp,id,RESET_PHASE+PHASE_END,0,1)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
 	local tc=Duel.GetMatchingGroup(s.cfilter,tp,0,LOCATION_MZONE,nil):SelectUnselect(Group.CreateGroup(),tp,false,Xyz.ProcCancellable)
 	if tc then

@@ -1,5 +1,4 @@
---Llamada Infernal/ Impfernal Call
---Scripted by EP Custom Cards
+--Impfernal Call
 local s,id=GetID()
 function s.initial_effect(c)
 	--Add 1 or shuffle back 4
@@ -12,9 +11,13 @@ function s.initial_effect(c)
 	c:RegisterEffect(e1)
 end
 s.listed_names={16233032}
+s.listed_series={0xf19}
 --search filter
 function s.filter(c)
 	return c:IsRace(RACE_FIEND) and c:IsAbleToHand()
+end
+function s.filter2(c)
+	return c:IsSetCard(0xf19) or (c:IsRace(RACE_FIEND) and c:IsAbleToHand() and not c:IsAttribute(ATTRIBUTE_DARK))
 end
 --shuffle back filter
 function s.tdfilter(c)
@@ -47,10 +50,10 @@ function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
 		Duel.SetOperationInfo(0,CATEGORY_TODECK,nil,3,tp,LOCATION_GRAVE)
 	end
 end
---add up to 3 if you control emperatriz
+--add up to 2 if you control emperatriz
 function s.thop1(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
-	local g=Duel.SelectMatchingCard(tp,s.filter,tp,LOCATION_DECK,0,1,3,nil)
+	local g=Duel.SelectMatchingCard(tp,s.filter,tp,LOCATION_DECK,0,1,2,nil)
 	if #g>0 then
 		Duel.SendtoHand(g,nil,REASON_EFFECT)
 		Duel.ConfirmCards(1-tp,g)
@@ -59,7 +62,7 @@ end
 --add 1
 function s.thop2(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
-	local g=Duel.SelectMatchingCard(tp,s.filter,tp,LOCATION_DECK,0,1,1,nil)
+	local g=Duel.SelectMatchingCard(tp,s.filter2,tp,LOCATION_DECK,0,1,1,nil)
 	if #g>0 then
 		Duel.SendtoHand(g,nil,REASON_EFFECT)
 		Duel.ConfirmCards(1-tp,g)
@@ -73,7 +76,7 @@ function s.tdop1(e,tp,eg,ep,ev,re,r,rp)
 	local ct=Duel.GetMatchingGroupCount(s.tdfilter,tp,LOCATION_GRAVE,0,nil)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TODECK)
 	if Duel.IsExistingMatchingCard(s.cfilter,e:GetHandlerPlayer(),LOCATION_GRAVE,0,1,nil) and ct>5 then --if mandala is in GY and you can return 6 minimum
-		local g=Duel.SelectMatchingCard(tp,s.tdfilter,tp,LOCATION_GRAVE,0,6,12,nil)
+		local g=Duel.SelectMatchingCard(tp,s.tdfilter,tp,LOCATION_GRAVE,0,3,12,nil)
 		Duel.SendtoDeck(g,nil,SEQ_DECKSHUFFLE,REASON_EFFECT)
 	else
 		local g=Duel.SelectMatchingCard(tp,s.tdfilter,tp,LOCATION_GRAVE,0,3,6,nil) -- if mandala is not in gy or if there are less than 6
@@ -86,7 +89,7 @@ function s.tdop2(e,tp,eg,ep,ev,re,r,rp)
 	local ct=Duel.GetMatchingGroupCount(s.tdfilter,tp,LOCATION_GRAVE,0,nil)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TODECK)
 	if Duel.IsExistingMatchingCard(s.cfilter,e:GetHandlerPlayer(),LOCATION_GRAVE,0,1,nil) and ct>5 then --if mandala is in GY and you can return 6
-		local g=Duel.SelectMatchingCard(tp,s.tdfilter,tp,LOCATION_GRAVE,0,6,6,nil)
+		local g=Duel.SelectMatchingCard(tp,s.tdfilter,tp,LOCATION_GRAVE,0,3,6,nil)
 		Duel.SendtoDeck(g,nil,SEQ_DECKSHUFFLE,REASON_EFFECT)
 	else
 		local g=Duel.SelectMatchingCard(tp,s.tdfilter,tp,LOCATION_GRAVE,0,3,3,nil) --if mandala is not in gy or if there are less than 6
