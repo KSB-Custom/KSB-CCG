@@ -46,7 +46,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e5)
 end
 function s.filter(c,e,tp)
-	return c:IsCanBeSpecialSummoned(e,0,tp,false,false) and c:IsType(TYPE_FIEND) and c:IsLevelBelow(4)
+	return c:IsCanBeSpecialSummoned(e,0,tp,false,false) and c:IsRace(RACE_FIEND) and c:IsLevelBelow(4)
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:GetLocation()==LOCATION_GRAVE and chkc:GetControler()==tp
