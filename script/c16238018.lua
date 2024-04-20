@@ -29,7 +29,7 @@ function s.initial_effect(c)
 end
 --search monster
 function s.filter(c)
-	return c:IsSetCard(0xf19) and c:IsMonster() and c:IsType(TYPE_NORMAL) and c:IsAbleToHand()
+	return c:IsSetCard(0xf19) and c:IsMonster() and (c:IsType(TYPE_NORMAL) or c:IsType(TYPE_TUNER)) and c:IsAbleToHand()
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.filter,tp,LOCATION_DECK,0,1,nil) end
@@ -64,7 +64,7 @@ function s.cost2(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.PayLPCost(tp,1500)
 end
 function s.filter2(c)
-	return (c:IsSetCard(0xf19) or c:IsSetCard(0xf18)) and c:IsSpellTrap()	and c:IsAbleToHand()
+	return (c:IsSetCard(0xf19) or c:IsSetCard(0xf18)) and c:IsSpellTrap()	and c:IsAbleToHand() and not c:IsCode(id)
 end
 function s.target3(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.filter2,tp,LOCATION_DECK+LOCATION_GRAVE,0,1,nil) end
