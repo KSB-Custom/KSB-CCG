@@ -59,24 +59,6 @@ function s.spop(e,tp,eg,ep,ev,re,r,rp)
 		Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_FACEUP_DEFENSE)
 	end
 end
-function s.operation(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
-	if Duel.GetLocationCount(tp,LOCATION_MZONE)<=0 then return end
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-	local g=Duel.SelectMatchingCard(tp,,tp,0x13,0,1,1,nil,e,tp)
-	if c:IsRelateToEffect(e) and Duel.SpecialSummon(g,0,tp,tp,false,false,POS_FACEUP)>0 then
-	--Restricted to level/rank 3+ monsters
-		local e3=Effect.CreateEffect(e:GetHandler())
-		e3:SetDescription(aux.Stringid(id,2))
-		e3:SetType(EFFECT_TYPE_FIELD)
-		e3:SetProperty(EFFECT_FLAG_PLAYER_TARGET+EFFECT_FLAG_CLIENT_HINT)
-		e3:SetCode(EFFECT_CANNOT_SPECIAL_SUMMON)
-		e3:SetTargetRange(1,0)
-		e3:SetTarget(s.splimit)
-		e3:SetReset(RESET_PHASE+PHASE_END)
-		Duel.RegisterEffect(e3,tp)
-	end
-end
 --
 function s.tdcon(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():IsSummonType(SUMMON_TYPE_LINK)
