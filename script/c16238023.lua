@@ -39,7 +39,7 @@ function s.initial_effect(c)
 	--search monster
 	local e4=e1:Clone()
 	e4:SetDescription(aux.Stringid(id,3))
-	e4:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH)
+	e4:SetCategory(CATEGORY_TOGRAVE)
 	e4:SetCost(s.cost4)
 	e4:SetTarget(s.montg)
 	e4:SetOperation(s.monop)
@@ -121,24 +121,23 @@ function s.stop(e,tp,eg,ep,ev,re,r,rp)
 		Duel.ConfirmCards(1-tp,g)
 	end
 end
---search monster
+--SendtoGrave monster
 function s.cost4(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.CheckLPCost(tp,1000) end
 	Duel.PayLPCost(tp,1000)
 end
 function s.monfilter(c)
-	return c:IsMonster() and c:IsSetCard(0xf19) and c:IsAbleToHand()
+	return c:IsMonster() and c:IsSetCard(0xf19) and c:IsAbleToGrave()
 end
 function s.montg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.monfilter,tp,LOCATION_DECK,0,1,nil) end
-	Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_DECK)
+	Duel.SetOperationInfo(0,CATEGORY_TOGRAVE,nil,1,tp,LOCATION_DECK)
 end
 function s.monop(e,tp,eg,ep,ev,re,r,rp)
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
 	local g=Duel.SelectMatchingCard(tp,s.monfilter,tp,LOCATION_DECK,0,1,1,nil)
 	if #g>0 then
-		Duel.SendtoHand(g,nil,REASON_EFFECT)
-		Duel.ConfirmCards(1-tp,g)
+		Duel.SendtoGrave(g,REASON_EFFECT)
 	end
 end
 --return
