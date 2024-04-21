@@ -65,7 +65,7 @@ function s.defilter(c,tp)
 	return c:IsPreviousLocation(LOCATION_ONFIELD) and c:GetPreviousControler()==tp
 end
 function s.atkfilter(c,tp)
-	return c:IsSetCard(0x231)
+	return c:IsSetCard(0xf19)
 end
 function s.atkcon(e,tp,eg,ep,ev,re,r,rp)
 	return eg:IsExists(s.atkfilter,1,nil,tp)

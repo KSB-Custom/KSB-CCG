@@ -17,7 +17,7 @@ function s.filter(c)
 	return c:IsRace(RACE_FIEND) and c:IsAbleToHand()
 end
 function s.filter2(c)
-	return c:IsSetCard(0xf19) or (c:IsRace(RACE_FIEND) and c:IsAbleToHand() and not c:IsAttribute(ATTRIBUTE_DARK))
+	return c:IsAbleToHand() and c:IsMonster() and (c:IsSetCard(0xf19) or (c:IsRace(RACE_FIEND) and not c:IsAttribute(ATTRIBUTE_DARK)))
 end
 --shuffle back filter
 function s.tdfilter(c)
