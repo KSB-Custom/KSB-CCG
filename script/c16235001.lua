@@ -23,7 +23,7 @@ function s.mfilter(c,lc,sumtype,tp)
 	return c:IsRace(RACE_FIEND,lc,sumtype,tp) and c:IsLevelBelow(4)
 end
 function s.spcon(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.GetTurnPlayer()==1-tp and Duel.IsMainPhase()
+	return Duel.GetTurnPlayer()==1-tp and Duel.IsMainPhase() and Duel.GetFieldGroupCount(tp,LOCATION_MZONE,0)<Duel.GetFieldGroupCount(tp,0,LOCATION_MZONE)
 end
 function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
