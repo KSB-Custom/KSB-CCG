@@ -1,5 +1,4 @@
---Edorei el Hechicero Diablillo
---Scripted by EP Custom Cards
+--Edorei the Impísh Sorcerer
 local s,id=GetID()
 function s.initial_effect(c)
 	--spsummon
@@ -37,14 +36,15 @@ function s.initial_effect(c)
 end
 --special summon
 function s.spfilter(c,tp)
-	return c:IsLocation(LOCATION_MZONE) or c:IsPreviousControler(tp)
+	return c:IsPreviousSetCard(0xf19) and c:IsPreviousControler(tp) and c:IsPreviousLocation(LOCATION_ONFIELD) and c:IsPreviousPosition(POS_FACEUP)
 end
 function s.cfilter(c,tp)
 	return c:IsStatus(STATUS_DISABLED)
 end
 function s.spcon(e,tp,eg,ep,ev,re,r,rp)
 	local og=Duel.GetOperatedGroup()	-- this is the card that negated
-	return rp==tp and ev and Duel.IsExistingMatchingCard(s.cfilter,e:GetHandlerPlayer(),LOCATION_ONFIELD,0,1,nil) --checks for a negated card in the field
+	local de,dp=Duel.GetChainInfo(ev,CHAININFO_DISABLE_REASON,CHAININFO_DISABLE_PLAYER)
+	return rp==tp and (de and dp~=tp) or (ev and Duel.IsExistingMatchingCard(s.cfilter,e:GetHandlerPlayer(),LOCATION_ONFIELD|LOCATION_GRAVE,0,1,nil)) --checks for a negated card in the field
 end
 function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
@@ -65,7 +65,7 @@ function s.defilter(c,tp)
 	return c:IsPreviousLocation(LOCATION_ONFIELD) and c:GetPreviousControler()==tp
 end
 function s.atkfilter(c,tp)
-	return c:IsSetCard(0xf19)
+	return c:IsSetCard(0xf19) and not c:IsCode(id)
 end
 function s.atkcon(e,tp,eg,ep,ev,re,r,rp)
 	return eg:IsExists(s.atkfilter,1,nil,tp)
@@ -78,7 +78,7 @@ function s.atkop(e,tp,eg,ep,ev,re,r,rp)
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_SINGLE)
 	e1:SetCode(EFFECT_UPDATE_ATTACK)
-	e1:SetValue(600)
+	e1:SetValue(400)
 	e1:SetReset(RESET_EVENT+RESETS_STANDARD_DISABLE)
 	c:RegisterEffect(e1)
 end
@@ -87,7 +87,7 @@ function s.defop(e,tp,eg,ep,ev,re,r,rp)
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_SINGLE)
 	e1:SetCode(EFFECT_UPDATE_DEFENSE)
-	e1:SetValue(600)
+	e1:SetValue(400)
 	e1:SetReset(RESET_EVENT+RESETS_STANDARD_DISABLE)
 	c:RegisterEffect(e1)
 end
