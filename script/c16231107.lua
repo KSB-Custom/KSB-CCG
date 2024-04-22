@@ -48,8 +48,11 @@ function s.initial_effect(c)
 	e9:SetOperation(s.reop)
 	c:RegisterEffect(e9)
 end
+function s.cfilter(c)
+	return c:IsFaceup() and c:IsSetCard(0xf19) and (c:IsType(TYPE_TUNER) or c:GetLevel()==6) and not c:IsCode(id)
+end
 function s.lvcon(e)
-	return Duel.IsExistingMatchingCard(aux.FaceupFilter(Card.IsSetCard,0xf19),e:GetHandlerPlayer(),LOCATION_MZONE,0,1,nil)
+	return Duel.IsExistingMatchingCard(s.cfilter,e:GetHandlerPlayer(),LOCATION_MZONE,0,1,nil)
 end
 --draw
 function s.cost(e,tp,eg,ep,ev,re,r,rp,chk)
