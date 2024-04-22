@@ -1,5 +1,4 @@
---Diablillo Descartes
---Scripted by EP Custom Cards
+--Impish Discarder
 local s,id=GetID()
 function s.initial_effect(c)
 --draw
