@@ -20,8 +20,36 @@ function s.initial_effect(c)
 	e2:SetCondition(s.efcon)
 	e2:SetOperation(s.efop)
 	c:RegisterEffect(e2)
+	--disable
+	local e3=Effect.CreateEffect(c)
+	e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+	e3:SetCode(EVENT_CHAIN_SOLVING)
+	e3:SetRange(LOCATION_MZONE)
+	e3:SetCondition(s.discon)
+	e3:SetOperation(s.disop)
+	c:RegisterEffect(e3)
+		--special summon
+	local e4=Effect.CreateEffect(c)
+	e4:SetType(EFFECT_TYPE_FIELD)
+	e4:SetCode(EFFECT_SPSUMMON_PROC)
+	e4:SetProperty(EFFECT_FLAG_UNCOPYABLE)
+	e4:SetCountLimit(1,id)
+	e4:SetRange(LOCATION_GRAVE)
+	e4:SetCondition(s.spcon)
+	e4:SetOperation(s.spop)
+	c:RegisterEffect(e4)
 	
 end
+--Special Summon
+function s.spcon(e,c)
+	if c==nil then return true end
+	return Duel.GetLocationCount(c:GetControler(),LOCATION_MZONE)>0
+		and Duel.IsCanRemoveCounter(c:GetControler(),1,1,0x1501,4,REASON_COST)
+end
+function s.spop(e,tp,eg,ep,ev,re,r,rp,c)
+	Duel.RemoveCounter(tp,1,1,0x1501,1,REASON_COST)
+end
+--
 function s.thcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
 	if chk==0 then return c:IsDiscardable() end
@@ -69,4 +97,12 @@ function s.efop(e,tp,eg,ep,ev,re,r,rp)
 		e2:SetReset(RESET_EVENT+RESETS_STANDARD)
 		rc:RegisterEffect(e2,true)
 	end
+end
+--
+function s.discon(e,tp,eg,ep,ev,re,r,rp)
+	if e:GetHandler():IsStatus(STATUS_BATTLE_DESTROYED) then return false end
+	return rp==1-tp and re:IsActiveType(TYPE_MONSTER) and re:GetHandler():GetCounter(0x1501)>0
+end
+function s.disop(e,tp,eg,ep,ev,re,r,rp)
+	Duel.NegateEffect(ev)
 end
