@@ -33,7 +33,7 @@ function s.initial_effect(c)
 	end
 --link filter
 function s.mfilter(c,lc,sumtype,tp)
-	return c:IsType(TYPE_LINK,lc,sumtype,tp) and not c:IsCode(id)
+	return c:IsType(TYPE_LINK,lc,sumtype,tp) and c:IsSetCard(0xf19) and not c:IsLinkBelow(1)
 end
 --Shuffle
 function s.tdfilter(c)
