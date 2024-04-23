@@ -61,6 +61,7 @@ local e3=Effect.CreateEffect(c)
 	e5:SetOperation(s.rthop)
 	c:RegisterEffect(e5)
 end
+--Draw
 function s.dfilter(c,tp)
 	return c:IsControler(tp) and c:IsPreviousControler(tp) and c:IsSetCard(0xf25) 
 end
@@ -90,9 +91,9 @@ function s.spop(e,tp,eg,ep,ev,re,r,rp)
 		Duel.SpecialSummon(c,0,tp,tp,false,false,POS_FACEUP)
 	end
 end
---
+--Discard 1 JellyBeans and add itself to hand
 function s.rthcostfilter(c)
-	return c:IsDiscardable() and c:IsSetCard(0xf25)
+	return c:IsDiscardable() and c:IsSetCard(0xf25) and not c:IsCode(id)
 end
 function s.rthcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.rthcostfilter,tp,LOCATION_HAND,0,1,nil) end
@@ -108,7 +109,7 @@ function s.rthop(e,tp,eg,ep,ev,re,r,rp)
 	if c:IsRelateToEffect(e) then Duel.SendtoHand(c,nil,REASON_EFFECT)
 	end
 end
---
+--Search
 function s.thfilter(c)
 	return c:IsSetCard(0xf25) and c:IsMonster() and c:IsAbleToHand() and (c:IsType(TYPE_NORMAL) or c:IsType(TYPE_RITUAL))
 end

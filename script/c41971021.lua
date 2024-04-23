@@ -115,7 +115,7 @@ end
 --
 --TO HAND
 function s.thfilter(c)
-	return c:IsSetCard(0xf25) and c:IsMonster() and c:IsAbleToHand()
+	return c:IsSetCard(0xf25) and c:IsMonster() and c:IsAbleToHand() and not c;IsCode(id)
 end
 function s.thcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local exc=(e:GetHandler():IsLocation(LOCATION_HAND) and not e:GetHandler():IsAbleToGraveAsCost()) and e:GetHandler() or nil
