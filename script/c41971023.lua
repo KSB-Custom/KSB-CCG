@@ -27,7 +27,7 @@ local e2=Effect.CreateEffect(c)
 	e3:SetTarget(s.tgtg)
 	e3:SetOperation(s.tgop)
 	c:RegisterEffect(e3)
---tohand
+	--Discard this card and add to hand
 	local e6=Effect.CreateEffect(c)
 	e6:SetDescription(aux.Stringid(id,0))
 	e6:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH)
@@ -39,7 +39,7 @@ local e2=Effect.CreateEffect(c)
 	e6:SetTarget(s.thtg)
 	e6:SetOperation(s.thop)
 	c:RegisterEffect(e6)
---Quick if the opponent controls a monster
+	--Quick if the opponent controls a monster
 	local e8=e6:Clone()
 	e8:SetType(EFFECT_TYPE_QUICK_O)
 	e8:SetCode(EVENT_FREE_CHAIN)
@@ -51,6 +51,7 @@ local e2=Effect.CreateEffect(c)
 	e7:SetCategory(CATEGORY_TOHAND)
 	e7:SetProperty(EFFECT_FLAG_DELAY)
 	e7:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
+	e7:SetCondition(s.thcon2)
 	e7:SetCode(EVENT_REMOVE)
 	e7:SetCountLimit(1,{id,3})
 	e7:SetTarget(s.thtg2)
@@ -62,6 +63,7 @@ local e2=Effect.CreateEffect(c)
 	e9:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e9:SetCountLimit(1,{id,3})
 	e9:SetCode(EVENT_RELEASE)
+	e9:SetCondition(s.thcon2)
 	e9:SetTarget(s.thtg2)
 	e9:SetOperation(s.thop2)
 	c:RegisterEffect(e9)
@@ -91,7 +93,10 @@ function s.thop(e,tp,eg,ep,ev,re,r,rp)
 		Duel.ConfirmCards(1-tp,g)
 	end
 end
---
+--Add itself to hand
+function s.thcon2(e,tp,eg,ep,ev,re,r,rp)
+	return Duel.GetFieldGroupCount(tp,0,LOCATION_ONFIELD)>Duel.GetFieldGroupCount(tp,LOCATION_ONFIELD,0)
+end
 function s.thtg2(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
 	if chk==0 then return c:IsAbleToHand() end

@@ -72,7 +72,6 @@ function s.operation(e,tp,eg,ep,ev,re,r,rp)
 		c:RegisterEffect(e1,true)
 	end
 end
-end
 --Level
 function s.filter(c)
 	return c:IsFaceup() and c:IsSetCard(0xf25) and not c:IsLevel(2) and c:IsLevelAbove(1)
