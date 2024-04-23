@@ -5,6 +5,15 @@ function s.initial_effect(c)
 	c:EnableReviveLimit()
 	--Link summon procedure
 	Link.AddProcedure(c,s.mfilter,3,4)
+	--Disable zones
+	local e0=Effect.CreateEffect(c)
+	e0:SetType(EFFECT_TYPE_FIELD)
+	e0:SetCode(EFFECT_FORCE_MZONE)
+	e0:SetRange(LOCATION_MZONE)
+	e0:SetProperty(EFFECT_FLAG_PLAYER_TARGET+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_CANNOT_DISABLE)
+	e0:SetTargetRange(1,0)
+	e0:SetValue(s.znval)
+	c:RegisterEffect(e0)
 	--atkup
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
