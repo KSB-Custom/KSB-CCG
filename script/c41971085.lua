@@ -49,6 +49,9 @@ function s.initial_effect(c)
 	Duel.AddCustomActivityCounter(id,ACTIVITY_FLIPSUMMON,s.counterfilter)
 end
 --Limit Summon
+function s.counterfilter(c)
+	return c:IsSetCard(0xf25)
+end
 function s.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetCustomActivityCount(id,tp,ACTIVITY_SUMMON)==0
 		and Duel.GetCustomActivityCount(id,tp,ACTIVITY_SPSUMMON)==0 
