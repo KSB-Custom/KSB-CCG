@@ -44,10 +44,33 @@ function s.initial_effect(c)
 	e3:SetTarget(s.target)
 	e3:SetOperation(s.operation)
 	c:RegisterEffect(e3)
+	--Cannot be target
+	local e5=Effect.CreateEffect(c)
+	e5:SetType(EFFECT_TYPE_SINGLE)
+	e5:SetCode(EFFECT_CANNOT_BE_EFFECT_TARGET)
+	e5:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
+	e5:SetRange(LOCATION_MZONE)
+	e5:SetValue(s.tgval)
+	c:RegisterEffect(e5)
+	--indes
+	local e4=Effect.CreateEffect(c)
+	e4:SetType(EFFECT_TYPE_SINGLE)
+	e4:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
+	e4:SetCode(EFFECT_INDESTRUCTABLE_EFFECT)
+	e4:SetRange(LOCATION_MZONE)
+	e4:SetValue(s.indval)
+	c:RegisterEffect(e4)
 	end
 --link filter
 function s.mfilter(c,lc,sumtype,tp)
 	return c:IsSetCard(0xf19,lc,sumtype,tp)
+end
+--Protection against Spell/Trap
+function s.tgval(e,re,rp)
+	return aux.tgoval(e,re,rp) and re:IsActiveType(TYPE_SPELL+TYPE_TRAP)
+end
+function s.indval(e,re,tp)
+	return tp~=e:GetHandlerPlayer() and re:IsActiveType(TYPE_SPELL+TYPE_TRAP)
 end
 --
 function s.valcheck(e,c)
