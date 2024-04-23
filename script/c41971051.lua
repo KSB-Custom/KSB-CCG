@@ -6,7 +6,7 @@ function s.initial_effect(c)
 	c:EnableReviveLimit()
 	--pendulum summon
 	Pendulum.AddProcedure(c,false)
---atk
+	--atk
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_SINGLE)
 	e1:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
@@ -14,7 +14,7 @@ function s.initial_effect(c)
 	e1:SetCode(EFFECT_UPDATE_ATTACK)
 	e1:SetValue(s.atkval)
 	c:RegisterEffect(e1)
-	--material
+	--Attach material
 	local e2=Effect.CreateEffect(c)
 	e2:SetType(EFFECT_TYPE_QUICK_O)
 	e2:SetCode(EVENT_FREE_CHAIN)
@@ -26,7 +26,7 @@ function s.initial_effect(c)
 	e2:SetTarget(s.target)
 	e2:SetOperation(s.operation)
 	c:RegisterEffect(e2)
---You take no battle damage from battles involving this cards
+	--You take no battle damage from battles involving this cards
 	local e7=Effect.CreateEffect(c)
 	e7:SetType(EFFECT_TYPE_SINGLE)
 	e7:SetCode(EFFECT_AVOID_BATTLE_DAMAGE)
@@ -38,6 +38,7 @@ function s.initial_effect(c)
 	e6:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e6:SetCode(EVENT_LEAVE_FIELD)
 	e6:SetProperty(EFFECT_FLAG_DELAY)
+	e6:SetCountLimit(1,{id,2})
 	e6:SetCondition(s.pencon)
 	e6:SetTarget(s.pentg)
 	e6:SetOperation(s.penop)
@@ -66,7 +67,7 @@ end
 --
 function s.mcon(e)
 	local tp=e:GetHandlerPlayer()
-	return Duel.GetFieldGroupCount(tp,LOCATION_MZONE,0)<Duel.GetFieldGroupCount(tp,0,LOCATION_MZONE)
+	return Duel.IsMainPhase() and Duel.GetFieldGroupCount(tp,LOCATION_MZONE,0)<Duel.GetFieldGroupCount(tp,0,LOCATION_MZONE)
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsLocation(LOCATION_MZONE) and s.filter(chkc,tp) and chkc~=e:GetHandler() end
