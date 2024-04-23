@@ -61,6 +61,10 @@ function s.initial_effect(c)
 	e4:SetValue(s.indval)
 	c:RegisterEffect(e4)
 	end
+	--
+function s.znval(e)
+	return ~(e:GetHandler():GetLinkedZone()&0x60)
+end
 --link filter
 function s.mfilter(c,lc,sumtype,tp)
 	return c:IsSetCard(0xf19,lc,sumtype,tp)

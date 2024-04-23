@@ -39,7 +39,7 @@ end
 s.listed_series={0xf19}
 --special summon self
 function s.spfilter(c)
-	return c:IsSetCard(0xf19) and c:IsAbleToRemoveAsCost() and aux.SpElimFilter(c,true,true)
+	return c:IsSetCard(0xf19) and c:IsAbleToRemoveAsCost() and aux.SpElimFilter(c,true,true) and not c:IsCode(id)
 end
 function s.hspcon(e,c)
 	if c==nil then return true end
@@ -82,7 +82,7 @@ function s.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.PayLPCost(tp,2000)
 end
 function s.filter(c,e,tp)
-	return c:IsRace(RACE_FIEND) and (c:GetAttack()==0 or c:GetDefense()==0) and c:IsCanBeSpecialSummoned(e,0,tp,false,false) and not c:IsCode(id)
+	return c:IsSetCard(0xf19) and (c:GetAttack()==0 or c:GetDefense()==0) and c:IsCanBeSpecialSummoned(e,0,tp,false,false) and not c:IsCode(id)
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
@@ -108,5 +108,5 @@ function s.operation(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function s.splimit(e,c)
-	return not c:IsRace(RACE_FIEND)
+	return not c:IsSetCard(0xf19)
 end
