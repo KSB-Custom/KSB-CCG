@@ -4,7 +4,7 @@ function s.initial_effect(c)
 	--Must be properly summoned before reviving
 	c:EnableReviveLimit()
 		--Link summon procedure
-	Link.AddProcedure(c,s.mfilter,4,5)
+	Link.AddProcedure(c,s.mfilter,3,5)
 	--Disable zones
 	local e0=Effect.CreateEffect(c)
 	e0:SetType(EFFECT_TYPE_FIELD)
