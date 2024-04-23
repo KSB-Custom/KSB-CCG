@@ -1,13 +1,13 @@
 --JellyBeans Bard
 local s,id=GetID()
 function s.initial_effect(c)
---You take no battle damage from battles involving this cards
-local e6=Effect.CreateEffect(c)
+	--You take no battle damage from battles involving this cards
+	local e6=Effect.CreateEffect(c)
 	e6:SetType(EFFECT_TYPE_SINGLE)
 	e6:SetCode(EFFECT_AVOID_BATTLE_DAMAGE)
 	e6:SetValue(1)
 	c:RegisterEffect(e6)
---special summon
+	--special summon
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(id,0))
 	e1:SetCategory(CATEGORY_SPECIAL_SUMMON)
@@ -19,7 +19,7 @@ local e6=Effect.CreateEffect(c)
 	e1:SetTarget(s.target)
 	e1:SetOperation(s.operation)
 	c:RegisterEffect(e1)
---Special Summon itself (Quick if the opponent controls a monster with highest ATK)
+	--Special Summon itself (Quick if the opponent controls a monster with highest ATK)
 	local e2=e1:Clone()
 	e2:SetType(EFFECT_TYPE_QUICK_O)
 	e2:SetCode(EVENT_FREE_CHAIN)

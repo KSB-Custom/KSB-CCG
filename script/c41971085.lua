@@ -3,16 +3,18 @@ local s,id=GetID()
 function s.initial_effect(c)
 	--Activate
 	local e1=Effect.CreateEffect(c)
-	e1:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH)
+	e1:SetCategory(CATEGORY_DECKDES)
 	e1:SetType(EFFECT_TYPE_ACTIVATE)
 	e1:SetCode(EVENT_FREE_CHAIN)
 	e1:SetCountLimit(1,{id,1})
-	e1:SetCost(s.spcost)
+	e1:SetCost(s.cost)
 	e1:SetTarget(s.regtg)
 	e1:SetOperation(s.regop)
 	c:RegisterEffect(e1)
-	--Negate target
---Fusion Summon 1 Plant Fusion Monster
+	Duel.AddCustomActivityCounter(id,ACTIVITY_SUMMON,s.counterfilter)
+	Duel.AddCustomActivityCounter(id,ACTIVITY_SPSUMMON,s.counterfilter)
+	Duel.AddCustomActivityCounter(id,ACTIVITY_FLIPSUMMON,s.counterfilter)
+	--Fusion Summon 1 Plant Fusion Monster
 	local params={handler=c,fusfilter=aux.FilterBoolFunction(Card.IsSetCard,0xf25),
 				matfilter=Card.IsAbleToDeck,extrafil=s.extrafil,
 				extraop=Fusion.ShuffleMaterial,extratg=s.extratg}
@@ -23,37 +25,56 @@ function s.initial_effect(c)
 	e2:SetProperty(EFFECT_FLAG_DELAY)
 	e2:SetCode(EVENT_TO_GRAVE)
 	e2:SetCountLimit(1,{id,2})
+	e2:SetCost(s.cost)
 	e2:SetCondition(s.condition)
 	e2:SetTarget(Fusion.SummonEffTG(params))
 	e2:SetOperation(Fusion.SummonEffOP(params))
 	c:RegisterEffect(e2)
+	Duel.AddCustomActivityCounter(id,ACTIVITY_SUMMON,s.counterfilter)
+	Duel.AddCustomActivityCounter(id,ACTIVITY_SPSUMMON,s.counterfilter)
+	Duel.AddCustomActivityCounter(id,ACTIVITY_FLIPSUMMON,s.counterfilter)
 	local e3=Effect.CreateEffect(c)
 	e3:SetDescription(aux.Stringid(id,3))
-	e3:SetCategory(CATEGORY_TOHAND)
+	e3:SetCategory(CATEGORY_SPECIAL_SUMMON+CATEGORY_FUSION_SUMMON)
 	e3:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e3:SetProperty(EFFECT_FLAG_DELAY)
 	e3:SetCode(EVENT_REMOVE)
 	e3:SetCountLimit(1,{id,2})
+	e3:SetCost(s.cost)
 	e3:SetTarget(Fusion.SummonEffTG(params))
 	e3:SetOperation(Fusion.SummonEffOP(params))
 	c:RegisterEffect(e3)
+	Duel.AddCustomActivityCounter(id,ACTIVITY_SUMMON,s.counterfilter)
+	Duel.AddCustomActivityCounter(id,ACTIVITY_SPSUMMON,s.counterfilter)
+	Duel.AddCustomActivityCounter(id,ACTIVITY_FLIPSUMMON,s.counterfilter)
 end
---
-function s.spcost(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.GetCustomActivityCount(id,tp,ACTIVITY_SPSUMMON)==0 and Duel.IsPlayerCanDiscardDeckAsCost(tp,3) and 
-	Duel.GetFieldGroupCount(tp,LOCATION_DECK,0)>3 end
+--Limit Summon
+function s.cost(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return Duel.GetCustomActivityCount(id,tp,ACTIVITY_SUMMON)==0
+		and Duel.GetCustomActivityCount(id,tp,ACTIVITY_SPSUMMON)==0 
+		and Duel.GetCustomActivityCount(id,tp,ACTIVITY_FLIPSUMMON)==0 end
 	local e1=Effect.CreateEffect(e:GetHandler())
-	e1:SetDescription(aux.Stringid(id,2))
 	e1:SetType(EFFECT_TYPE_FIELD)
-	e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET+EFFECT_FLAG_CLIENT_HINT+EFFECT_FLAG_OATH)
+	e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET+EFFECT_FLAG_OATH)
 	e1:SetCode(EFFECT_CANNOT_SPECIAL_SUMMON)
-	e1:SetTargetRange(1,0)
-	e1:SetTarget(s.splimit)
 	e1:SetReset(RESET_PHASE+PHASE_END)
+	e1:SetTargetRange(1,0)
+	e1:SetTarget(s.sumlimit)
 	Duel.RegisterEffect(e1,tp)
-	Duel.DiscardDeck(tp,3,REASON_COST)
+	local e2=e1:Clone()
+	e2:SetCode(EFFECT_CANNOT_SUMMON)
+	Duel.RegisterEffect(e2,tp)
+	local e3=e1:Clone()
+	e3:SetCode(EFFECT_CANNOT_FLIP_SUMMON)
+	Duel.RegisterEffect(e3,tp)
+	local e4=Effect.CreateEffect(e:GetHandler())
+	e4:SetProperty(EFFECT_FLAG_PLAYER_TARGET+EFFECT_FLAG_CLIENT_HINT)
+	e4:SetDescription(aux.Stringid(id,1))
+	e4:SetReset(RESET_PHASE+PHASE_END)
+	e4:SetTargetRange(1,0)
+	Duel.RegisterEffect(e4,tp)
 end
-function s.splimit(e,c)
+function s.sumlimit(e,c,sump,sumtype,sumpos,targetp,se)
 	return not c:IsSetCard(0xf25)
 end
 --

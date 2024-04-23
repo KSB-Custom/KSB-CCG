@@ -35,7 +35,7 @@ function s.initial_effect(c)
 	e6:SetTarget(s.pentg)
 	e6:SetOperation(s.penop)
 	c:RegisterEffect(e6)
---Special Summon
+	--Special Summon
 	local e7=Effect.CreateEffect(c)
 	e7:SetDescription(aux.Stringid(id,0))
 	e7:SetCategory(CATEGORY_SPECIAL_SUMMON)

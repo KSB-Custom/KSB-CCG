@@ -4,7 +4,7 @@ function s.initial_effect(c)
 c:EnableReviveLimit()
 	Link.AddProcedure(c,s.matfilter,2,3)
 	--You take no battle damage from battles involving this cards
-local e1=Effect.CreateEffect(c)
+	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_SINGLE)
 	e1:SetCode(EFFECT_AVOID_BATTLE_DAMAGE)
 	e1:SetValue(1)
@@ -35,7 +35,7 @@ local e1=Effect.CreateEffect(c)
 end
 --
 function s.spfilter(c,e,tp)
-	return c:IsSetCard(0xf25) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
+	return c:IsSetCard(0xf25) and c:IsCanBeSpecialSummoned(e,0,tp,false,false) and not c:IsCode(id)
 end
 function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
