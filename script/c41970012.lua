@@ -40,11 +40,21 @@ end
 function s.tetg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.tefilter,tp,LOCATION_DECK,0,1,nil) end
 end
+function s.pcfilter(c)
+	return c:IsFaceup() and c:IsSetCard(0xf14) and c:IsType(TYPE_PENDULUM) and not c:IsForbidden()
+end
 function s.teop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,aux.Stringid(id,3))
 	local g=Duel.SelectMatchingCard(tp,s.tefilter,tp,LOCATION_DECK,0,1,1,nil)
 	if #g>0 then
 		Duel.SendtoExtraP(g,tp,REASON_EFFECT)
+		if Duel.GetMatchingGroupCount(nil,tp,0,LOCATION_MZONE,nil)>0 then
+			Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOFIELD)
+			local g=Duel.SelectMatchingCard(tp,s.pcfilter,tp,LOCATION_EXTRA,0,1,1,nil)
+				if #g>0 then
+				Duel.MoveToField(g:GetFirst(),tp,tp,LOCATION_PZONE,POS_FACEUP,true)
+				end
+		end
 	end
 end
 	--To hand
