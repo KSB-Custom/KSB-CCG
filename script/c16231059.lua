@@ -1,5 +1,4 @@
 --Diablillo Atractivo/ Impish Graceful
---Scripted by EP Custom Cards
 local s,id=GetID()
 function s.initial_effect(c)
 	--cannot normal summon/set
@@ -22,6 +21,7 @@ function s.initial_effect(c)
 	e2:SetCategory(CATEGORY_TODECK)
 	e2:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e2:SetCode(EVENT_BE_MATERIAL)
+	e2:SetCountLimit(1,id)
 	e2:SetRange(LOCATION_GRAVE)
 	e2:SetLabel(REASON_SYNCHRO)
 	e2:SetCondition(s.condition)
