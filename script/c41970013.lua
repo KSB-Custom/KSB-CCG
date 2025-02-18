@@ -11,24 +11,63 @@ function s.initial_effect(c)
 	e1:SetTarget(s.target)
 	e1:SetOperation(s.activate)
 	c:RegisterEffect(e1)
-	--Discard 1 "FNO" card, and if you do, negate an opponent's activated monster effect when it resolves
+	--FNO Xyz monsters you control are unaffected by your opponent's activated effects
+	local e2=Effect.CreateEffect(c)
+	e2:SetType(EFFECT_TYPE_XMATERIAL)
+	e2:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
+	e2:SetCode(EFFECT_IMMUNE_EFFECT)
+	e2:SetTargetRange(LOCATION_MZONE,0)
+	e2:SetRange(LOCATION_MZONE)
+	e2:SetCondition(function(e) return e:GetHandler():IsSetCard(0xf14) end)
+	e2:SetValue(s.immval)
+	c:RegisterEffect(e2)
+	-- Special Summon Xyz
 	local e3=Effect.CreateEffect(c)
 	e3:SetDescription(aux.Stringid(id,1))
-	e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
-	e3:SetCode(EVENT_CHAIN_SOLVING)
-	e3:SetRange(LOCATION_FZONE)
-	e3:SetCondition(s.negcon)
-	e3:SetOperation(s.negop)
+	e3:SetCategory(CATEGORY_SPECIAL_SUMMON)
+	e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
+	e3:SetProperty(EFFECT_FLAG_DELAY)
+	e3:SetCode(EVENT_SUMMON_SUCCESS)
+	e3:SetRange(LOCATION_MZONE)
+	e3:SetCountLimit(1,{id,1})
+	e3:SetTarget(s.xsptg)
+	e3:SetOperation(s.xspop)
 	c:RegisterEffect(e3)
-	--double tribute
-	local e4=Effect.CreateEffect(c)
-	e4:SetType(EFFECT_TYPE_EQUIP)
-	e4:SetCode(EFFECT_DOUBLE_XYZ_MATERIAL)
-	e4:SetValue(1)
-	e4:SetOperation(function(e,c,matg) return c:IsSetCard(0xf14) end)
+	local e4=e3:Clone()
+	e4:SetCode(EVENT_SPSUMMON_SUCCESS)
 	c:RegisterEffect(e4)
+	local e5=e4:Clone()
+	e5:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
+	e5:SetCode(EVENT_BE_BATTLE_TARGET)
+	e5:SetCondition(s.thcon2)
+	c:RegisterEffect(e5)
+	local e1b=Effect.CreateEffect(c)
+	e1b:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_GRANT)
+	e1b:SetRange(LOCATION_SZONE)
+	e1b:SetTargetRange(LOCATION_MZONE,LOCATION_MZONE)
+	e1b:SetTarget(function(e,c) return e:GetHandler():GetEquipTarget()==c and c:IsSetCard(0xf14) end)
+	e1b:SetLabelObject(e3)
+	c:RegisterEffect(e1b)
+	local e2b=e1b:Clone()
+	e2b:SetLabelObject(e4)
+	c:RegisterEffect(e2b)
+	local e3b=e1b:Clone()
+	e3b:SetLabelObject(e5)
+	c:RegisterEffect(e3b)
+	--Any Xyz Monster this card is equipped to becomes an Effect Monster
+	local e6=Effect.CreateEffect(c)
+	e6:SetType(EFFECT_TYPE_FIELD)
+	e6:SetCode(EFFECT_ADD_TYPE)
+	e6:SetRange(LOCATION_SZONE)
+	e6:SetTargetRange(LOCATION_MZONE,LOCATION_MZONE)
+	e6:SetTarget(function(e,c) return e:GetHandler():GetEquipTarget()==c end)
+	e6:SetValue(TYPE_EFFECT)
+	c:RegisterEffect(e6)
 end
 s.listed_series={0xf14}
+function s.immval(e,te)
+	return te:GetOwnerPlayer()==1-e:GetHandlerPlayer() and te:IsActivated()
+end
 function s.eqlimit(e,c)
 	return e:GetLabelObject()==c
 end
@@ -60,21 +99,39 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 		c:RegisterEffect(e1)
 	end
 end
-function s.filter(c)
-	return c:IsSetCard(0xf14) and c:IsDiscardable()
+
+function s.thcon(e,tp,eg,ep,ev,re,r,rp)
+	return eg:IsExists(Card.IsSummonPlayer,1,nil,1-tp)
 end
-function s.negcon(e,tp,eg,ep,ev,re,r,rp)
-	return rp==1-tp and re:IsMonsterEffect() and Duel.IsChainDisablable(ev) and not e:GetHandler():HasFlagEffect(id)
-		and Duel.IsExistingMatchingCard(s.filter,tp,LOCATION_HAND,0,1,exc)
+function s.thcon2(e,tp,eg,ep,ev,re,r,rp)
+	return not e:GetHandler():GetBattleTarget():IsControler(tp)
 end
-function s.negop(e,tp,eg,ep,ev,re,r,rp)
+
+function s.xspfilter(c,e,tp,mc)
+	return c:IsType(TYPE_XYZ,c,SUMMON_TYPE_XYZ,tp) and c:IsSetCard(0xf14) and mc:IsCanBeXyzMaterial(c,tp)
+		and Duel.GetLocationCountFromEx(tp,tp,mc,c)>0 and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_XYZ,tp,false,false)
+end
+function s.xsptg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+	if chk==0 then
+		local c=e:GetHandler()
+		local pg=aux.GetMustBeMaterialGroup(tp,Group.FromCards(c),tp,nil,nil,REASON_XYZ)
+		return (#pg<=0 or (#pg==1 and pg:IsContains(c))) and Duel.IsExistingMatchingCard(s.xspfilter,tp,LOCATION_EXTRA,0,1,nil,e,tp,c)
+	end
+	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_EXTRA)
+end
+function s.xspop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	local g=Duel.GetMatchingGroup(s.filter,tp,LOCATION_HAND,0,nil)
-	local cid=Duel.GetChainInfo(ev,CHAININFO_CHAIN_ID)
-	if not (Duel.GetFlagEffectLabel(tp,id)~=cid and #g>0 and Duel.SelectEffectYesNo(tp,c)) then return end
-	Duel.Hint(HINT_CARD,0,id)
-	Duel.DiscardHand(tp,s.filter,1,1,REASON_EFFECT+REASON_DISCARD,nil,REASON_EFFECT)
-	Duel.NegateEffect(ev)
-	c:RegisterFlagEffect(id,RESETS_STANDARD_PHASE_END,EFFECT_FLAG_CLIENT_HINT,1,0,aux.Stringid(id,1))
-	Duel.RegisterFlagEffect(tp,id,RESET_CHAIN,0,1,cid)
+	if c:IsFacedown() or not c:IsRelateToEffect(e) or c:IsControler(1-tp) or c:IsImmuneToEffect(e) then return end
+	local pg=aux.GetMustBeMaterialGroup(tp,Group.FromCards(c),tp,nil,nil,REASON_XYZ)
+	if #pg>1 or (#pg==1 and not pg:IsContains(c)) then return end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
+	local sc=Duel.SelectMatchingCard(tp,s.xspfilter,tp,LOCATION_EXTRA,0,1,1,nil,e,tp,c):GetFirst()
+	if sc then
+		local mg=Group.FromCards(c)
+		sc:SetMaterial(mg)
+		Duel.Overlay(sc,mg)
+		if Duel.SpecialSummon(sc,SUMMON_TYPE_XYZ,tp,tp,false,false,POS_FACEUP)>0 then
+			sc:CompleteProcedure()
+		end
+	end
 end
