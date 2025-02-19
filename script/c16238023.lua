@@ -124,7 +124,7 @@ end
 --SendtoGrave monster
 function s.cost4(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.CheckLPCost(tp,500) end
-	Duel.PayLPCost(tp,500
+	Duel.PayLPCost(tp,500)
 end
 function s.monfilter(c)
 	return c:IsMonster() and c:IsSetCard(0xf19) and c:IsAbleToGrave()
