@@ -66,8 +66,8 @@ function s.initial_effect(c)
 end
 --draw 1
 function s.cost1(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.CheckLPCost(tp,3000) end
-	Duel.PayLPCost(tp,3000)
+	if chk==0 then return Duel.CheckLPCost(tp,1500) end
+	Duel.PayLPCost(tp,1500)
 end
 function s.drtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsPlayerCanDraw(tp,1) end
@@ -81,8 +81,8 @@ function s.drop(e,tp,eg,ep,ev,re,r,rp)
 end
 --draw 2
 function s.cost2(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.CheckLPCost(tp,4000) end
-	Duel.PayLPCost(tp,4000)
+	if chk==0 then return Duel.CheckLPCost(tp,2000) end
+	Duel.PayLPCost(tp,2000)
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsPlayerCanDraw(tp,2) end
@@ -103,8 +103,8 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 end
 --search st
 function s.cost3(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.CheckLPCost(tp,2000) end
-	Duel.PayLPCost(tp,2000)
+	if chk==0 then return Duel.CheckLPCost(tp,1000) end
+	Duel.PayLPCost(tp,1000)
 end
 function s.stfilter(c)
 	return c:IsSpellTrap() and (c:IsSetCard(0xf19) or c:IsSetCard(0xf18)) and c:IsAbleToHand() and not c:IsCode(id)
@@ -123,8 +123,8 @@ function s.stop(e,tp,eg,ep,ev,re,r,rp)
 end
 --SendtoGrave monster
 function s.cost4(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.CheckLPCost(tp,1000) end
-	Duel.PayLPCost(tp,1000)
+	if chk==0 then return Duel.CheckLPCost(tp,500) end
+	Duel.PayLPCost(tp,500
 end
 function s.monfilter(c)
 	return c:IsMonster() and c:IsSetCard(0xf19) and c:IsAbleToGrave()
