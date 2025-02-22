@@ -1,5 +1,4 @@
---Fanfarris Diablillo del Terror
---Scripted by EP Custom Cards
+--Musician Impish Fanfare
 local s,id=GetID()
 function s.initial_effect(c)
 	c:EnableReviveLimit()
@@ -51,14 +50,14 @@ function s.desop(e,tp,eg,ep,ev,re,r,rp)
 		end
 	elseif total_heads==2 then
 			Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-		local tc=Duel.SelectMatchingCard(tp,s.filter1,tp,LOCATION_EXTRA,0,1,1,nil,e,tp):GetFirst()
+		local tc=Duel.SelectMatchingCard(tp,s.filter2,tp,LOCATION_EXTRA,0,1,1,nil,e,tp):GetFirst()
 		if tc and Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_FACEUP) then
 		--Negate its effects
 		tc:NegateEffects(e:GetHandler())
 		end
 	elseif total_heads==1 then
 			Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-		local tc=Duel.SelectMatchingCard(tp,s.filter1,tp,LOCATION_EXTRA,0,1,1,nil,e,tp):GetFirst()
+		local tc=Duel.SelectMatchingCard(tp,s.filter3,tp,LOCATION_EXTRA,0,1,1,nil,e,tp):GetFirst()
 		if tc and Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_FACEUP) then
 		--Negate its effects
 		tc:NegateEffects(e:GetHandler())
