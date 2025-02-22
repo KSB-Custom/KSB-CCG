@@ -40,6 +40,10 @@ function s.initial_effect(c)
 	e3:SetTarget(s.atklimit)
 	c:RegisterEffect(e3)
 	end
+--
+function s.znval(e)
+	return ~(e:GetHandler():GetLinkedZone()&0x60)
+end
 --link filter
 function s.mfilter(c,lc,sumtype,tp)
 	return c:IsSetCard(0xf19,lc,sumtype,tp)
@@ -66,7 +70,7 @@ function s.atkop(e,tp,eg,ep,ev,re,r,rp)
 end
 --
 function s.efilter(e,te)
-	return te:IsActiveType(TYPE_MONSTER) and te:GetOwner()~=e:GetOwner() and not te:IsActiveType(TYPE_LINK)
+	return te:IsActiveType(TYPE_MONSTER) and te:GetOwner()~=e:GetOwner()
 end
 --Cannot activate
 function s.atklimit(e,c)
