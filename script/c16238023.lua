@@ -51,7 +51,6 @@ function s.initial_effect(c)
 	e5:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e5:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
 	e5:SetCode(EVENT_DESTROYED)
-	e5:SetCost(s.cost5)
 	e5:SetTarget(s.tdtg)
 	e5:SetOperation(s.tdop)
 	c:RegisterEffect(e5)
@@ -141,10 +140,6 @@ function s.monop(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 --return
-function s.cost5(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return true end
-	Duel.PayLPCost(tp,math.floor(Duel.GetLP(tp)/2))
-end
 function s.tdtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return e:GetHandler():IsAbleToDeck() end
 	Duel.SetOperationInfo(0,CATEGORY_TODECK,e:GetHandler(),1,0,0)
