@@ -19,11 +19,11 @@ function s.initial_effect(c)
 	e2:SetOperation(s.operation)
 	c:RegisterEffect(e2)
 	--You take no battle damage from battles involving this cards
-	local e7=Effect.CreateEffect(c)
-	e7:SetType(EFFECT_TYPE_SINGLE)
-	e7:SetCode(EFFECT_AVOID_BATTLE_DAMAGE)
-	e7:SetValue(1)
-	c:RegisterEffect(e7)
+	local e4=Effect.CreateEffect(c)
+	e4:SetType(EFFECT_TYPE_SINGLE)
+	e4:SetCode(EFFECT_AVOID_BATTLE_DAMAGE)
+	e4:SetValue(1)
+	c:RegisterEffect(e4)
 	--Place itself into pendulum zone
 	local e6=Effect.CreateEffect(c)
 	e6:SetDescription(aux.Stringid(id,2))
@@ -41,13 +41,23 @@ function s.initial_effect(c)
 	e7:SetCategory(CATEGORY_SPECIAL_SUMMON)
 	e7:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
 	e7:SetProperty(EFFECT_FLAG_DELAY)
-	e7:SetCode(EVENT_SPSUMMON_SUCCESS)
+	e7:SetCode(EVENT_DESTROYED)
 	e7:SetRange(LOCATION_PZONE)
 	e7:SetCountLimit(1,{id,3})
 	e7:SetCondition(s.spcon)
 	e7:SetTarget(s.sptg)
 	e7:SetOperation(s.spop)
 	c:RegisterEffect(e7)
+	--Send 1 "Thunder Dragon" card from deck to GY
+	local e3=Effect.CreateEffect(c)
+	e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
+	e3:SetCode(EVENT_PHASE+PHASE_END)
+	e3:SetRange(LOCATION_PZONE)
+	e3:SetCountLimit(1)
+	e3:SetCondition(s.gycon)
+	e3:SetTarget(s.gytg)
+	e3:SetOperation(s.gyop)
+	c:RegisterEffect(e3)
 end
 function s.atkval(e,c)
 	return c:GetOverlayCount()*200
@@ -111,5 +121,23 @@ function s.spop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and c:IsRelateToEffect(e) then
 		Duel.SpecialSummon(c,0,tp,tp,false,false,POS_FACEUP)
+	end
+end
+--
+function s.gycon(e,tp,eg,ep,ev,re,r,rp)
+	return Duel.GetTurnPlayer()==tp
+end
+function s.gyfilter(c)
+	return c:IsSetCard(0xf25) and IsType(TYPE_SPELL+TYPE_TRAP) and c:IsAbleToGrave()
+end
+function s.gytg(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return Duel.IsExistingMatchingCard(s.gyfilter,tp,LOCATION_DECK,0,1,nil) end
+	Duel.SetOperationInfo(0,CATEGORY_TOGRAVE,nil,1,tp,LOCATION_DECK)
+end
+function s.gyop(e,tp,eg,ep,ev,re,r,rp)
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
+	local g=Duel.SelectMatchingCard(tp,s.gyfilter,tp,LOCATION_DECK,0,1,1,nil)
+	if #g>0 then
+		Duel.SendtoGrave(g,REASON_EFFECT)
 	end
 end

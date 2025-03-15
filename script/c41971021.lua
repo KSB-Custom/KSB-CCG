@@ -54,8 +54,9 @@ local e1=Effect.CreateEffect(c)
 	c:RegisterEffect(e5)
 end
 function s.ppcost(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return e:GetHandler():IsDiscardable() end
+	if chk==0 then return e:GetHandler():IsDiscardable() and Duel.CheckLPCost(tp,500) end
 	Duel.SendtoGrave(e:GetHandler(),REASON_COST+REASON_DISCARD)
+	Duel.PayLPCost(tp,500)
 end
 --
 function s.spquickcon(e,tp,eg,ep,ev,re,r,rp)

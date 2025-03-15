@@ -65,8 +65,9 @@ function s.spquickcon(e,tp,eg,ep,ev,re,r,rp)
 end
 --
 function s.thcost(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return e:GetHandler():IsDiscardable() end
+	if chk==0 then return e:GetHandler():IsDiscardable() and Duel.CheckLPCost(tp,500) end
 	Duel.SendtoGrave(e:GetHandler(),REASON_COST+REASON_DISCARD)
+	Duel.PayLPCost(tp,500)
 end
 function s.filter(c)
 	return c:IsSetCard(0xf25) and c:IsSpell() and c:IsType(TYPE_RITUAL) and c:IsSSetable()
