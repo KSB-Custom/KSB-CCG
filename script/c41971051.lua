@@ -48,7 +48,7 @@ function s.initial_effect(c)
 	e7:SetTarget(s.sptg)
 	e7:SetOperation(s.spop)
 	c:RegisterEffect(e7)
-	--Send 1 "Thunder Dragon" card from deck to GY
+	--Send 1 spell/trap card from deck to GY
 	local e3=Effect.CreateEffect(c)
 	e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
 	e3:SetCode(EVENT_PHASE+PHASE_END)
@@ -128,7 +128,7 @@ function s.gycon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.GetTurnPlayer()==tp
 end
 function s.gyfilter(c)
-	return c:IsSetCard(0xf25) and IsType(TYPE_SPELL+TYPE_TRAP) and c:IsAbleToGrave()
+	return c:IsSetCard(0xf25) and c:IsType(TYPE_SPELL+TYPE_TRAP) and c:IsAbleToGrave()
 end
 function s.gytg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.gyfilter,tp,LOCATION_DECK,0,1,nil) end
