@@ -52,7 +52,7 @@ function s.descost(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.RegisterEffect(e1,tp)
 end
 function s.aclimit(e,re,tp)
-	return re:IsActiveType(TYPE_MONSTER) and not re:GetHandler():IsSetCard(0x137)
+	return re:IsActiveType(TYPE_MONSTER) and not re:GetHandler():IsSetCard(0xf25)
 end
 function s.spop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
