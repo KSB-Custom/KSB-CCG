@@ -28,19 +28,20 @@ function s.initial_effect(c)
 	e3:SetCode(EFFECT_AVOID_BATTLE_DAMAGE)
 	e3:SetValue(1)
 	c:RegisterEffect(e3)
-	--splimit
+	--spsummon limit
 	local e4=Effect.CreateEffect(c)
+	e4:SetDescription(aux.Stringid(id,2))
 	e4:SetType(EFFECT_TYPE_FIELD)
-	e4:SetCode(EFFECT_CANNOT_SPECIAL_SUMMON)
-	e4:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
 	e4:SetRange(LOCATION_MZONE)
+	e4:SetCode(EFFECT_CANNOT_SPECIAL_SUMMON)
+	e4:SetProperty(EFFECT_FLAG_PLAYER_TARGET+EFFECT_FLAG_CLIENT_HINT)
 	e4:SetTargetRange(1,0)
-	e4:SetTarget(s.splimit)
+	e4:SetTarget(s.sumlimit)
 	c:RegisterEffect(e4)
 end
 s.listed_series={0xf25}
-function s.splimit(e,c)
-	return not c:IsSetCard(0xf25)
+function s.sumlimit(e,c,sump,sumtype,sumpos,targetp,se)
+	return c:IsLocation(LOCATION_EXTRA) and not c:IsSetCard(0xf25))
 end
 function s.condition(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_MZONE,LOCATION_MZONE,nil)
