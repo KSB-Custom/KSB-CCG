@@ -41,7 +41,7 @@ function s.initial_effect(c)
 end
 s.listed_series={0xf25}
 function s.sumlimit(e,c,sump,sumtype,sumpos,targetp,se)
-	return c:IsLocation(LOCATION_EXTRA) and not c:IsSetCard(0xf25))
+	return c:IsLocation(LOCATION_EXTRA) and not c:IsSetCard(0xf25)
 end
 function s.condition(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.GetMatchingGroup(Card.IsFaceup,tp,LOCATION_MZONE,LOCATION_MZONE,nil)
@@ -53,7 +53,7 @@ function s.filter(c,e,tp)
 	return c:IsSetCard(0xf25) and c:IsType(TYPE_NORMAL) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
 end
 function s.costfilter(c)
-	return c:IsSetCard(0xf25) and (c:IsType(TYPE_NORMAL) or c:IsType(TYPE_RITUAL)) and not c:IsPublic()
+	return c:IsSetCard(0xf25) and c:IsType(TYPE_MONSTER) and (c:IsType(TYPE_NORMAL) or c:IsType(TYPE_RITUAL)) and not c:IsPublic()
 end
 function s.spcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.costfilter,tp,LOCATION_HAND,0,1,nil) and Duel.CheckLPCost(tp,500) end
