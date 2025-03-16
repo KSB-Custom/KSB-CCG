@@ -2,7 +2,7 @@
 local s,id=GetID()
 function s.initial_effect(c)
 c:EnableReviveLimit()
-	Link.AddProcedure(c,s.matfilter,2,3)
+	Link.AddProcedure(c,nil,2,3,lcheck)
 	--You take no battle damage from battles involving this cards
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_SINGLE)
@@ -32,6 +32,10 @@ c:EnableReviveLimit()
 	e3:SetTarget(s.target)
 	e3:SetOperation(s.operation)
 	c:RegisterEffect(e3)
+end
+--
+function s.lcheck(g,lc,sumtype,tp)
+	return g:IsExists(Card.IsSetCard,1,nil,0xf25,lc,sumtype,tp)
 end
 --
 function s.spfilter(c,e,tp)
