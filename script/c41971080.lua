@@ -7,7 +7,6 @@ function s.initial_effect(c)
 	e1:SetType(EFFECT_TYPE_ACTIVATE)
 	e1:SetCode(EVENT_FREE_CHAIN)
 	e1:SetCountLimit(1,{id,1})
-	e1:SetTarget(s.pctg)
 	e1:SetOperation(s.pcop)
 	c:RegisterEffect(e1)
 	-- No LP Cost
@@ -34,10 +33,6 @@ s.listed_series={0xf25}
 function s.pcfilter(c)
 	return c:IsSetCard(0xf25) and c:IsType(TYPE_PENDULUM) and not c:IsForbidden()
 end
-function s.pctg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.CheckPendulumZones(tp)
-		and Duel.IsExistingMatchingCard(s.pcfilter,tp,LOCATION_DECK,0,1,nil) end
-end
 function s.pcop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if not c:IsRelateToEffect(e) then return end
@@ -51,9 +46,11 @@ function s.pcop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.RegisterEffect(e1,tp)
 	aux.RegisterClientHint(e:GetHandler(),nil,tp,1,0,aux.Stringid(id,2),nil)
 	if not Duel.CheckPendulumZones(tp) then return end
+	local g=Duel.GetMatchingGroup(s.pcfilter,tp,LOCATION_DECK,0,nil,tp)
+	if #g>0 and Duel.SelectYesNo(tp,aux.Stringid(id,0)) then
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOFIELD)
-	local g=Duel.SelectMatchingCard(tp,s.pcfilter,tp,LOCATION_DECK,0,1,1,nil)
-	if #g>0 then
+	local tc=g:Select(tp,1,1,nil):GetFirst()
+		if not tc then return end
 		Duel.MoveToField(g:GetFirst(),tp,tp,LOCATION_PZONE,POS_FACEUP,true)
 	end
 end
