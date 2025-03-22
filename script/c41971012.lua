@@ -58,7 +58,7 @@ function s.operation(e,tp,eg,ep,ev,re,r,rp)
 end
 --
 function s.filter(c)
-	return c:IsSSetable() and c:IsSetCard(0xf25) and (c:GetType()==(TYPE_TRAP) or c:GetType()==(TYPE_SPELL)) 
+	return c:IsSSetable() and c:IsSetCard(0xf25) and c:IsSpellTrap()
 end
 function s.fgtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsLocation(LOCATION_GRAVE) and chkc:IsControler(tp) and s.filter(chkc) end
