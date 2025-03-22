@@ -1,4 +1,4 @@
---JellyBeans Aviator
+--JellyBeans Master Wizard
 local s,id=GetID()
 function s.initial_effect(c)
 c:EnableReviveLimit()
@@ -9,7 +9,7 @@ c:EnableReviveLimit()
 	e1:SetCode(EFFECT_AVOID_BATTLE_DAMAGE)
 	e1:SetValue(1)
 	c:RegisterEffect(e1)
-	--Link summon 1 link monster during opponent's main phase
+	--Link summon 1 link monster 
 	local e2=Effect.CreateEffect(c)
 	e2:SetDescription(aux.Stringid(id,0))
 	e2:SetCategory(CATEGORY_SPECIAL_SUMMON)
@@ -17,6 +17,7 @@ c:EnableReviveLimit()
 	e2:SetCode(EVENT_FREE_CHAIN)
 	e2:SetHintTiming(0,TIMINGS_CHECK_MONSTER+TIMING_MAIN_END)
 	e2:SetRange(LOCATION_MZONE)
+	e2:SetCountLimit(1)
 	e2:SetCost(s.descost)
 	e2:SetTarget(s.sptg)
 	e2:SetOperation(s.spop)
