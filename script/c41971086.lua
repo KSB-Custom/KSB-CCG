@@ -12,6 +12,7 @@ function s.initial_effect(c)
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_EQUIP)
 	e1:SetCode(EFFECT_DISABLE)
+	e1:SetCondition(s.negcon)
 	c:RegisterEffect(e1)
 	--Atk up
 	local e2=Effect.CreateEffect(c)
@@ -33,11 +34,20 @@ function s.initial_effect(c)
 	e4:SetTarget(s.nstg)
 	e4:SetOperation(s.nsop)
 	c:RegisterEffect(e4)
+	--Direct Attack
+	local e5=Effect.CreateEffect(c)
+	e5:SetType(EFFECT_TYPE_EQUIP)
+	e5:SetCode(EFFECT_DIRECT_ATTACK)
+	c:RegisterEffect(e5)
+end
+function s.negcon(e)
+	local ec=e:GetHandler():GetEquipTarget()
+	return ec and not ec:IsSetCard(0xf25)
 end
 function s.con(e)
 	local ph=Duel.GetCurrentPhase()
 	local tp=Duel.GetTurnPlayer()
-	return tp==e:GetHandlerPlayer() ph==PHASE_MAIN1 or ph==PHASE_MAIN2
+	return tp==e:GetHandlerPlayer() and (ph==PHASE_MAIN1 or ph==PHASE_MAIN2)
 end
 function s.nsfilter(c)
 	return c:IsSetCard(0xf25) and c:IsSummonable(true,nil)
