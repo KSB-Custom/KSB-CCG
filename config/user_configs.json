@@ -1,0 +1,101 @@
+{
+	"repos": [
+		{
+			"url": "https://github.com/KSB-Custom/KSB-CCG",
+			"repo_name": "KSB Custom Cards",
+			"repo_path": "./repositories/KSBCustoms",
+			"should_update": true,
+			"should_read": true
+		},
+		{
+			"url": "https://github.com/Secuter/SecuterYGOCustomCards",
+			"repo_name": "Secuter Custom Cards",
+			"repo_path": "./repositories/secuter-custom-cards",
+			"data_path": "expansions",
+			"script_path": "script",
+			"should_update": true,
+			"should_read": true
+		},
+		{
+			"url": "https://github.com/Satellaa/Custom-Cards.git",
+			"repo_name": "Lilac Cards",
+			"repo_path": "./repositories/Lilac-Cards",
+			"data_path": "",
+			"script_path": "script",
+			"should_update": true,
+			"should_read": true
+		},
+		{
+			"url": "https://github.com/Coroln/Custom-cards",
+			 "repo_name": "Coroln Scripts",
+			 "repo_path": "./repositories/Coroln",
+			 "script_path": "script",
+			 "should_update": true,
+			 "should_read": true
+	  	},
+		{
+			"url": "https://github.com/Henrique-Izidio/EDOPro-RMS.git",
+			"repo_name": "RMS Cards",
+			"repo_path": "./repositories/RMS-Cards",
+			"data_path": "",
+			"script_path": "script",
+			"should_update": true,
+			"should_read": true
+		},
+		{
+			"url": "https://github.com/KServantes/Customs",
+			"repo_name": "Cartas de Keddy",
+			"repo_path": "./repositories/kedysium",
+			"should_update": true,
+			"should_read": true
+		},
+		{
+			"url": "https://github.com/lakevin/EdoProCustom",
+			"repo_name": "RMS Cards",
+			"repo_path": "./repositories/laKevin",
+			"data_path": "",
+			"script_path": "script",
+			"should_update": true,
+			"should_read": true
+		},
+		{
+			"url": "https://github.com/Drakayshin/Cartas-Custom---DrakayStudios",
+			"repo_name": "Cartas Custom - DrakayStudios",
+			"repo_path": "./repositories/Drakayshin",
+			"data_path": "expansions",
+			"script_path": "script",
+			"should_update": true,
+			"should_read": true
+		}
+	],
+	"urls": [
+		{
+			"url": "https://raw.githubusercontent.com/Secuter/SecuterYGOCustomCards-pics/master/{}.png",
+			"type": "pic"
+		},
+		{
+			"url": "https://raw.githubusercontent.com/Secuter/SecuterYGOCustomCards-pics/master/field/{}.png",
+			"type": "field"
+		},
+		{
+			"url": "https://raw.githubusercontent.com/Secuter/SecuterYGOCustomCards-pics/master/field/{}.jpg",
+			"type": "field"
+		}
+	],	
+	 "servers": [
+		{
+			"name": "Secuter Custom Cards",
+			"address": "duel.secutertools.win",
+			"duelport": 7820,
+			"roomaddress": "duel.secutertools.win",
+			"roomlistprotocol": "http",
+			"roomlistport": 7810
+		},
+		"name": "localhost",
+            "address": "127.0.0.1",
+            "roomaddress": "127.0.0.1",
+            "roomlistport": 7922,
+            "duelport": 7911
+		}
+    ]
+}
