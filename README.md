@@ -12,3 +12,49 @@ To add the cards and the server (for online play) follow the configuration in th
 
 Thanks to Secuter for allowing my cards to be added to their server.
 My discord: keenon4190
+
+# A la comunidad en Español
+Si no sabes inglés seguramente te costará entender como modificar algunas cosas del juego, como los repositorios, así que te dejo una guía sencilla a continuación.
+
+¿Qué es un repositorio y para qué sirve?
+Los repositorios son bibliotecas alojadas en Github.com, estos se enlazan con el juego mediante códigos dentro del archivo config.json. Un nuevo repositorio es una nueva colección de cartas (en este caso cartas personalizadas) y pueden ser añadidos modificando el archivo config.json (Carpeta config). 
+EdoPro se actualiza automáticamente mediante repositorios, los cuales contienen los archivos del juego. Un repositorio descargará o actualizará
+automáticamente las cartas en EdoPro, estas descargas se irán a la carpeta "Repositories". 
+Así es como se ven los códigos de repositorios en el archivo .json
+* repositories
+```json
+		{
+			"url": "https://github.com/Secuter/SecuterYGOCustomCards",
+			"repo_name": "Secuter Custom Cards",
+			"repo_path": "./repositories/secuter-custom-cards",
+			"data_path": "expansions",
+			"script_path": "script",
+			"should_update": true,
+			"should_read": true
+		},
+		{
+			"url": "https://github.com/KSB-Custom/KSB-CCG",
+			"repo_name": "KSB Custom Cards",
+			"repo_path": "./repositories/KSBCustoms",
+			"should_update": true,
+			"should_read": true
+		}
+```
+¿Cómo puedo añadir un repositorio a EdoPro?
+Hay 2 maneras: 
+1. Debes descargar el archivo [user_configs.json](Config/user_configs.json) y colocarlo en la carpeta "config" de su instalación de Edopro. En  mi caso -> WINDOWS(C)\ProjectIgnis\config\user_configs.json<br>
+2. Si usas otros repositorios con cartas personalizadas, debes editar manualmente el archivo user_config para incluir ambos.<br>
+Hay quienes modifican el archivo config.json, pero lo ideal es usar el archivo user_config. La única diferencia es que el archivo config.json se sobrescribe con las actualizaciones importantes de Edopro, mientras que el archivo user_config no.<br>
+
+¿Puedo tener más de un archivo configs.json?
+No. Si varios programadores tienen su propio archivo config.json o user_config.json debes quedarte con uno y utilizar el método manual para añadir sus repositorios en  un sólo un archivo user_config.json.
+
+¿Las cartas están en inglés o en español?
+He añadido un repositorio para mi traducción al español de las cartas personalizadas (Secuter y mías)
+Si ya tienes mi repositorio, solo debes verificar que el archivo esté en "languajes>Español>CCG-KSB-Spanish" dentro de la carpeta
+"Config" de tu Edopro. También puedes acerlo manualmente colocando el archivo en la ubicación mencionada. Debido a la gran carga de información usé traductores que pueden tener errores. Cualquier error que encuentres puedes reportarlo a mi discord para corregirlo.
+
+¿Puedo jugar con mis amigos con las cartas personalizadas?
+Sí, pero debes agregar el repositorio del servidor Secuter Custom Cards. (Mi archivo user_config.json ya lo incluye, si ya lo tienes debería aparecerte el Servidor)
+Y sólo las cartas que están en mi sitio web que tienen en la descripción "ONLINE" están disponibles para jugar en el servidor.
+->https://ksb-custom.github.io/KSB-Archetypes/
