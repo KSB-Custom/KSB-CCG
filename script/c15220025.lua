@@ -12,7 +12,7 @@ function s.initial_effect(c)
 	e0:SetTarget(s.sptg)
 	e0:SetOperation(s.spop)
 	c:RegisterEffect(e0)
-	--Search or send to the GY 1 Dinosaur from your Deck
+	--Search or send to the GY 1 TKOF from your Deck
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(id,0))
 	e1:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH+CATEGORY_TOGRAVE)
@@ -30,7 +30,7 @@ end
 s.listed_series={0x3f17,0x2f17}
 --
 function s.cfilter(c)
-	return c:IsMonster() and c:IsSetCard(0x2f17) and (c:IsAbleToHand() or c:IsAbleToGrave())
+	return c:IsMonster() and c:IsSetCard(0xf17) and (c:IsAbleToHand() or c:IsAbleToGrave())
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.cfilter,tp,LOCATION_DECK,0,1,nil) end

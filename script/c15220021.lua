@@ -27,7 +27,7 @@ function s.initial_effect(c)
 	e2:SetCode(EVENT_SPSUMMON_SUCCESS)
 	c:RegisterEffect(e2)
 end
-s.listed_series={0x3f17}
+s.listed_series={0xf17}
 function s.thfilter(c)
 	return c:IsCode(15220025) and c:IsAbleToHand()
 end
@@ -44,7 +44,7 @@ function s.thop(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function s.spconfilter(c)
-	return c:IsFaceup() and c:IsSetCard(0x3f17) and c:IsMonster() and c:IsAbleToDeckOrExtraAsCost()
+	return c:IsFaceup() and(c:IsCode(15220021) or c:IsCode(15220022)) and c:IsAbleToDeckOrExtraAsCost()
 end
 function s.spcon(e,c)
 	if c==nil then return true end

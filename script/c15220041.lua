@@ -1,6 +1,7 @@
 --Iori TKOF
 local s,id=GetID()
 function s.initial_effect(c)
+	c:SetUniqueOnField(1,0,id)
 	--Special Summon this card (from your hand) by discarding 1 "TKOF" monster
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(id,0))
@@ -14,6 +15,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e1)
 	--Additional Normal Summon
 	local e2=Effect.CreateEffect(c)
+	e2:SetDescription(aux.Stringid(id,1))
 	e2:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
 	e2:SetCode(EVENT_SUMMON_SUCCESS)
 	e2:SetOperation(s.nsop)
@@ -53,4 +55,10 @@ function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk,c)
 		return true
 	end
 	return false
+end
+function s.spop(e,tp,eg,ep,ev,re,r,rp,c)
+	local g=e:GetLabelObject()
+	if not g then return end
+	Duel.SendtoGrave(g,REASON_DISCARD|REASON_COST)
+	g:DeleteGroup()
 end

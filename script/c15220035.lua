@@ -25,6 +25,16 @@ function s.initial_effect(c)
 	local e2=e1:Clone()
 	e2:SetCode(EVENT_SPSUMMON_SUCCESS)
 	c:RegisterEffect(e2)
+	--destroy
+	local e3=Effect.CreateEffect(c)
+	e3:SetDescription(aux.Stringid(id,0))
+	e3:SetCategory(CATEGORY_DESTROY)
+	e3:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_F)
+	e3:SetCode(EVENT_BATTLED)
+	e3:SetCondition(s.condition)
+	e3:SetTarget(s.target)
+	e3:SetOperation(s.operation)
+	c:RegisterEffect(e3)
 end
 s.listed_series={0x1f17}
 function s.spcfilter(c)
@@ -70,5 +80,21 @@ function s.drop(e,tp,eg,ep,ev,re,r,rp,chk)
 		Duel.BreakEffect()
 		Duel.ShuffleHand(tp)
 		Duel.DiscardHand(tp,aux.TRUE,1,1,REASON_EFFECT+REASON_DISCARD)
+	end
+end
+--
+function s.condition(e,tp,eg,ep,ev,re,r,rp)
+	return e:GetHandler():GetBattleTarget()~=nil
+end
+function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return true end
+	local tc=e:GetHandler():GetBattleTarget()
+	Duel.SetTargetCard(tc)
+	Duel.SetOperationInfo(0,CATEGORY_DESTROY,tc,1,0,0)
+end
+function s.operation(e,tp,eg,ep,ev,re,r,rp)
+	local tc=Duel.GetFirstTarget()
+	if tc:IsRelateToEffect(e) then
+		Duel.Destroy(tc,REASON_EFFECT)
 	end
 end
