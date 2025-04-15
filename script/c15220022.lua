@@ -44,7 +44,7 @@ function s.thop(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function s.spconfilter(c)
-	return c:IsFaceup() (c:IsCode(15220021) or c:IsCode(15220022)) and c:IsAbleToDeckOrExtraAsCost()
+	return c:IsFaceup() and (c:IsCode(15220021) or c:IsCode(15220022)) and c:IsAbleToDeckOrExtraAsCost()
 end
 function s.spcon(e,c)
 	if c==nil then return true end
