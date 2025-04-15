@@ -7,18 +7,19 @@ function s.initial_effect(c)
 	e0:SetType(EFFECT_TYPE_FIELD)
 	e0:SetProperty(EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_CANNOT_DISABLE)
 	e0:SetCode(EFFECT_SPSUMMON_PROC)
-	e0:SetRange(LOCATION_HAND)
+	e0:SetRange(LOCATION_HAND|LOCATION_GRAVE)
 	e0:SetCondition(s.spcon)
 	e0:SetTarget(s.sptg)
 	e0:SetOperation(s.spop)
 	c:RegisterEffect(e0)
 	--destroy
 	local e1=Effect.CreateEffect(c)
-	e1:SetDescription(aux.Stringid(id,0))
+	e1:SetDescription(aux.Stringid(id,1))
 	e1:SetCategory(CATEGORY_DESTROY)
 	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e1:SetCode(EVENT_SUMMON_SUCCESS)
 	e1:SetProperty(EFFECT_FLAG_CARD_TARGET+EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DELAY)
+	e1:SetCountLimit(2,id)
 	e1:SetTarget(s.destg)
 	e1:SetOperation(s.desop)
 	c:RegisterEffect(e1)
@@ -34,7 +35,7 @@ function s.initial_effect(c)
 end
 s.listed_series={0x1f17}
 function s.spconfilter(c)
-	return c:IsSetCard(0x1f17) and c:IsMonster() and c:IsAbleToDeckOrExtraAsCost()
+	return c:IsFaceup() and c:IsSetCard(0x1f17) and c:IsMonster() and c:IsAbleToDeckOrExtraAsCost()
 end
 function s.spcon(e,c)
 	if c==nil then return true end
@@ -55,7 +56,7 @@ end
 function s.spop(e,tp,eg,ep,ev,re,r,rp,c)
 	local g=e:GetLabelObject()
 	if not g then return end
-	if g:IsExists(Card.IsLocation,1,nil,LOCATION_HAND) then
+	if g:IsExists(Card.IsLocation,1,nil,LOCATION_HAND|LOCATION_GRAVE) then
 		Duel.ConfirmCards(1-tp,g)
 	else
 		Duel.HintSelection(g)

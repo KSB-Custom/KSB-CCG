@@ -1,4 +1,4 @@
---Chris Twister Drive
+--Shermie Spark
 local s,id=GetID()
 function s.initial_effect(c)
 	--Special Summon this card (from your hand)
@@ -12,36 +12,39 @@ function s.initial_effect(c)
 	e0:SetTarget(s.sptg)
 	e0:SetOperation(s.spop)
 	c:RegisterEffect(e0)
-	--destroy
+	--Add 1 "Dragontail" monster from your Deck to your hand
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(id,0))
-	e1:SetCategory(CATEGORY_DESTROY)
+	e1:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH)
 	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
+	e1:SetProperty(EFFECT_FLAG_DELAY)
 	e1:SetCode(EVENT_SUMMON_SUCCESS)
-	e1:SetProperty(EFFECT_FLAG_CARD_TARGET+EFFECT_FLAG_DELAY)
-	e1:SetTarget(s.destg)
-	e1:SetOperation(s.desop)
+	e1:SetCountLimit(1,id)
+	e1:SetTarget(s.thtg)
+	e1:SetOperation(s.thop)
 	c:RegisterEffect(e1)
 	local e2=e1:Clone()
 	e2:SetCode(EVENT_SPSUMMON_SUCCESS)
 	c:RegisterEffect(e2)
-	--Increase its ATK by 1000 per attack declared
-	local e3=Effect.CreateEffect(c)
-	e3:SetType(EFFECT_TYPE_SINGLE)
-	e3:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
-	e3:SetCode(EFFECT_UPDATE_ATTACK)
-	e3:SetRange(LOCATION_MZONE)
-	e3:SetCondition(s.atkcon)
-	e3:SetValue(500)
-	c:RegisterEffect(e3)
 end
-s.listed_series={0x1f17}
-function s.atkcon(e)
-	local ph=Duel.GetCurrentPhase()
-	return (ph==PHASE_DAMAGE or ph==PHASE_DAMAGE_CAL) and e:GetHandler():IsRelateToBattle()
+s.listed_series={0x3f17}
+function s.thfilter(c)
+	return c:IsCode(15220025) and c:IsAbleToHand()
+end
+function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK,0,1,nil) end
+	Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_DECK)
+end
+function s.thop(e,tp,eg,ep,ev,re,r,rp)
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
+	local g=Duel.SelectMatchingCard(tp,s.thfilter,tp,LOCATION_DECK,0,1,1,nil)
+	if #g>0 then
+		Duel.SendtoHand(g,nil,REASON_EFFECT)
+		Duel.ConfirmCards(1-tp,g)
+	end
 end
 function s.spconfilter(c)
-	return c:IsFaceup() and c:IsSetCard(0x1f17) and c:IsMonster() and c:IsAbleToDeckOrExtraAsCost()
+	return c:IsFaceup() and c:IsSetCard(0x3f17) and c:IsMonster() and c:IsAbleToDeckOrExtraAsCost()
 end
 function s.spcon(e,c)
 	if c==nil then return true end
@@ -69,21 +72,4 @@ function s.spop(e,tp,eg,ep,ev,re,r,rp,c)
 	end
 	Duel.SendtoDeck(g,nil,SEQ_DECKSHUFFLE,REASON_COST)
 	g:DeleteGroup()
-end
---destroy
-function s.filter(c)
-	return c:IsAttackBelow(1000) and c:IsType(TYPE_MONSTER)
-end
-function s.destg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then return chkc:IsLocation(LOCATION_MZONE) end
-	if chk==0 then return Duel.IsExistingTarget(s.filter,tp,LOCATION_MZONE,LOCATION_MZONE,1,nil) end
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DESTROY)
-	local g=Duel.SelectTarget(tp,s.filter,tp,LOCATION_MZONE,LOCATION_MZONE,1,1,nil)
-	Duel.SetOperationInfo(0,CATEGORY_DESTROY,g,1,0,0)
-end
-function s.desop(e,tp,eg,ep,ev,re,r,rp)
-	local tc=Duel.GetFirstTarget()
-	if tc:IsRelateToEffect(e) then
-		Duel.Destroy(tc,REASON_EFFECT)
-	end
 end
