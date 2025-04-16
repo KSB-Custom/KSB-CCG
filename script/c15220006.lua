@@ -18,7 +18,7 @@ function s.fextra(e,tp,mg)
 end
 function s.extratg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
-	Duel.SetPossibleOperationInfo(0,CATEGORY_TOGRAVE,nil,2,tp,LOCATION_DECK)
+	Duel.SetPossibleOperationInfo(0,CATEGORY_TOGRAVE,nil,3,tp,LOCATION_DECK)
 end
 function s.stage2(e,tc,tp,mg,chk)
 	if chk==2 then
