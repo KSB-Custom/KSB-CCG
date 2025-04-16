@@ -18,6 +18,7 @@ function s.initial_effect(c)
 	e3:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e3:SetProperty(EFFECT_FLAG_CARD_TARGET+EFFECT_FLAG_DELAY)
 	e3:SetCode(EVENT_TO_GRAVE)
+	e3:SetCost(s.cost)
 	e3:SetCondition(s.con)
 	e3:SetCountLimit(1,id)
 	e3:SetTarget(s.tg)
@@ -33,7 +34,7 @@ function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,0,LOCATION_DECK)
 end
 function s.tgfilter(c)
-	return c:IsSetCard(0x1f17) and c:IsAbleToGrave()
+	return (c:IsSetCard(0x1f17) or c:IsCode(15220015)) and c:IsAbleToGrave()
 end
 function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.GetLocationCount(tp,LOCATION_MZONE)<=0 then return end
@@ -55,7 +56,7 @@ function s.con(e,tp,eg,ep,ev,re,r,rp)
 	return c:IsReason(REASON_DESTROY) and c:IsReason(REASON_EFFECT)
 end
 function s.dfilter(c)
-	return c:IsSetCard(0x1f17) and c:IsDiscardable()
+	return (c:IsSetCard(0x1f17) or c:IsCode(15220015)) and c:IsDiscardable()
 end
 function s.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.dfilter,tp,LOCATION_HAND,0,1,nil) end
