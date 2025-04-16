@@ -1,14 +1,14 @@
 --Iori Orochi TKOF
 local s,id=GetID()
 function s.initial_effect(c)
-	--special summon itself
+	--special summon 
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(id,0))
 	e1:SetCategory(CATEGORY_SPECIAL_SUMMON)
 	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e1:SetCode(EVENT_SUMMON_SUCCESS)
-	e1:SetTarget(s.sptg)
-	e1:SetOperation(s.spop)
+	e1:SetTarget(s.sptg2)
+	e1:SetOperation(s.spop2)
 	c:RegisterEffect(e1)
 	--Send 1 "TKOF" Monster from your Deck to the GY
 	local e2=Effect.CreateEffect(c)
@@ -21,7 +21,7 @@ function s.initial_effect(c)
 	e2:SetTarget(s.tgtg)
 	e2:SetOperation(s.tgop)
 	c:RegisterEffect(e2)
-	--spsummon
+	--spsummon itself
 	local e4=Effect.CreateEffect(c)
 	e4:SetDescription(aux.Stringid(id,2))
 	e4:SetCategory(CATEGORY_SPECIAL_SUMMON)
@@ -29,8 +29,8 @@ function s.initial_effect(c)
 	e4:SetRange(LOCATION_GRAVE)
 	e4:SetCountLimit(1,{id,2})
 	e4:SetCondition(s.pccon)
-	e4:SetTarget(s.sptg2)
-	e4:SetOperation(s.spop2)
+	e4:SetTarget(s.sptg)
+	e4:SetOperation(s.spop)
 	c:RegisterEffect(e4)
 end
 s.listed_series={0xf17}
