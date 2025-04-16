@@ -5,7 +5,7 @@ function s.initial_effect(c)
 	Fusion.AddProcMix(c,true,true,15220015,15220025,15220035)
 	Fusion.AddContactProc(c,s.contactfil,s.contactop,s.splimit)
 	--neos return
-	aux.EnableNeosReturn(c,CATEGORY_DESTROY,s.desinfo,s.desop)
+	aux.EnableNeosReturn(c,CATEGORY_SPECIAL_SUMMON,s.sptg,s.spop)
 	--immune
 	local e2=Effect.CreateEffect(c)
 	e2:SetType(EFFECT_TYPE_SINGLE)
@@ -45,14 +45,21 @@ end
 function s.efilter(e,te)
 	return te:GetOwner()~=e:GetOwner()
 end
-function s.desinfo(e,tp,eg,ep,ev,re,r,rp)
-	local dg=Duel.GetFieldGroup(tp,0,LOCATION_ONFIELD)
-	Duel.SetOperationInfo(0,CATEGORY_DESTROY,dg,#dg,0,0)
+function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+	if chk==0 then return true end
+	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_DECK|LOCATION_GRAVE)
 end
-function s.desop(e,tp,eg,ep,ev,re,r,rp)
-	local dg=Duel.GetFieldGroup(tp,0,LOCATION_ONFIELD)
-	if #dg>0 then
-		Duel.Destroy(dg,REASON_EFFECT)
+function s.spfilter(c,e,tp)
+	return c:IsCode(15220015) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
+end
+function s.spop(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
+	if Duel.GetLocationCount(tp,LOCATION_MZONE)>0 then
+		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
+		local g=Duel.SelectMatchingCard(tp,aux.NecroValleyFilter(s.spfilter),tp,LOCATION_DECK|LOCATION_GRAVE,0,1,1,nil,e,tp)
+		if #g>0 then
+			Duel.SpecialSummon(g,0,tp,tp,false,false,POS_FACEUP)
+		end
 	end
 end
 function s.splimit(e,se,sp,st)
