@@ -1,6 +1,8 @@
 local s,id=GetID()
 function s.initial_effect(c)
 	local e1=Fusion.CreateSummonEff(c,aux.FilterBoolFunction(Card.ListsCodeAsMaterial,15220015),nil,s.fextra,nil,nil,s.stage2,3,0,nil,FUSPROC_NOTFUSION|FUSPROC_LISTEDMATS,nil,nil,nil,s.extratg)
+	e1:SetCondition(s.condition)
+	e1:SetCost(s.cost)
 	c:RegisterEffect(e1)
 	--destroy replace
 	local e2=Effect.CreateEffect(c)
@@ -13,6 +15,13 @@ function s.initial_effect(c)
 	c:RegisterEffect(e2)
 end
 s.listed_names={15220015}
+function s.cost(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return true end
+	Duel.PayLPCost(tp,math.floor(Duel.GetLP(tp)/2))
+end
+function s.condition(e,tp,eg,ep,ev,re,r,rp)
+	return Duel.GetFieldGroupCount(tp,0,LOCATION_ONFIELD)>Duel.GetFieldGroupCount(tp,LOCATION_ONFIELD,0)
+end
 function s.fextra(e,tp,mg)
 	return Duel.GetMatchingGroup(Fusion.IsMonsterFilter(Card.IsAbleToGrave),tp,LOCATION_DECK,0,nil)
 end

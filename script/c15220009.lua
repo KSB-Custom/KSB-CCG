@@ -8,10 +8,10 @@ function s.initial_effect(c)
 	--tohand
 	local e2=Effect.CreateEffect(c)
 	e2:SetDescription(aux.Stringid(id,0))
-	e2:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH+EFFECT_FLAG_NO_TURN_RESET)
+	e2:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH)
 	e2:SetType(EFFECT_TYPE_IGNITION)
 	e2:SetRange(LOCATION_SZONE)
-	e2:SetCountLimit(1)
+	e2:SetCountLimit(1,{id,2},EFFECT_COUNT_CODE_OATH)
 	e2:SetTarget(s.thtg)
 	e2:SetOperation(s.thop)
 	c:RegisterEffect(e2)
@@ -26,6 +26,17 @@ function s.initial_effect(c)
 	e3:SetTarget(s.settg)
 	e3:SetOperation(s.setop)
 	c:RegisterEffect(e3)
+	--damage
+	local e4=Effect.CreateEffect(c)
+	e4:SetCategory(CATEGORY_DAMAGE)
+	e4:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_F)
+	e4:SetRange(LOCATION_SZONE)
+	e4:SetCode(EVENT_PHASE+PHASE_END)
+	e4:SetCountLimit(1)
+	e4:SetCondition(s.damcon)
+	e4:SetTarget(s.damtg)
+	e4:SetOperation(s.damop)
+	c:RegisterEffect(e4)
 end
 s.listed_series={0x2f17}
 function s.filter(c)
@@ -58,4 +69,19 @@ function s.setop(e,tp,eg,ep,ev,re,r,rp)
 	if c:IsRelateToEffect(e) and c:IsSSetable() then
 		Duel.SSet(tp,c)
 	end
+end
+--
+function s.damcon(e,tp,eg,ep,ev,re,r,rp)
+	return Duel.GetTurnPlayer()==tp
+end
+function s.damtg(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return true end
+	Duel.SetTargetPlayer(tp)
+	Duel.SetTargetParam(1000)
+	Duel.SetOperationInfo(0,CATEGORY_DAMAGE,0,0,tp,1000)
+end
+function s.damop(e,tp,eg,ep,ev,re,r,rp)
+	if not e:GetHandler():IsRelateToEffect(e) then return end
+	local p,d=Duel.GetChainInfo(0,CHAININFO_TARGET_PLAYER,CHAININFO_TARGET_PARAM)
+	Duel.Damage(p,d,REASON_EFFECT)
 end
