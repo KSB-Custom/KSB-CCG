@@ -1,20 +1,21 @@
 --FNO Party
 local s,id=GetID()
 function s.initial_effect(c)
-	Xyz.AddProcedure(c,aux.FilterBoolFunctionEx(Card.IsSetCard,0xf14),8,2,nil,nil,99)
-	--Prevent effect and activation from being negated
-	local e1=Effect.CreateEffect(c)
-	e1:SetType(EFFECT_TYPE_FIELD)
-	e1:SetCode(EFFECT_CANNOT_INACTIVATE)
-	e1:SetRange(LOCATION_MZONE)
-	e1:SetValue(s.effectfilter)
-	c:RegisterEffect(e1)
-	local e2=Effect.CreateEffect(c)
-	e2:SetType(EFFECT_TYPE_FIELD)
-	e2:SetCode(EFFECT_CANNOT_DISEFFECT)
-	e2:SetRange(LOCATION_MZONE)
-	e2:SetValue(s.effectfilter)
-	c:RegisterEffect(e2)
+	Xyz.AddProcedure(c,aux.FilterBoolFunctionEx(Card.IsSetCard,0xf14),8,2,s.xyzfilter,aux.Stringid(id,0),Xyz.InfiniteMats,s.xyzop)
+	--Fusion Summon 1 "FNO" Fusion Monster 
+	local params={fusfilter=s.fusionfilter,gc=Fusion.ForcedHandler}
+	local e7=Effect.CreateEffect(c)
+	e7:SetDescription(aux.Stringid(id,0))
+	e7:SetCategory(CATEGORY_SPECIAL_SUMMON+CATEGORY_FUSION_SUMMON)
+	e7:SetType(EFFECT_TYPE_QUICK_O)
+	e7:SetCode(EVENT_FREE_CHAIN)
+	e7:SetRange(LOCATION_MZONE)
+	e7:SetHintTiming(0,TIMING_MAIN_END|TIMINGS_CHECK_MONSTER)
+	e7:SetCountLimit(1,id)
+	e7:SetCondition(function() return Duel.IsMainPhase() end)
+	e7:SetTarget(Fusion.SummonEffTG(params))
+	e7:SetOperation(Fusion.SummonEffOP(params))
+	c:RegisterEffect(e7)
 	--PZone fusion material
 	local e3=Effect.CreateEffect(c)
 	e3:SetType(EFFECT_TYPE_FIELD)
@@ -24,16 +25,6 @@ function s.initial_effect(c)
 	e3:SetTarget(s.mttg2)
 	e3:SetValue(s.mtval)
 	c:RegisterEffect(e3)
-	--Opponent's monsters cannot activate their effects during battle phase
-	local e4=Effect.CreateEffect(c)
-	e4:SetType(EFFECT_TYPE_FIELD)
-	e4:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
-	e4:SetCode(EFFECT_CANNOT_ACTIVATE)
-	e4:SetRange(LOCATION_MZONE)
-	e4:SetTargetRange(0,1)
-	e4:SetCondition(s.condition)
-	e4:SetValue(s.aclimit)
-	c:RegisterEffect(e4)
 	--atkup
 	local e5=Effect.CreateEffect(c)
 	e5:SetType(EFFECT_TYPE_SINGLE)
@@ -51,7 +42,33 @@ function s.initial_effect(c)
 	e6:SetCondition(s.incon)
 	e6:SetValue(1)
 	c:RegisterEffect(e6)
+	--
+	aux.GlobalCheck(s,function()
+		local ge1=Effect.CreateEffect(c)
+		ge1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+		ge1:SetCode(EVENT_CHAIN_SOLVED)
+		ge1:SetOperation(s.regop)
+		Duel.RegisterEffect(ge1,0)
+	end)
 	end
+function s.fusionfilter(c)
+	return c:IsSetCard(0xf14)
+end
+function s.xyzfilter(c,tp,xyzc)
+	local g=Duel.GetMatchingGroup(aux.FilterBoolFunctionEx(Card.IsSetCard,0xf14),tp,LOCATION_MZONE,0,nil)
+	return #g>0 and g:GetMaxGroup(Card.GetAttack,nil):IsContains(c)
+end
+function s.regop(e,tp,eg,ep,ev,re,r,rp)
+	if not re:IsMonsterEffect() or Duel.HasFlagEffect(rp,id) then return end
+	local loc=Duel.GetChainInfo(ev,CHAININFO_TRIGGERING_LOCATION)
+	if loc==LOCATION_HAND or loc==LOCATION_GRAVE then
+		Duel.RegisterFlagEffect(rp,id,RESET_PHASE|PHASE_END,0,1)
+	end
+end
+function s.xyzop(e,tp,chk)
+	if chk==0 then return Duel.HasFlagEffect(1-tp,id) end
+	return true
+end
 --Ritual
 function s.effectfilter(e,c)
 	local e=Duel.GetChainInfo(c,CHAININFO_TRIGGERING_EFFECT)
