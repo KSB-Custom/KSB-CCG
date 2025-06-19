@@ -55,7 +55,7 @@ function s.fusionfilter(c)
 	return c:IsSetCard(0xf14)
 end
 function s.xyzfilter(c,tp,xyzc)
-	local g=Duel.GetMatchingGroup(aux.FilterBoolFunctionEx(Card.IsSetCard,0xf14),tp,LOCATION_MZONE,0,nil)
+	local g=Duel.GetMatchingGroup(s.cfilter,tp,LOCATION_MZONE,0,nil)
 	return #g>0 and g:GetMaxGroup(Card.GetAttack,nil):IsContains(c)
 end
 function s.regop(e,tp,eg,ep,ev,re,r,rp)
@@ -84,15 +84,7 @@ function s.mtval(e,c)
 end
 --Sychro
 function s.cfilter(c)
-	return c:IsFaceup() and c:IsSetCard(0xf14) and c:IsType(TYPE_SYNCHRO)
-end
-function s.condition(e)
-	local ph=Duel.GetCurrentPhase()
-	return Duel.IsExistingMatchingCard(s.cfilter,e:GetHandlerPlayer(),LOCATION_MZONE,0,1,e:GetHandler()) 
-	and (ph>=PHASE_BATTLE_START and ph<=PHASE_BATTLE)
-end
-function s.aclimit(e,re,tp)
-	return re:IsActiveType(TYPE_MONSTER)
+	return c:IsFaceup() and c:IsSetCard(0xf14) and c:IsType(TYPE_PENDULUM)
 end
 --
 function s.val(e,c)
