@@ -3,6 +3,17 @@ local s,id=GetID()
 function s.initial_effect(c)
 	--pendulum summon
 	Pendulum.AddProcedure(c)
+	--Special Summon this card from your GY
+	local e2=Effect.CreateEffect(c)
+	e2:SetType(EFFECT_TYPE_FIELD)
+	e2:SetProperty(EFFECT_FLAG_UNCOPYABLE)
+	e2:SetCode(EFFECT_SPSUMMON_PROC)
+	e2:SetRange(LOCATION_GRAVE)
+	e2:SetCountLimit(1,{id,2})
+	e2:SetCondition(s.spcon1)
+	e2:SetTarget(s.sptg1)
+	e2:SetOperation(s.spop1)
+	c:RegisterEffect(e2)
 	--Cannot disable pendulum summon
 	local e4=Effect.CreateEffect(c)
 	e4:SetType(EFFECT_TYPE_FIELD)
@@ -75,7 +86,38 @@ function s.initial_effect(c)
 	c:RegisterEffect(e9)
 end
 s.listed_series={0xf14}
-
+--
+function s.spfilter2(c,ft)
+	return c:IsFaceup() and c:IsSetCard(0xf14) and c:IsType(TYPE_PENDULUM) and c:IsAbleToRemoveAsCost() and (ft>0 or c:GetSequence()<5)
+end
+function s.spcon1(e,c)
+	if c==nil then return true end
+	local tp=c:GetControler()
+	local ft=Duel.GetLocationCount(tp,LOCATION_ONFIELD)
+	local rg=Duel.GetMatchingGroup(s.spfilter2,tp,LOCATION_ONFIELD,0,nil,ft)
+	return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
+		and Duel.GetFieldGroupCount(tp,LOCATION_MZONE,0)<Duel.GetFieldGroupCount(tp,0,LOCATION_MZONE)
+		and #rg>0 and aux.SelectUnselectGroup(rg,e,tp,1,1,nil,0)
+end
+function s.sptg1(e,tp,eg,ep,ev,re,r,rp,c)
+	local c=e:GetHandler()
+	local g=nil
+	local rg=Duel.GetMatchingGroup(s.spfilter2,tp,LOCATION_ONFIELD,0,nil,Duel.GetLocationCount(tp,LOCATION_ONFIELD))
+	local g=aux.SelectUnselectGroup(rg,e,tp,1,1,nil,1,tp,HINTMSG_REMOVE,nil,nil,true)
+	if #g>0 then
+		g:KeepAlive()
+		e:SetLabelObject(g)
+		return true
+	end
+	return false
+end
+function s.spop1(e,tp,eg,ep,ev,re,r,rp,c)
+	local g=e:GetLabelObject()
+	if not g then return end
+	Duel.Remove(g,POS_FACEUP,REASON_COST)
+	g:DeleteGroup()
+end
+--
 function s.target(e,c)
 	return c:IsSetCard(0xf14) and c:IsType(TYPE_PENDULUM)
 end

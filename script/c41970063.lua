@@ -2,6 +2,7 @@
 local s,id=GetID()
 function s.initial_effect(c)
 	Xyz.AddProcedure(c,aux.FilterBoolFunctionEx(Card.IsSetCard,0xf14),8,2,s.xyzfilter,aux.Stringid(id,0),Xyz.InfiniteMats,s.xyzop)
+	c:SetUniqueOnField(1,0,id)
 	--Fusion Summon 1 "FNO" Fusion Monster 
 	local params={fusfilter=s.fusionfilter,gc=Fusion.ForcedHandler}
 	local e7=Effect.CreateEffect(c)
