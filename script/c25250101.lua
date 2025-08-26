@@ -33,7 +33,7 @@ function s.initial_effect(c)
 	e3:SetProperty(EFFECT_FLAG_DELAY)
 	e3:SetCode(EVENT_REMOVE)
 	e3:SetRange(LOCATION_MZONE)
-	e3:SetCountLimit(1,{id,1})
+	e3:SetCountLimit(1)
 	e3:SetTarget(s.ovtg)
 	e3:SetOperation(s.ovop)
 	c:RegisterEffect(e3)
@@ -44,12 +44,11 @@ function s.initial_effect(c)
 end
 --Unaffected
 function s.unafilter(c)
-	return c:IsCard(75347539)
+	return c:IsCode(75347539)
 end
 function s.unacon(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	local bc=c:GetBattleTarget()
-	return bc and bc:IsControler(1-tp) and c:GetOverlayGroup():IsExists(s.unafilter,1,nil)
+	return c:GetOverlayGroup():IsExists(s.unafilter,1,nil)
 end
 --Xyz Filter
 function s.ovfilter(c,tp,lc)
@@ -88,18 +87,17 @@ function s.disop(e,tp,eg,ep,ev,re,r,rp)
 	end
 	if not c:IsRelateToEffect(e) or c:IsFacedown() then return end
 end
---Attach
-function s.ovfilter(c,e,xc,tp)
-	return c:IsMonster() and c:IsFaceup() and c:IsSetCard(SET_MAGNETIC_WARRIOR)
-		and c:GetOwner()==tp and c:IsLocation(LOCATION_GRAVE|LOCATION_REMOVED)
-		and not c:IsImmuneToEffect(e) and c:IsCanBeXyzMaterial(xc,tp,REASON_EFFECT)
+--Attach 
+function s.ovfilter2(c,e,xc,tp)
+	return c:IsMonster() and c:IsFaceup() and c:IsAttribute(ATTRIBUTE_EARTH) and c:IsRace(RACE_ROCK)
+		and c:GetOwner()==tp and not c:IsImmuneToEffect(e) and c:IsCanBeXyzMaterial(xc,tp,REASON_EFFECT)
 end
 function s.ovtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
-	if chk==0 then return c:IsType(TYPE_XYZ) and eg:IsExists(s.ovfilter,1,nil,e,c,tp) end
+	if chk==0 then return c:IsType(TYPE_XYZ) and eg:IsExists(s.ovfilter2,1,nil,e,c,tp) end
 	Duel.SetTargetCard(eg)
 	if e:GetCode()==EVENT_TO_GRAVE then
-		Duel.SetOperationInfo(0,CATEGORY_LEAVE_GRAVE,nil,1,1-tp,0)
+		Duel.SetOperationInfo(0,CATEGORY_LEAVE_GRAVE,nil,1,tp,0)
 	end
 end
 function s.ovop(e,tp,eg,ep,ev,re,r,rp)
@@ -108,7 +106,7 @@ function s.ovop(e,tp,eg,ep,ev,re,r,rp)
 	local tg=Duel.GetTargetCards(e):Filter(Card.IsRelateToEffect,nil,e)
 	if #tg==0 then return end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATTACH)
-	local g=tg:FilterSelect(tp,s.ovfilter,1,1,nil,e,c,tp)
+	local g=tg:FilterSelect(tp,s.ovfilter2,1,1,nil,e,c,tp)
 	if #g>0 then
 		Duel.Overlay(c,g)
 	end
