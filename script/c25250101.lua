@@ -17,7 +17,8 @@ function s.initial_effect(c)
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(id,0))
 	e1:SetCategory(CATEGORY_DISABLE)
-	e1:SetType(EFFECT_TYPE_QUICK)
+	e1:SetType(EFFECT_TYPE_QUICK_O)
+	e1:SetCode(EVENT_FREE_CHAIN)
 	e1:SetRange(LOCATION_MZONE)
 	e1:SetCountLimit(1)
 	e1:SetCondition(s.discon)
@@ -25,10 +26,25 @@ function s.initial_effect(c)
 	e1:SetTarget(s.distg)
 	e1:SetOperation(s.disop)
 	c:RegisterEffect(e1)
+	--Attach 1 monster to this card
+	local e3=Effect.CreateEffect(c)
+	e3:SetDescription(aux.Stringid(id,1))
+	e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
+	e3:SetProperty(EFFECT_FLAG_DELAY)
+	e3:SetCode(EVENT_REMOVE)
+	e3:SetRange(LOCATION_MZONE)
+	e3:SetCountLimit(1,{id,1})
+	e3:SetTarget(s.ovtg)
+	e3:SetOperation(s.ovop)
+	c:RegisterEffect(e3)
+	local e4=e3:Clone()
+	e4:SetCategory(CATEGORY_LEAVE_GRAVE)
+	e4:SetCode(EVENT_TO_GRAVE)
+	c:RegisterEffect(e4)
 end
 --Unaffected
 function s.unafilter(c)
-	return c:IsSetCard(SET_UTOPIA) and c:IsType(TYPE_XYZ)
+	return c:IsCard(75347539)
 end
 function s.unacon(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
@@ -71,4 +87,29 @@ function s.disop(e,tp,eg,ep,ev,re,r,rp)
 		end
 	end
 	if not c:IsRelateToEffect(e) or c:IsFacedown() then return end
+end
+--Attach
+function s.ovfilter(c,e,xc,tp)
+	return c:IsMonster() and c:IsFaceup() and c:IsSetCard(SET_MAGNETIC_WARRIOR)
+		and c:GetOwner()==tp and c:IsLocation(LOCATION_GRAVE|LOCATION_REMOVED)
+		and not c:IsImmuneToEffect(e) and c:IsCanBeXyzMaterial(xc,tp,REASON_EFFECT)
+end
+function s.ovtg(e,tp,eg,ep,ev,re,r,rp,chk)
+	local c=e:GetHandler()
+	if chk==0 then return c:IsType(TYPE_XYZ) and eg:IsExists(s.ovfilter,1,nil,e,c,tp) end
+	Duel.SetTargetCard(eg)
+	if e:GetCode()==EVENT_TO_GRAVE then
+		Duel.SetOperationInfo(0,CATEGORY_LEAVE_GRAVE,nil,1,1-tp,0)
+	end
+end
+function s.ovop(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
+	if not c:IsRelateToEffect(e) or not c:IsType(TYPE_XYZ) or c:IsImmuneToEffect(e) then return end
+	local tg=Duel.GetTargetCards(e):Filter(Card.IsRelateToEffect,nil,e)
+	if #tg==0 then return end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATTACH)
+	local g=tg:FilterSelect(tp,s.ovfilter,1,1,nil,e,c,tp)
+	if #g>0 then
+		Duel.Overlay(c,g)
+	end
 end
