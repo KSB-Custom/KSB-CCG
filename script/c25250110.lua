@@ -60,7 +60,7 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Damage(p,d,REASON_EFFECT)
 end
 function s.actfilter(c)
-	return c:IsFaceup() and c:IsSetCard(SET_MAGNET_WARRIOR) and c:IsNormalMonster() 
+	return c:IsFaceup() and c:IsSetCard(SET_MAGNET_WARRIOR) and c:IsType(TYPE_NORMAL)
 end
 function s.actcon(e)
 	return Duel.IsExistingMatchingCard(s.actfilter,e:GetHandlerPlayer(),LOCATION_MZONE,0,1,nil)
