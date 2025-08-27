@@ -8,6 +8,7 @@ function s.initial_effect(c)
 	--Cannot be destroyed by opponent's card effects
 	local e1=Effect.CreateEffect(c)
 	e1:SetCode(EFFECT_IMMUNE_EFFECT)
+	e1:SetType(EFFECT_TYPE_SINGLE)
 	e1:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
 	e1:SetRange(LOCATION_MZONE)
 	e1:SetCondition(function(e) return Duel.IsExistingMatchingCard(aux.FaceupFilter(Card.IsCode,4740489),0,LOCATION_ONFIELD,LOCATION_ONFIELD,1,nil) end)

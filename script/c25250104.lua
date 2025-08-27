@@ -61,7 +61,7 @@ function s.ssop(e,tp,eg,ep,ev,re,r,rp)
 end
 s.listed_series={SET_MAGNET_WARRIOR}
 function s.spcostfilter(c)
-	return c:IsSetCard(SET_MAGNET_WARRIOR) and c:IsNormalMonster() and not c:IsPublic()
+	return c:IsSetCard(SET_MAGNET_WARRIOR) and c:IsType(TYPE_NORMAL) and not c:IsPublic()
 end
 function s.spcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
