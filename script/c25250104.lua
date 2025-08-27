@@ -1,7 +1,7 @@
---Epsilon the Magnet Warrior 
+--Zeta the Magnet Warrior 
 local s,id=GetID()
 function s.initial_effect(c)
---Special Summon
+	--Special Summon
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(id,0))
 	e1:SetType(EFFECT_TYPE_TRIGGER_O+EFFECT_TYPE_FIELD)
@@ -14,7 +14,7 @@ function s.initial_effect(c)
 	e1:SetTarget(s.sstg)
 	e1:SetOperation(s.ssop)
 	c:RegisterEffect(e1)
-	--
+	--Once cannot be destroyed by battle
 	local e2=Effect.CreateEffect(c)
 	e2:SetType(EFFECT_TYPE_SINGLE)
 	e2:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
@@ -61,7 +61,7 @@ function s.ssop(e,tp,eg,ep,ev,re,r,rp)
 end
 s.listed_series={SET_MAGNET_WARRIOR}
 function s.spcostfilter(c)
-	return c:IsSetCard(SET_MAGNET_WARRIOR) and c:IsMonster() and not c:IsPublic()
+	return c:IsSetCard(SET_MAGNET_WARRIOR) and c:IsNormalMonster() and not c:IsPublic()
 end
 function s.spcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
@@ -95,8 +95,8 @@ function s.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if Duel.Remove(c,POS_FACEUP,REASON_COST+REASON_TEMPORARY)~=0 then
 		local e1=Effect.CreateEffect(c)
 		e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
-		e1:SetCode(EVENT_PHASE+PHASE_END)
-		e1:SetReset(RESET_PHASE|PHASE_END)
+		e1:SetCode(EVENT_PHASE+PHASE_STANDBY)
+		e1:SetReset(RESET_PHASE|PHASE_STANDBY)
 		e1:SetLabelObject(c)
 		e1:SetCountLimit(1)
 		e1:SetOperation(s.retop)
