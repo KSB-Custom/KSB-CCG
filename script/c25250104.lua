@@ -39,6 +39,9 @@ function s.initial_effect(c)
 	e4:SetCode(EVENT_SPSUMMON_SUCCESS)
 	c:RegisterEffect(e4)
 end
+s.listed_names={id}
+s.listed_series={SET_MAGNET_WARRIOR}
+--
 function s.valcon(e,re,r,rp)
 	return (r&REASON_BATTLE)~=0
 end

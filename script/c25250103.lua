@@ -20,6 +20,7 @@ function s.initial_effect(c)
 	e2:SetOperation(s.sumop)
 	c:RegisterEffect(e2)
 end
+s.listed_names={id}
 s.listed_series={SET_MAGNET_WARRIOR}
 function s.spfilter(c)
 	return c:IsRace(RACE_ROCK) and c:IsAttribute(ATTRIBUTE_EARTH) and not c:IsCode(id)
