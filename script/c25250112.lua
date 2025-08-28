@@ -14,7 +14,7 @@ function s.initial_effect(c)
 	e1:SetTarget(s.settg)
 	e1:SetOperation(s.setop)
 	c:RegisterEffect(e1)
-	--spsummon
+	--Draw
 	local e2=Effect.CreateEffect(c)
 	e2:SetDescription(aux.Stringid(id,0))
 	e2:SetCategory(CATEGORY_DRAW)
@@ -33,6 +33,14 @@ function s.initial_effect(c)
 	e3:SetHintTiming(0,TIMINGS_CHECK_MONSTER_E)
 	e3:SetCondition(s.spquickcon)
 	c:RegisterEffect(e3)
+	--Name becomes
+	local e4=Effect.CreateEffect(c)
+	e4:SetType(EFFECT_TYPE_SINGLE)
+	e4:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
+	e4:SetCode(EFFECT_CHANGE_CODE)
+	e4:SetRange(LOCATION_MZONE|LOCATION_GRAVE)
+	e4:SetValue(39256679)
+	c:RegisterEffect(e4)
 end
 function s.matfilter(c,scard,sumtype,tp)
 	return c:IsLevelBelow(4) and c:IsRace(RACE_ROCK,scard,sumtype,tp) and c:IsAttribute(ATTRIBUTE_EARTH,lc,sumtype,tp)

@@ -16,7 +16,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e2)
 end
 function s.ffilter(c)
-	return c:IsAttribute(ATTRIBUTE_LIGHT) and c:IsRace(RACE_WARRIOR)
+	return c:IsAttribute(ATTRIBUTE_EARTH) and c:IsRace(RACE_ROCK)
 end
 function s.fextra(e,tp,mg)
 	return Duel.GetMatchingGroup(aux.NecroValleyFilter(Fusion.IsMonsterFilter(Card.IsFaceup,Card.IsAbleToDeck)),tp,LOCATION_GRAVE|LOCATION_REMOVED,0,nil)
