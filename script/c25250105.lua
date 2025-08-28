@@ -4,7 +4,8 @@ function s.initial_effect(c)
 	--fusion material
 	c:EnableReviveLimit()
 	Fusion.AddProcMix(c,true,true,99785935,39256679,11549357)
-	Fusion.AddContactProc(c,s.contactfil,s.contactop,s.splimit)
+	Fusion.AddContactProc(c,s.contactfil,s.contactop,false,nil,1)
+	c:AddMustBeFusionSummoned()
 	--Cannot be destroyed by opponent's card effects
 	local e1=Effect.CreateEffect(c)
 	e1:SetCode(EFFECT_IMMUNE_EFFECT)
@@ -29,9 +30,6 @@ function s.initial_effect(c)
 end
 function s.efilter(e,te)
 	return te:GetOwner()~=e:GetOwner()
-end
-function s.splimit(e,se,sp,st)
-	return not e:GetHandler():IsLocation(LOCATION_EXTRA)
 end
 function s.matfil(c,tp)
 	return c:IsAbleToRemoveAsCost() and (c:IsLocation(LOCATION_SZONE) or aux.SpElimFilter(c,false,true))
