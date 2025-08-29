@@ -6,7 +6,7 @@ function s.initial_effect(c)
 	Fusion.AddProcMix(c,true,true,99785935,aux.FilterBoolFunctionEx(Card.IsSetCard,SET_MAGNET_WARRIOR))
 	Fusion.AddContactProc(c,s.contactfil,s.contactop,false,nil,1)
 	c:AddMustBeFusionSummoned()
-	--Search or send to the GY 1 Dinosaur from your Deck
+	--Search or send to the GY 1 from your Deck
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(id,0))
 	e1:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH+CATEGORY_TOGRAVE)
