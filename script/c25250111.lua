@@ -45,8 +45,11 @@ function s.matfilter(c,scard,sumtype,tp)
 	return c:IsLevelBelow(4) and c:IsRace(RACE_ROCK,scard,sumtype,tp) and c:IsAttribute(ATTRIBUTE_EARTH,lc,sumtype,tp)
 end
 --
+function s.sfilter(c)
+	return c:IsFaceup() and c:IsCode(4740489)
+end
 function s.spquickcon(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.GetFieldGroupCount(tp,0,LOCATION_MZONE)>0
+	return Duel.IsExistingMatchingCard(s.sfilter,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,nil)
 end
 --
 function s.thcon(e,tp,eg,ep,ev,re,r,rp)

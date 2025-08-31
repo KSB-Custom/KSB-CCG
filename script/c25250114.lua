@@ -25,7 +25,7 @@ function s.initial_effect(c)
 	--Negate traps
 	local e4=Effect.CreateEffect(c)
 	e4:SetType(EFFECT_TYPE_FIELD)
-	e4:S¿etCode(EFFECT_DISABLE)
+	e4:SetCode(EFFECT_DISABLE)
 	e4:SetRange(LOCATION_SZONE)
 	e4:SetTargetRange(LOCATION_SZONE,LOCATION_SZONE)
 	e4:SetTarget(s.distarget)
