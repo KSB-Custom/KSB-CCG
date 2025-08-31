@@ -37,7 +37,9 @@ function s.initial_effect(c)
 	c:RegisterEffect(e4)
 end
 function s.efilter(e,te)
-	return te:GetOwner()~=e:GetOwner()
+	function s.efilter(e,re)
+	return e:GetOwnerPlayer()~=re:GetOwnerPlayer()
+end
 end
 function s.matfil(c,tp)
 	return c:IsAbleToRemoveAsCost() and (c:IsLocation(LOCATION_SZONE) or aux.SpElimFilter(c,false,true))
