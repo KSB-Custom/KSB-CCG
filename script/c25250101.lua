@@ -1,113 +1,93 @@
---Valkyrion the Magna Warrior Charged-Mode
+--Valkyrion the Magna Wings
 local s,id=GetID()
 function s.initial_effect(c)
+	--Fusion Procedure
 	c:EnableReviveLimit()
-	--Xyz Summon
-	Xyz.AddProcedure(c,aux.FilterBoolFunctionEx(Card.IsAttribute,ATTRIBUTE_EARTH),8,2,s.ovfilter,aux.Stringid(id,0))
-	--Unaffected by opponent's activated effects
-	local e0=Effect.CreateEffect(c)
-	e0:SetType(EFFECT_TYPE_SINGLE)
-	e0:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
-	e0:SetCode(EFFECT_IMMUNE_EFFECT)
-	e0:SetRange(LOCATION_MZONE)
-	e0:SetCondition(s.unacon)
-	e0:SetValue(function(e,te) return te:IsActivated() and e:GetOwnerPlayer()~=te:GetOwnerPlayer() end)
-	c:RegisterEffect(e0)
-	--Negate
+	Fusion.AddProcMixN(c,true,true,99785935,39256679,11549357)
+	--Shuffle cards from the GY into the Deck
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(id,0))
-	e1:SetCategory(CATEGORY_DISABLE)
-	e1:SetType(EFFECT_TYPE_QUICK_O)
-	e1:SetCode(EVENT_FREE_CHAIN)
-	e1:SetRange(LOCATION_MZONE)
-	e1:SetCountLimit(1)
-	e1:SetCondition(s.discon)
-	e1:SetCost(Cost.DetachFromSelf(1))
-	e1:SetTarget(s.distg)
-	e1:SetOperation(s.disop)
+	e1:SetCategory(CATEGORY_TODECK)
+	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
+	e1:SetProperty(EFFECT_FLAG_CARD_TARGET+EFFECT_FLAG_DELAY)
+	e1:SetCode(EVENT_SPSUMMON_SUCCESS)
+	e1:SetCountLimit(1,id)
+	e1:SetTarget(s.tdtg)
+	e1:SetOperation(s.tdop)
 	c:RegisterEffect(e1)
-	--Attach 1 monster to this card
+	--Banish 1 "Magna Warrior" monster from your GY and banish
+	local e2=Effect.CreateEffect(c)
+	e2:SetDescription(aux.Stringid(id,1))
+	e2:SetCategory(CATEGORY_REMOVE+CATEGORY_DESTROY)
+	e2:SetType(EFFECT_TYPE_IGNITION)
+	e2:SetRange(LOCATION_MZONE)
+	e2:SetProperty(EFFECT_FLAG_CARD_TARGET)
+	e2:SetCountLimit(1,{id,1})
+	e2:SetCost(s.rmcost)
+	e2:SetTarget(s.rmtg)
+	e2:SetOperation(s.rmop)
+	c:RegisterEffect(e2)
+	--Cannot be targeted
 	local e3=Effect.CreateEffect(c)
-	e3:SetDescription(aux.Stringid(id,1))
-	e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
-	e3:SetProperty(EFFECT_FLAG_DELAY)
-	e3:SetCode(EVENT_REMOVE)
+	e3:SetType(EFFECT_TYPE_FIELD)
+	e3:SetCode(EFFECT_CANNOT_BE_EFFECT_TARGET)
 	e3:SetRange(LOCATION_MZONE)
-	e3:SetCountLimit(1)
-	e3:SetTarget(s.ovtg)
-	e3:SetOperation(s.ovop)
+	e3:SetTargetRange(LOCATION_ONFIELD,0)
+	e3:SetTarget(function(e,c) return c==e:GetHandler() or c:IsCode(4740489) end)
+	e3:SetValue(aux.tgoval)
 	c:RegisterEffect(e3)
+	--Cannot be destroyed
 	local e4=e3:Clone()
-	e4:SetCategory(CATEGORY_LEAVE_GRAVE)
-	e4:SetCode(EVENT_TO_GRAVE)
+	e4:SetCode(EFFECT_INDESTRUCTABLE_EFFECT)
+	e4:SetTargetRange(LOCATION_ONFIELD,0)
+	e4:SetTarget(function(e,c) return c==e:GetHandler() or c:IsCode(4740489) end)
+	e4:SetValue(aux.indoval)
 	c:RegisterEffect(e4)
 end
---Unaffected
-function s.unafilter(c)
-	return c:IsCode(75347539)
+function s.tdtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+	if chkc then return chkc:IsLocation(LOCATION_GRAVE) and chkc:IsAbleToDeck() end
+	if chk==0 then return Duel.IsExistingTarget(Card.IsAbleToDeck,tp,LOCATION_GRAVE,LOCATION_GRAVE,1,nil) end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TODECK)
+	local g=Duel.SelectTarget(tp,Card.IsAbleToDeck,tp,LOCATION_GRAVE,LOCATION_GRAVE,1,5,nil)
+	Duel.SetOperationInfo(0,CATEGORY_TODECK,g,#g,0,0)
 end
-function s.unacon(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
-	return c:GetOverlayGroup():IsExists(s.unafilter,1,nil)
+function s.tdop(e,tp,eg,ep,ev,re,r,rp)
+	local sg=Duel.GetTargetCards(e)
+	if #sg==0 then return end
+	Duel.SendtoDeck(sg,nil,SEQ_DECKSHUFFLE,REASON_EFFECT)
 end
---Xyz Filter
-function s.ovfilter(c,tp,lc)
-	return c:IsFaceup() and c:IsSummonCode(lc,SUMMON_TYPE_XYZ,tp,75347539)
+--Banish
+function s.rmcfilter(c,attr)
+	return c:IsSetCard(SET_MAGNET_WARRIOR) and c:IsMonster() and c:IsAbleToRemoveAsCost() 
 end
---Negate
-function s.discon(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.GetFieldGroupCount(tp,0,LOCATION_ONFIELD)>Duel.GetFieldGroupCount(tp,LOCATION_ONFIELD,0)
+function s.rmcost(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return Duel.IsExistingMatchingCard(s.rmcfilter,tp,LOCATION_GRAVE,0,1,nil) end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
+	local sc=Duel.SelectMatchingCard(tp,s.rmcfilter,tp,LOCATION_GRAVE,0,1,1,nil):GetFirst()
+	Duel.Remove(sc,POS_FACEUP,REASON_COST)
+	local tn_chk=sc:IsType(TYPE_NORMAL) and 1 or 0
 end
-function s.distg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(Card.IsNegatable,tp,0,LOCATION_ONFIELD,1,nil) end
+function s.rmtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+	if chkc then return chkc:IsLocation(LOCATION_ONFIELD) and chkc:IsAbleToRemove() end
+	if chk==0 then return Duel.IsExistingTarget(Card.IsAbleToRemove,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,nil) end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
+	local g=Duel.SelectTarget(tp,Card.IsAbleToRemove,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,1,nil)
+	Duel.SetOperationInfo(0,CATEGORY_REMOVE,g,1,0,0)
+	Duel.SetPossibleOperationInfo(0,CATEGORY_DESTROY,nil,1,PLAYER_EITHER,LOCATION_ONFIELD)
 end
-function s.disop(e,tp,eg,ep,ev,re,r,rp)
-	local g=Duel.GetMatchingGroup(Card.IsNegatable,tp,0,LOCATION_ONFIELD,nil)
-	local tc=g:GetFirst()
-	if not tc then return end
-	local c=e:GetHandler()
-	for tc in aux.Next(g) do
-		local e1=Effect.CreateEffect(c)
-		e1:SetType(EFFECT_TYPE_SINGLE)
-		e1:SetCode(EFFECT_DISABLE)
-		e1:SetReset(RESET_EVENT|RESETS_STANDARD|RESET_PHASE|PHASE_STANDBY,2)
-		tc:RegisterEffect(e1)
-		local e2=Effect.CreateEffect(c)
-		e2:SetType(EFFECT_TYPE_SINGLE)
-		e2:SetCode(EFFECT_DISABLE_EFFECT)
-		e2:SetReset(RESET_EVENT|RESETS_STANDARD|RESET_PHASE|PHASE_STANDBY,2)
-		tc:RegisterEffect(e2)
-		if tc:IsType(TYPE_TRAPMONSTER) then
-			local e3=Effect.CreateEffect(c)
-			e3:SetType(EFFECT_TYPE_SINGLE)
-			e3:SetCode(EFFECT_DISABLE_TRAPMONSTER)
-			e3:SetReset(RESET_EVENT|RESETS_STANDARD|RESET_PHASE|PHASE_STANDBY,2)
-			tc:RegisterEffect(e3)
+function s.rmop(e,tp,eg,ep,ev,re,r,rp)
+	local tc=Duel.GetFirstTarget()
+	if tc and tc:IsRelateToEffect(e) then
+		Duel.Remove(tc,POS_FACEUP,REASON_EFFECT)
+	end
+	if tn_chk==0 then return end
+	Duel.BreakEffect()
+	local g=Duel.GetFieldGroup(tp,LOCATION_ONFIELD,LOCATION_ONFIELD)
+		if #g>0 and Duel.SelectYesNo(tp,aux.Stringid(id,2)) then
+			Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DESTROY)
+			local sg=g:Select(tp,1,1,nil)
+			Duel.HintSelection(sg)
+			Duel.BreakEffect()
+			Duel.Destroy(sg,REASON_EFFECT)
 		end
-	end
-	if not c:IsRelateToEffect(e) or c:IsFacedown() then return end
-end
---Attach 
-function s.ovfilter2(c,e,xc,tp)
-	return c:IsMonster() and c:IsFaceup() and c:IsAttribute(ATTRIBUTE_EARTH) and c:IsRace(RACE_ROCK)
-		and c:GetOwner()==tp and not c:IsImmuneToEffect(e) and c:IsCanBeXyzMaterial(xc,tp,REASON_EFFECT)
-end
-function s.ovtg(e,tp,eg,ep,ev,re,r,rp,chk)
-	local c=e:GetHandler()
-	if chk==0 then return c:IsType(TYPE_XYZ) and eg:IsExists(s.ovfilter2,1,nil,e,c,tp) end
-	Duel.SetTargetCard(eg)
-	if e:GetCode()==EVENT_TO_GRAVE then
-		Duel.SetOperationInfo(0,CATEGORY_LEAVE_GRAVE,nil,1,tp,0)
-	end
-end
-function s.ovop(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
-	if not c:IsRelateToEffect(e) or not c:IsType(TYPE_XYZ) or c:IsImmuneToEffect(e) then return end
-	local tg=Duel.GetTargetCards(e):Filter(Card.IsRelateToEffect,nil,e)
-	if #tg==0 then return end
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATTACH)
-	local g=tg:FilterSelect(tp,s.ovfilter2,1,1,nil,e,c,tp)
-	if #g>0 then
-		Duel.Overlay(c,g)
-	end
 end
