@@ -6,6 +6,9 @@ function s.initial_effect(c)
 	Fusion.AddProcMix(c,true,true,99785935,39256679,11549357)
 	Fusion.AddContactProc(c,s.contactfil,s.contactop,false,nil,1)
 	c:AddMustBeFusionSummoned()
+	--Can only be Special Summoned once per turn
+	c:SetSPSummonOnce(id)
+	c:SetUniqueOnField(1,0,id)
 	--Cannot be destroyed by opponent's card effects
 	local e1=Effect.CreateEffect(c)
 	e1:SetCode(EFFECT_IMMUNE_EFFECT)

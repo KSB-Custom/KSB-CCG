@@ -3,7 +3,7 @@ local s,id=GetID()
 function s.initial_effect(c)
 	--Fusion Procedure
 	c:EnableReviveLimit()
-	Fusion.AddProcMixN(c,true,true,99785935,39256679,11549357)
+	Fusion.AddProcMix(c,true,true,99785935,39256679,11549357)
 	--Shuffle cards from the GY into the Deck
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(id,0))
@@ -43,6 +43,14 @@ function s.initial_effect(c)
 	e4:SetTarget(function(e,c) return c==e:GetHandler() or c:IsCode(4740489) end)
 	e4:SetValue(aux.indoval)
 	c:RegisterEffect(e4)
+	--Each of your "Valkyrion" or "Bersekion" can attack directly this turn
+	local e5=Effect.CreateEffect(c)
+	e5:SetDescription(aux.Stringid(id,3))
+	e5:SetType(EFFECT_TYPE_IGNITION)
+	e5:SetRange(LOCATION_MZONE)
+	e5:SetCost(s.dcost)
+	e5:SetOperation(s.dop)
+	c:RegisterEffect(e5)
 end
 function s.tdtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsLocation(LOCATION_GRAVE) and chkc:IsAbleToDeck() end
@@ -56,6 +64,23 @@ function s.tdop(e,tp,eg,ep,ev,re,r,rp)
 	if #sg==0 then return end
 	Duel.SendtoDeck(sg,nil,SEQ_DECKSHUFFLE,REASON_EFFECT)
 end
+--Direct attack
+function s.dcost(e,tp,eg,ep,ev,re,r,rp,chk)
+	local c=e:GetHandler()
+	if chk==0 then return c:IsAbleToExtraAsCost() end
+	Duel.SendtoDeck(c,nil,SEQ_DECKSHUFFLE,REASON_COST)
+end
+function s.dop(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
+	--Each of your "Valkyrion" and "Bersekion" can attack directly this turn
+	local e1=Effect.CreateEffect(c)
+	e1:SetType(EFFECT_TYPE_FIELD)
+	e1:SetCode(EFFECT_DIRECT_ATTACK)
+	e1:SetTargetRange(LOCATION_MZONE,0)
+	e1:SetTarget(function(e,c) return c:IsCode(75347539) or c:IsCode(42901635) end)
+	e1:SetReset(RESET_PHASE|PHASE_END)
+	Duel.RegisterEffect(e1,tp)
+end
 --Banish
 function s.rmcfilter(c,attr)
 	return c:IsSetCard(SET_MAGNET_WARRIOR) and c:IsMonster() and c:IsAbleToRemoveAsCost() 
@@ -66,6 +91,7 @@ function s.rmcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local sc=Duel.SelectMatchingCard(tp,s.rmcfilter,tp,LOCATION_GRAVE,0,1,1,nil):GetFirst()
 	Duel.Remove(sc,POS_FACEUP,REASON_COST)
 	local tn_chk=sc:IsType(TYPE_NORMAL) and 1 or 0
+	e:SetLabel(tn_chk)
 end
 function s.rmtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsLocation(LOCATION_ONFIELD) and chkc:IsAbleToRemove() end
@@ -77,11 +103,11 @@ function s.rmtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 end
 function s.rmop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
-	if tc and tc:IsRelateToEffect(e) then
-		Duel.Remove(tc,POS_FACEUP,REASON_EFFECT)
-	end
-	if tn_chk==0 then return end
+	local tn_chk=e:GetLabel()
+	if tc and tc:IsRelateToEffect(e) and Duel.Remove(tc,POS_FACEUP,REASON_EFFECT)
+	then 
 	Duel.BreakEffect()
+	if tn_chk==0 then return end
 	local g=Duel.GetFieldGroup(tp,LOCATION_ONFIELD,LOCATION_ONFIELD)
 		if #g>0 and Duel.SelectYesNo(tp,aux.Stringid(id,2)) then
 			Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DESTROY)
@@ -90,4 +116,5 @@ function s.rmop(e,tp,eg,ep,ev,re,r,rp)
 			Duel.BreakEffect()
 			Duel.Destroy(sg,REASON_EFFECT)
 		end
+	end
 end
