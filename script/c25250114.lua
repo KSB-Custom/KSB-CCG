@@ -47,7 +47,7 @@ function s.pcon(e)
 end
 function s.atkcon(e)
 	local ec=e:GetHandler():GetEquipTarget()
-	return ec and (ec:IsType(TYPE_NORMAL) or ec:IsType(TYPE_FUSION))
+	return ec and (ec:IsType(TYPE_NORMAL) or ec:IsType(TYPE_FUSION) or ec:IsSetCard(SET_MAGNA_WARRIOR))
 end
 function s.distarget(e,c)
 	return c~=e:GetHandler() and c:IsSpell() and c:IsType(TYPE_EQUIP)
