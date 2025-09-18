@@ -65,7 +65,6 @@ end
 function s.efilter(e,te)
 	return e:GetOwnerPlayer()~=re:GetOwnerPlayer()
 end
-end
 function s.matfil(c,tp)
 	return c:IsAbleToRemoveAsCost() and (c:IsLocation(LOCATION_SZONE) or aux.SpElimFilter(c,false,true))
 end
