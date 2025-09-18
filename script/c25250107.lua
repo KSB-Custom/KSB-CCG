@@ -6,6 +6,14 @@ function s.initial_effect(c)
 	Fusion.AddProcMix(c,true,true,39256679,aux.FilterBoolFunctionEx(Card.IsSetCard,SET_MAGNET_WARRIOR))
 	Fusion.AddContactProc(c,s.contactfil,s.contactop,false,nil,1)
 	c:AddMustBeFusionSummoned()
+		--You can only Fusion Summon or Special Summon by its alternate procedure once per turn
+	local e0=Effect.CreateEffect(c)
+	e0:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
+	e0:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
+	e0:SetCode(EVENT_SPSUMMON_SUCCESS)
+	e0:SetCondition(s.regcon)
+	e0:SetOperation(s.regop)
+	c:RegisterEffect(e0)
 	--Set 1 Spell
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(id,1))
@@ -36,6 +44,23 @@ function s.initial_effect(c)
 	e3:SetHintTiming(0,TIMINGS_CHECK_MONSTER_E)
 	e3:SetCondition(s.spquickcon)
 	c:RegisterEffect(e3)
+end
+s.listed_names={39256679}
+--
+function s.regcon(e)
+	local c=e:GetHandler()
+	return c:IsFusionSummoned() or c:IsSummonType(SUMMON_TYPE_SPECIAL+1)
+end
+function s.regop(e,tp,eg,ep,ev,re,r,rp)
+	--Prevent another Fusion Summon or Special Summon by its alternate procedure that turn
+	local e1=Effect.CreateEffect(e:GetHandler())
+	e1:SetType(EFFECT_TYPE_FIELD)
+	e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
+	e1:SetCode(EFFECT_CANNOT_SPECIAL_SUMMON)
+	e1:SetTargetRange(1,0)
+	e1:SetTarget(function(e,c,sump,sumtype) return c:IsOriginalCode(id) and (sumtype&SUMMON_TYPE_FUSION==SUMMON_TYPE_FUSION or sumtype&SUMMON_TYPE_SPECIAL+1==SUMMON_TYPE_SPECIAL+1) end)
+	e1:SetReset(RESET_PHASE|PHASE_END)
+	Duel.RegisterEffect(e1,tp)
 end
 function s.efilter(e,te)
 	return te:GetOwner()~=e:GetOwner()
