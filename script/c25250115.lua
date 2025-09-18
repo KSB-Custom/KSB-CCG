@@ -28,6 +28,7 @@ function s.initial_effect(c)
 	e2:SetOperation(s.setop)
 	c:RegisterEffect(e2)
 end
+s.listed_names={99785935,39256679,11549357}
 function s.tgfilter(c,cc)
 	return c:IsMonster() and (c:IsSetCard(SET_MAGNET_WARRIOR) or c:IsSetCard(SET_MAGNA_WARRIOR)) and (c:IsLocation(LOCATION_HAND) or c:IsFaceup()) and c:IsAbleToGraveAsCost()
 		and Duel.IsExistingTarget(Card.IsNegatable,0,LOCATION_ONFIELD,LOCATION_ONFIELD,1,Group.FromCards(c,cc)+c:GetEquipGroup())
@@ -52,6 +53,17 @@ function s.disop(e,tp,eg,ep,ev,re,r,rp,chk)
 	if tc:IsNegatable() and tc:IsRelateToEffect(e) then
 		tc:NegateEffects(e:GetHandler(),nil,true)
 	end
+	local c=e:GetHandler()
+	--Specific Magnet Warrior monsters you control cannot be destroyed by card effects for the rest of this turn
+	local e1=Effect.CreateEffect(c)
+	e1:SetType(EFFECT_TYPE_FIELD)
+	e1:SetCode(EFFECT_INDESTRUCTABLE_EFFECT)
+	e1:SetTargetRange(LOCATION_MZONE,0)
+	e1:SetTarget(aux.TargetBoolFunction(Card.IsCode,99785935,39256679,11549357))
+	e1:SetValue(1)
+	e1:SetReset(RESET_PHASE|PHASE_END)
+	Duel.RegisterEffect(e1,tp)
+	aux.RegisterClientHint(c,nil,tp,1,0,aux.Stringid(id,2))
 end
 --Set
 function s.illusionconfilter(c)

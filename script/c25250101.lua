@@ -45,13 +45,14 @@ function s.initial_effect(c)
 	c:RegisterEffect(e4)
 	--Each of your "Valkyrion" or "Bersekion" can attack directly this turn
 	local e5=Effect.CreateEffect(c)
-	e5:SetDescription(aux.Stringid(id,3))
+	e5:SetDescription(aux.Stringid(id,2))
 	e5:SetType(EFFECT_TYPE_IGNITION)
 	e5:SetRange(LOCATION_MZONE)
 	e5:SetCost(s.dcost)
 	e5:SetOperation(s.dop)
 	c:RegisterEffect(e5)
 end
+s.listed_names={99785935,39256679,11549357}
 function s.tdtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsLocation(LOCATION_GRAVE) and chkc:IsAbleToDeck() end
 	if chk==0 then return Duel.IsExistingTarget(Card.IsAbleToDeck,tp,LOCATION_GRAVE,LOCATION_GRAVE,1,nil) end
