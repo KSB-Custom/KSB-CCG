@@ -63,7 +63,6 @@ function s.regop(e,tp,eg,ep,ev,re,r,rp)
 end
 --
 function s.efilter(e,te)
-	function s.efilter(e,re)
 	return e:GetOwnerPlayer()~=re:GetOwnerPlayer()
 end
 end
