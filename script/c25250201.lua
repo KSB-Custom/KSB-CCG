@@ -2,6 +2,11 @@
 local s,id=GetID()
 function s.initial_effect(c)
 	c:SetCounterLimit(0x1019,10)
+	--Activate
+	local e1=Effect.CreateEffect(c)
+	e1:SetType(EFFECT_TYPE_ACTIVATE)
+	e1:SetCode(EVENT_FREE_CHAIN)
+	c:RegisterEffect(e1)
 	--counter
 	local e2=Effect.CreateEffect(c)
 	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
@@ -20,8 +25,8 @@ function s.initial_effect(c)
 	e4:SetCode(EFFECT_UPDATE_ATTACK)
 	e4:SetRange(LOCATION_FZONE)
 	e4:SetTargetRange(LOCATION_MZONE,LOCATION_MZONE)
-	e4:SetTarget(function(e,c) return c:IsType(TYPE_PENDULUM) end)
-	e4:SetValue(function(e,c) return e:GetHandler():GetCounter(COUNTER_SOUL_PENDULUM)*100 end)
+	e4:SetTarget(aux.TargetBoolFunction(Card.IsSetCard,SET_CLOUDIAN))
+	e4:SetValue(function(e,c) return e:GetHandler():GetCounter(COUNTER_FOG)*100 end)
 	c:RegisterEffect(e4)
 	--Add counter2
 	local e5=Effect.CreateEffect(c)
@@ -47,8 +52,8 @@ function s.initial_effect(c)
 	e7:SetRange(LOCATION_FZONE)
 	e7:SetCost(s.ctcost)
 	e7:SetCountLimit(1)
-	e7:SetTarget(s.cttg)
-	e7:SetOperation(s.ctop)
+	e7:SetTarget(s.cttg2)
+	e7:SetOperation(s.ctop2)
 	c:RegisterEffect(e7)
 end
 s.listed_series={SET_CLOUDIAN}
