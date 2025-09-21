@@ -103,14 +103,17 @@ end
 function s.xyzop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local tc=Duel.GetFirstTarget()
-	if c:IsFaceup() and c:IsRelateToEffect(e) and tc:IsRelateToEffect(e) and
-		Duel.Overlay(c,tc)>0 then
+	if c:IsFaceup() and c:IsRelateToEffect(e) and tc:IsRelateToEffect(e)
+		then Duel.Overlay(c,tc)
+		if c:GetOverlayGroup():IsContains(tc) then 
 		--Gains 300 ATK
 		local e1=Effect.CreateEffect(c)
 		e1:SetType(EFFECT_TYPE_SINGLE)
+		e1:SetProperty(EFFECT_FLAG_COPY_INHERIT)
 		e1:SetCode(EFFECT_UPDATE_ATTACK)
 		e1:SetValue(300)
 		e1:SetReset(RESET_EVENT|RESETS_STANDARD_DISABLE)
 		c:RegisterEffect(e1)
+		end
 	end
 end
