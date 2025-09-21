@@ -51,7 +51,6 @@ function s.initial_effect(c)
 	e7:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e7:SetRange(LOCATION_FZONE)
 	e7:SetCost(s.ctcost)
-	e7:SetCountLimit(1)
 	e7:SetTarget(s.cttg2)
 	e7:SetOperation(s.ctop2)
 	c:RegisterEffect(e7)
@@ -93,15 +92,18 @@ end
 function s.cfilter(c)
 	return c:IsMonster() and c:IsSetCard(SET_CLOUDIAN)
 end
-function s.cttg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+function s.cttg2(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsFaceup() end
 	if chk==0 then return Duel.IsExistingTarget(s.cfilter,tp,LOCATION_MZONE,LOCATION_MZONE,1,nil) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FACEUP)
 	Duel.SelectTarget(tp,s.cfilter,tp,LOCATION_MZONE,LOCATION_MZONE,1,1,nil)
+	Duel.SetOperationInfo(0,CATEGORY_RECOVER,nil,0,1-tp,300)
 end
-function s.ctop(e,tp,eg,ep,ev,re,r,rp)
+function s.ctop2(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
 	if tc:IsFaceup() and tc:IsRelateToEffect(e) then
 		tc:AddCounter(COUNTER_FOG,1)
+		Duel.BreakEffect()
+		Duel.Recover(1-tp,300,REASON_EFFECT)
 	end
 end
