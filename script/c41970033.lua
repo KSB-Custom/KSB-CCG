@@ -86,7 +86,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e9)
 end
 s.listed_series={0xf14}
---
+--Special Summon from GY
 function s.spfilter2(c,ft)
 	return c:IsFaceup() and c:IsSetCard(0xf14) and c:IsType(TYPE_PENDULUM) and c:IsAbleToRemoveAsCost() and (ft>0 or c:GetSequence()<5)
 end
@@ -221,26 +221,5 @@ function s.defop(e,tp,eg,ep,ev,re,r,rp)
 	e4:SetValue(1)
 	e4:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END)
 	c:RegisterEffect(e4,true)
-	end
-end
---REMOVE
-function s.rmcon(e,tp,eg,ep,ev,re,r,rp)
-	return r&(REASON_EFFECT+REASON_BATTLE)~=0
-end
-function s.rmfilter(c)
-	return c:IsAbleToRemove() and aux.SpElimFilter(c)
-end
-function s.rmtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then return chkc:IsLocation(LOCATION_MZONE+LOCATION_GRAVE) and s.rmfilter(chkc) end
-	if chk==0 then return true end
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
-	local g=Duel.SelectTarget(tp,s.rmfilter,tp,LOCATION_MZONE+LOCATION_GRAVE,LOCATION_MZONE+LOCATION_GRAVE,1,1,nil)
-	e:GetHandler():RegisterFlagEffect(id,RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END,0,1)
-	Duel.SetOperationInfo(0,CATEGORY_REMOVE,g,1,0,0)
-end
-function s.rmop(e,tp,eg,ep,ev,re,r,rp)
-	local tc=Duel.GetFirstTarget()
-	if tc and tc:IsRelateToEffect(e) then
-		Duel.Remove(tc,POS_FACEUP,REASON_EFFECT)
 	end
 end
