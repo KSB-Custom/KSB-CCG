@@ -64,7 +64,7 @@ function s.spop1(e,tp,eg,ep,ev,re,r,rp)
 end
 function s.aclimit(e,re,tp)
 	local rc=re:GetHandler()
-	return re:IsMonsterEffect() and not rc:IsSetCard(SET_HERALDIC_BEAST)
+	return re:IsMonsterEffect() and not (rc:IsSetCard(SET_HERALDIC_BEAST) or rc:IsSetCard(SET_NUMBER))
 end
 --
 function s.cfilter(c)

@@ -41,7 +41,7 @@ function s.spcon(e,tp,eg,ep,ev,re,r,rp)
 	return eg:IsExists(s.cfilter,1,nil,tp)
 end
 function s.tgfilter(c)
-	return c:IsMonster() and c:IsSetCard(SET_HERALDRY) and c:IsAbleToGrave()
+	return c:IsMonster() and c:IsAbleToGrave() and (c:IsSetCard(SET_HERALDRY) or c:IsCode(23649496))
 end
 function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsPlayerCanDraw(tp,1)
@@ -51,11 +51,26 @@ end
 function s.spop(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.GetLocationCount(tp,LOCATION_MZONE)<=0 then return end
 	local c=e:GetHandler()
-	if c:IsRelateToEffect(e) and Duel.SpecialSummon(c,0,tp,tp,false,false,POS_FACEUP)~=0 then
+	if c:IsRelateToEffect(e) and Duel.SpecialSummon(c,0,tp,tp,false,false,POS_FACEUP)~=0 and Duel.SelectYesNo(tp,aux.Stringid(id,2))
+		then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
-		local g=Duel.SelectMatchingCard(tp,s.tgfilter,tp,LOCATION_DECK,0,1,1,nil)
+		local g=Duel.SelectMatchingCard(tp,s.tgfilter,tp,LOCATION_EXTRA,0,1,1,nil)
 		if #g>0 then
 			Duel.SendtoGrave(g,REASON_EFFECT)
 		end
+	end
+end
+--Set
+function s.setfilter(c)
+	return c:IsSetCard(SET_HERALDRY) and c:IsSpellTrap() and c:IsSSetable()
+end
+function s.settg(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return Duel.IsExistingMatchingCard(s.setfilter,tp,LOCATION_DECK,0,1,nil) end
+end
+function s.setop(e,tp,eg,ep,ev,re,r,rp)
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SET)
+	local g=Duel.SelectMatchingCard(tp,s.setfilter,tp,LOCATION_DECK,0,1,1,nil)
+	if #g>0 then
+		Duel.SSet(tp,g)
 	end
 end
