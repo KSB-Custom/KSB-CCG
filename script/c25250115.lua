@@ -67,7 +67,7 @@ function s.disop(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 --Set
 function s.illusionconfilter(c)
-	return c:IsFaceup() and c:IsLevelAbove(8) and c:IsRace(RACE_ROCK) and c:IsAttribute(ATTRIBUTE_EARTH)
+	return c:IsFaceup() and c:IsLevelAbove(7) and c:IsRace(RACE_ROCK) and c:IsAttribute(ATTRIBUTE_EARTH)
 end
 function s.settg(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
