@@ -27,7 +27,7 @@ function s.initial_effect(c)
 end
 s.listed_series={SET_MAGNET_WARRIOR}
 function s.filter(c,e,tp)
-	return c:IsSetCard(SET_MAGNET_WARRIOR) and c:IsCanBeSpecialSummoned(e,0,tp,false,false,POS_FACEUP_DEFENSE)
+	return c:IsSetCard(SET_MAGNET_WARRIOR) and c:IsCanBeSpecialSummoned(e,0,tp,false,false,POS_FACEUP)
 end
 function s.sptg1(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0 
