@@ -27,6 +27,14 @@ function s.initial_effect(c)
 	e2:SetTarget(s.rmtg)
 	e2:SetOperation(s.rmop)
 	c:RegisterEffect(e2)
+	--(Quick if the opponent controls monsters)
+	local e6=e2:Clone()
+	e6:SetType(EFFECT_TYPE_QUICK_O)
+	e6:SetCode(EVENT_FREE_CHAIN)
+	e6:SetHintTiming(0,TIMINGS_CHECK_MONSTER_E)
+	e6:SetCountLimit(1,{id,1})
+	e6:SetCondition(s.spquickcon)
+	c:RegisterEffect(e6)
 	--Cannot be targeted
 	local e3=Effect.CreateEffect(c)
 	e3:SetType(EFFECT_TYPE_FIELD)
@@ -43,7 +51,7 @@ function s.initial_effect(c)
 	e4:SetTarget(function(e,c) return c==e:GetHandler() or c:IsCode(4740489) end)
 	e4:SetValue(aux.indoval)
 	c:RegisterEffect(e4)
-	--Each of your "Valkyrion" or "Bersekion" can attack directly this turn
+	--"Magna Warrior" monsters you control can attack directly this turn
 	local e5=Effect.CreateEffect(c)
 	e5:SetDescription(aux.Stringid(id,2))
 	e5:SetType(EFFECT_TYPE_IGNITION)
@@ -52,6 +60,7 @@ function s.initial_effect(c)
 	e5:SetOperation(s.dop)
 	c:RegisterEffect(e5)
 end
+s.listed_series={SET_MAGNET_WARRIOR,SET_MAGNA_WARRIOR}
 s.listed_names={99785935,39256679,11549357}
 function s.tdtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsLocation(LOCATION_GRAVE) and chkc:IsAbleToDeck() end
@@ -78,7 +87,7 @@ function s.dop(e,tp,eg,ep,ev,re,r,rp)
 	e1:SetType(EFFECT_TYPE_FIELD)
 	e1:SetCode(EFFECT_DIRECT_ATTACK)
 	e1:SetTargetRange(LOCATION_MZONE,0)
-	e1:SetTarget(function(e,c) return c:IsCode(75347539) or c:IsCode(42901635) end)
+	e1:SetTarget(function(e,c) return c:IsSetCard(SET_MAGNA_WARRIOR) end)
 	e1:SetReset(RESET_PHASE|PHASE_END)
 	Duel.RegisterEffect(e1,tp)
 end
@@ -118,4 +127,11 @@ function s.rmop(e,tp,eg,ep,ev,re,r,rp)
 			Duel.Destroy(sg,REASON_EFFECT)
 		end
 	end
+end
+--Quick condition
+function s.sfilter(c)
+	return c:IsFaceup() and c:IsCode(4740489)
+end
+function s.spquickcon(e,tp,eg,ep,ev,re,r,rp)
+	return Duel.IsExistingMatchingCard(s.sfilter,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,nil)
 end
