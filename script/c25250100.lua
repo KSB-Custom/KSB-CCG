@@ -56,7 +56,7 @@ end
 function s.spfilter2(c,e,tp)
 	return c:IsCode(75347539) and c:IsCanBeSpecialSummoned(e,0,tp,true,false)
 end
-function s.regcon(e,tp,eg,ep,ev,re,r,rp)
+function s.spcon(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	return c:IsPreviousLocation(LOCATION_MZONE) and rp==1-tp and c:IsPreviousControler(tp)
 end

@@ -38,7 +38,7 @@ function s.tgop(e,tp,eg,ep,ev,re,r,rp)
 end
 --Search
 function s.thfilter(c)
-	return c:IsSetCard(SET_MAGNET_WARRIOR) and c:IsAbleToHand()
+	return c:IsSetCard(SET_MAGNET_WARRIOR) and c:IsType(TYPE_NORMAL) and c:IsAbleToHand()
 end
 function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
