@@ -23,7 +23,7 @@ function s.initial_effect(c)
 	e1:SetCondition(function(e) return Duel.IsExistingMatchingCard(aux.FaceupFilter(Card.IsCode,4740489),0,LOCATION_ONFIELD,LOCATION_ONFIELD,1,nil) end)
 	e1:SetValue(s.efilter)
 	c:RegisterEffect(e1)
-	--Return 1 banished card to the GY
+	--Return 3 banished cards to the GY
 	local e2=Effect.CreateEffect(c)
 	e2:SetDescription(aux.Stringid(id,1))
 	e2:SetCategory(CATEGORY_TOGRAVE)
@@ -62,7 +62,7 @@ function s.regop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.RegisterEffect(e1,tp)
 end
 --
-function s.efilter(e,te)
+function s.efilter(e,re)
 	return e:GetOwnerPlayer()~=re:GetOwnerPlayer()
 end
 function s.matfil(c,tp)
