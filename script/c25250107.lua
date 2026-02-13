@@ -99,7 +99,7 @@ function s.setop(e,tp,eg,ep,ev,re,r,rp)
 end
 --Set from Deck
 function s.thfilter(c)
-	return c:IsSSetable() and c:IsCode(25250109) or c:IsCode(25250108)
+	return c:IsSSetable() and c:IsSetCard(SET_MAGNET) and c:IsSpellTrap()
 end
 function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK,0,1,nil) end

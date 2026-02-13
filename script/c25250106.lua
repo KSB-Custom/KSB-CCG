@@ -37,7 +37,7 @@ function s.initial_effect(c)
 	e2:SetTarget(s.thtg)
 	e2:SetOperation(s.thop)
 	c:RegisterEffect(e2)
-	--Special Summon (Quick if the opponent controls monsters)
+	--(Quick if the opponent controls monsters)
 	local e3=e2:Clone()
 	e3:SetType(EFFECT_TYPE_QUICK_O)
 	e3:SetCode(EVENT_FREE_CHAIN)
@@ -84,7 +84,7 @@ function s.contactop(g)
 end
 --Search
 function s.cfilter(c)
-	return c:ListsCodeWithArchetype(SET_MAGNET_WARRIOR) and (c:IsAbleToHand() or c:IsAbleToGrave())
+	return c:IsSetCard(SET_MAGNET) and (c:IsAbleToHand() or c:IsAbleToGrave())
 end
 function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.cfilter,tp,LOCATION_DECK,0,1,nil) end
