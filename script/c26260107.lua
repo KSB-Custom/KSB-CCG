@@ -1,4 +1,4 @@
---Sparkhearts Passion Girl
+--I´m Having Trouble with My Fields Being Destroyed!
 local s,id=GetID()
 function s.initial_effect(c)
 	--Activate 1 of these effects
@@ -14,13 +14,7 @@ function s.initial_effect(c)
 end
 s.listed_names={26260101,26260102}
 function s.deckmatfilter(c)
-	return c:IsRace(RACE_SPELLCASTER) and c:IsAttribute(ATRIBUTTE_FIRE) and c:IsReleasableByEffect()
-end
-function s.matfilter(c)
-	return(c:IsRace(RACE_SPELLCASTER) and c:IsAttribute(ATRIBUTTE_FIRE)
-end
-function s.rfilter(c)
-	return(c:IsRace(RACE_SPELLCASTER) and c:IsAttribute(ATRIBUTTE_FIRE)
+	return c:IsSetCard(0xf27) and c:IsMonster() and c:IsReleasableByEffect()
 end
 function s.extragroup(e,tp,eg,ep,ev,re,r,rp,chk)
 	return Duel.GetMatchingGroup(s.deckmatfilter,tp,LOCATION_DECK,0,nil)
@@ -36,16 +30,16 @@ function s.tributelimit(e,tp,g,sc)
 end
 function s.effcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	e:SetLabel(-100)
-	local params1={lvtype=RITPROC_EQUAL,filter=s.rfilter,location=LOCATION_DECK,matfilter=s.matfilter}
-	local params2={lvtype=RITPROC_EQUAL,filter=s.rfilter,matfilter=s.matfilter,extrafil=s.extragroup,extraop=s.extraop,forcedselection=s.tributelimit}
+	local params1={lvtype=RITPROC_EQUAL,filter=s.deckmatfilter,location=LOCATION_DECK,matfilter=s.deckmatfilter}
+	local params2={lvtype=RITPROC_EQUAL,filter=s.deckmatfilter,matfilter=s.deckmatfilter,extrafil=s.extragroup,extraop=s.extraop,forcedselection=s.tributelimit}
 	local b1=not Duel.HasFlagEffect(tp,id) and Ritual.Target(params1)(e,tp,eg,ep,ev,re,r,rp,0)
 	local b2=not Duel.HasFlagEffect(tp,id+1) and Ritual.Target(params2)(e,tp,eg,ep,ev,re,r,rp,0)
 	if chk==0 then return b1 or b2 end
 end
 function s.efftg(e,tp,eg,ep,ev,re,r,rp,chk)
 	local cost_skip=e:GetLabel()~=-100
-	local params1={lvtype=RITPROC_EQUAL,filter=s.rfilter,location=LOCATION_DECK,matfilter=s.matfilter}
-	local params2={lvtype=RITPROC_EQUAL,filter=s.rfilter,matfilter=s.matfilter,extrafil=s.extragroup,extraop=s.extraop,forcedselection=s.tributelimit}
+	local params1={lvtype=RITPROC_EQUAL,filter=s.deckmatfilter,location=LOCATION_DECK,matfilter=s.deckmatfilter}
+	local params2={lvtype=RITPROC_EQUAL,filter=s.deckmatfilter,matfilter=s.deckmatfilter,extrafil=s.extragroup,extraop=s.extraop,forcedselection=s.tributelimit}
 	local b1=(cost_skip or not Duel.HasFlagEffect(tp,id))
 		and Ritual.Target(params1)(e,tp,eg,ep,ev,re,r,rp,0)
 	local b2=(cost_skip or not Duel.HasFlagEffect(tp,id+1))
@@ -68,10 +62,32 @@ end
 function s.effop(e,tp,eg,ep,ev,re,r,rp)
 	local op=e:GetLabel()
 	if op==1 then
-		local params1={lvtype=RITPROC_EQUAL,filter=s.rfilter,location=LOCATION_DECK,matfilter=s.matfilter}
+		local params1={lvtype=RITPROC_EQUAL,filter=s.deckmatfilter,location=LOCATION_DECK,matfilter=s.deckmatfilter,stage2=s.stage2aux}
 		Ritual.Operation(params1)(e,tp,eg,ep,ev,re,r,rp)
 	elseif op==2 then
-		local params2={lvtype=RITPROC_EQUAL,filter=s.rfilter,matfilter=s.matfilter,extrafil=s.extragroup,extraop=s.extraop,forcedselection=s.tributelimit}
+		local params2={lvtype=RITPROC_EQUAL,filter=s.deckmatfilter,matfilter=s.deckmatfilter,extrafil=s.extragroup,extraop=s.extraop,stage2=s.stage2,forcedselection=s.tributelimit}
 		Ritual.Operation(params2)(e,tp,eg,ep,ev,re,r,rp)
 	end
+end
+function s.stage2(mat,e,tp,eg,ep,ev,re,r,rp,tc)
+	--Cannot be destroyed by battle
+		local e1=Effect.CreateEffect(e:GetHandler())
+		e1:SetDescription(3000)
+		e1:SetType(EFFECT_TYPE_SINGLE)
+		e1:SetProperty(EFFECT_FLAG_CLIENT_HINT)
+		e1:SetCode(EFFECT_INDESTRUCTABLE_BATTLE)
+		e1:SetValue(1)
+		e1:SetReset(RESET_EVENT|RESETS_STANDARD)
+		Duel.RegisterEffect(e1,tp)
+end
+function s.stage2aux(mat,e,tp,eg,ep,ev,re,r,rp,tc)
+	--Cannot be destroyed by battle
+		local e1=Effect.CreateEffect(e:GetHandler())
+		e1:SetDescription(3002)
+		e1:SetType(EFFECT_TYPE_SINGLE)
+		e1:SetProperty(EFFECT_FLAG_CLIENT_HINT)
+		e1:SetCode(EFFECT_CANNOT_BE_EFFECT_TARGET)
+		e1:SetValue(aux.tgoval)
+		e1:SetReset(RESET_EVENT|RESETS_STANDARD)
+		Duel.RegisterEffect(e1,tp)
 end
