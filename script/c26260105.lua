@@ -23,9 +23,11 @@ function s.initial_effect(c)
 	local e3=Effect.CreateEffect(c)
 	e3:SetDescription(aux.Stringid(id,2))
 	e3:SetCategory(CATEGORY_TODECK+CATEGORY_DRAW)
-	e3:SetType(EFFECT_TYPE_IGNITION)
+	e3:SetType(EFFECT_TYPE_QUICK_O)
+	e3:SetCode(EVENT_FREE_CHAIN)
 	e3:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e3:SetRange(LOCATION_GRAVE)
+	e3:SetHintTiming(0,TIMINGS_CHECK_MONSTER_E)
 	e3:SetCountLimit(1,{id,2})
 	e3:SetTarget(s.tdtg)
 	e3:SetOperation(s.tdop)
@@ -41,13 +43,19 @@ function s.activate(e,tp,eg,ep,ev,re,r,rp)
 			local e1=Effect.CreateEffect(e:GetHandler())
 			e1:SetType(EFFECT_TYPE_SINGLE)
 			e1:SetCode(EFFECT_UPDATE_ATTACK)
-			e1:SetReset(RESETS_STANDARD_PHASE_END)
+			e1:SetReset(RESET_EVENT|RESETS_STANDARD)
 			e1:SetValue(-500)
 			tc:RegisterEffect(e1)
 			local e2=e1:Clone()
 			e2:SetCode(EFFECT_UPDATE_DEFENSE)
 			tc:RegisterEffect(e2)
 		end
+		--Destroy all Spells/Traps the opponent controls
+			local sg=Duel.GetMatchingGroup(Card.IsSpellTrap,tp,0,LOCATION_ONFIELD,nil)
+			if Duel.IsBattlePhase() and #sg>0 and Duel.SelectYesNo(tp,aux.Stringid(id,0)) then
+				Duel.BreakEffect()
+				Duel.Destroy(sg,REASON_EFFECT)
+			end
 	end
 end
 function s.extracostfilter(c)
