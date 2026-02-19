@@ -1,7 +1,7 @@
 --Sparkhearts Girl
 local s,id=GetID()
 function s.initial_effect(c)
---Shuffle 1 monster from your hand or face-up field into the Deck, and if you do, Special Summon this card, but banish it when it leaves the field
+	--Shuffle 1 monster from your hand or face-up field into the Deck, and if you do, Special Summon this card
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(id,1))
 	e1:SetCategory(CATEGORY_TODECK+CATEGORY_SPECIAL_SUMMON)
@@ -11,6 +11,13 @@ function s.initial_effect(c)
 	e1:SetTarget(s.tdtg)
 	e1:SetOperation(s.tdop)
 	c:RegisterEffect(e1)
+	--Special Summon itself from the hand (Quick if the opponent controls monsters)
+	local e4=e1:Clone()
+	e4:SetType(EFFECT_TYPE_QUICK_O)
+	e4:SetCode(EVENT_FREE_CHAIN)
+	e4:SetHintTiming(0,TIMINGS_CHECK_MONSTER_E)
+	e4:SetCondition(s.spquickcon)
+	c:RegisterEffect(e4)
 	--Set 1 "Sparks" and 1 "Sparkhearts" Spell/Trap directly from your Deck
 	local e2=Effect.CreateEffect(c)
 	e2:SetDescription(aux.Stringid(id,1))
@@ -26,6 +33,11 @@ function s.initial_effect(c)
 	e3:SetCode(EVENT_SPSUMMON_SUCCESS)
 	c:RegisterEffect(e3)
 end
+--
+function s.spquickcon(e,tp,eg,ep,ev,re,r,rp)
+	return Duel.GetFieldGroupCount(tp,0,LOCATION_MZONE)>1 and Duel.GetFieldGroupCount(tp,LOCATION_MZONE,0)==0
+end
+--
 function s.tdfilter(c,tp)
 	return (c:IsLocation(LOCATION_HAND) and not c:IsCode(id) or c:IsFaceup())
 		and c:IsAbleToDeck() and Duel.GetMZoneCount(tp,c)>0

@@ -1,4 +1,4 @@
---Sparkhearts Passion Girl
+--I Need Holy Water to Ward Evil Spirits!
 local s,id=GetID()
 function s.initial_effect(c)
 	--Activate 1 of these effects
@@ -31,7 +31,7 @@ end
 function s.effcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	e:SetLabel(-100)
 	local params1={lvtype=RITPROC_EQUAL,filter=s.deckmatfilter,location=LOCATION_DECK,matfilter=s.deckmatfilter}
-	local params2={lvtype=RITPROC_EQUAL,filter=s.deckmatfilter,matfilter=s.deckmatfilter,extrafil=s.extragroup,extraop=s.extraop,forcedselection=s.tributelimit}
+	local params2={lvtype=RITPROC_EQUAL,filter=s.deckmatfilter,matfilter=s.deckmatfilter,extrafil=s.extragroup,extraop=s.extraop}
 	local b1=not Duel.HasFlagEffect(tp,id) and Ritual.Target(params1)(e,tp,eg,ep,ev,re,r,rp,0)
 	local b2=not Duel.HasFlagEffect(tp,id+1) and Ritual.Target(params2)(e,tp,eg,ep,ev,re,r,rp,0)
 	if chk==0 then return b1 or b2 end
@@ -39,7 +39,7 @@ end
 function s.efftg(e,tp,eg,ep,ev,re,r,rp,chk)
 	local cost_skip=e:GetLabel()~=-100
 	local params1={lvtype=RITPROC_EQUAL,filter=s.deckmatfilter,location=LOCATION_DECK,matfilter=s.deckmatfilter}
-	local params2={lvtype=RITPROC_EQUAL,filter=s.deckmatfilter,matfilter=s.deckmatfilter,extrafil=s.extragroup,extraop=s.extraop,forcedselection=s.tributelimit}
+	local params2={lvtype=RITPROC_EQUAL,filter=s.deckmatfilter,matfilter=s.deckmatfilter,extrafil=s.extragroup,extraop=s.extraop}
 	local b1=(cost_skip or not Duel.HasFlagEffect(tp,id))
 		and Ritual.Target(params1)(e,tp,eg,ep,ev,re,r,rp,0)
 	local b2=(cost_skip or not Duel.HasFlagEffect(tp,id+1))
@@ -62,13 +62,27 @@ end
 function s.effop(e,tp,eg,ep,ev,re,r,rp)
 	local op=e:GetLabel()
 	if op==1 then
-		local params1={lvtype=RITPROC_EQUAL,filter=s.deckmatfilter,location=LOCATION_DECK,matfilter=s.deckmatfilter,stage2=s.stage2aux}
+		local params1={lvtype=RITPROC_EQUAL,filter=s.deckmatfilter,location=LOCATION_DECK,matfilter=s.deckmatfilter}
 		Ritual.Operation(params1)(e,tp,eg,ep,ev,re,r,rp)
 	elseif op==2 then
-		local params2={lvtype=RITPROC_EQUAL,filter=s.deckmatfilter,matfilter=s.deckmatfilter,extrafil=s.extragroup,extraop=s.extraop,stage2=s.stage2,forcedselection=s.tributelimit}
+		local params2={lvtype=RITPROC_EQUAL,filter=s.deckmatfilter,matfilter=s.deckmatfilter,extrafil=s.extragroup,extraop=s.extraop}
 		Ritual.Operation(params2)(e,tp,eg,ep,ev,re,r,rp)
 	end
+	--"Passion Girl and Passion" monsters cannot be destroyed by battle
+	local e1=Effect.CreateEffect(e:GetHandler())
+	e1:SetDescription(3000)
+	e1:SetType(EFFECT_TYPE_FIELD)
+	e1:SetCode(EFFECT_INDESTRUCTABLE_BATTLE)
+	e1:SetTargetRange(LOCATION_MZONE,0)
+	e1:SetReset(RESET_PHASE|PHASE_END)
+	e1:SetTarget(s.indtg)
+	e1:SetValue(aux.indoval)
+	Duel.RegisterEffect(e1,tp)
 end
+function s.indtg(e,c)
+	return c:IsCode(26260101) or c:IsCode(26260103)
+end
+
 function s.stage2(mat,e,tp,eg,ep,ev,re,r,rp,tc)
 	--Cannot be destroyed by battle
 		local e1=Effect.CreateEffect(e:GetHandler())
@@ -78,7 +92,7 @@ function s.stage2(mat,e,tp,eg,ep,ev,re,r,rp,tc)
 		e1:SetCode(EFFECT_INDESTRUCTABLE_BATTLE)
 		e1:SetValue(1)
 		e1:SetReset(RESET_EVENT|RESETS_STANDARD)
-		Duel.RegisterEffect(e1,tp)
+		fc:RegisterEffect(e1)
 end
 function s.stage2aux(mat,e,tp,eg,ep,ev,re,r,rp,tc)
 	--Cannot be destroyed by battle
@@ -89,5 +103,5 @@ function s.stage2aux(mat,e,tp,eg,ep,ev,re,r,rp,tc)
 		e1:SetCode(EFFECT_CANNOT_BE_EFFECT_TARGET)
 		e1:SetValue(aux.tgoval)
 		e1:SetReset(RESET_EVENT|RESETS_STANDARD)
-		Duel.RegisterEffect(e1,tp)
+		fc:RegisterEffect(e1)
 end

@@ -38,8 +38,32 @@ function s.initial_effect(c)
 	e3:SetTarget(aux.TargetBoolFunction(Card.IsFaceup))
 	e3:SetValue(s.val)
 	c:RegisterEffect(e3)
+	--Destroy all opponent's monsters
+	local e5=Effect.CreateEffect(c)
+	e5:SetDescription(aux.Stringid(id,0))
+	e5:SetCategory(CATEGORY_DESTROY)
+	e5:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_F)
+	e5:SetCode(EVENT_CHAINING)
+	e5:SetRange(LOCATION_MZONE)
+	e5:SetCondition(s.descon)
+	e5:SetTarget(s.destg)
+	e5:SetOperation(s.desop)
+	c:RegisterEffect(e5)
 end
 s.listed_series={0xf27}
+--Destroy
+function s.descon(e,tp,eg,ep,ev,re,r,rp)
+	return rp==tp and re:GetHandler():IsCode(76103675) and re:IsHasType(EFFECT_TYPE_ACTIVATE)
+end
+function s.destg(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return true end
+	local g=Duel.GetMatchingGroup(aux.TRUE,tp,0,LOCATION_MZONE,nil)
+	Duel.SetOperationInfo(0,CATEGORY_DESTROY,g,#g,0,0)
+end
+function s.desop(e,tp,eg,ep,ev,re,r,rp)
+	local g=Duel.GetMatchingGroup(aux.TRUE,tp,0,LOCATION_MZONE,nil)
+	Duel.Destroy(g,REASON_EFFECT)
+end
 --
 function s.val(e,c)
 	local g=Duel.GetMatchingGroup(Card.IsCode,e:GetHandlerPlayer(),LOCATION_GRAVE,0,nil,76103675,26260105,26260106,26260107,26260110)
