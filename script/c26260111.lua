@@ -39,19 +39,19 @@ function s.spquickcon(e,tp,eg,ep,ev,re,r,rp)
 end
 --
 function s.tdfilter(c,tp)
-	return (c:IsLocation(LOCATION_HAND) and not c:IsCode(id) or c:IsFaceup())
+	return (c:IsLocation(LOCATION_HAND) or c:IsFaceup())
 		and c:IsAbleToDeck() and Duel.GetMZoneCount(tp,c)>0
 end
 function s.tdtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
-	if chk==0 then return Duel.IsExistingMatchingCard(s.tdfilter,tp,LOCATION_HAND|LOCATION_MZONE,0,1,nil,tp)
+	if chk==0 then return Duel.IsExistingMatchingCard(nil,tp,LOCATION_HAND|LOCATION_ONFIELD,0,1,c,tp)
 		and c:IsCanBeSpecialSummoned(e,0,tp,false,false) end
 	Duel.SetOperationInfo(0,CATEGORY_TODECK,nil,1,tp,LOCATION_HAND|LOCATION_MZONE)
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,c,1,tp,0)
 end
 function s.tdop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TODECK)
-	local sc=Duel.SelectMatchingCard(tp,s.tdfilter,tp,LOCATION_HAND|LOCATION_MZONE,0,1,1,nil,tp):GetFirst()
+	local sc=Duel.SelectMatchingCard(tp,nil,tp,LOCATION_HAND|LOCATION_ONFIELD,0,1,1,e:GetHandler(),tp):GetFirst()
 	if not sc then return end
 	if sc:IsLocation(LOCATION_HAND) then Duel.ConfirmCards(1-tp,sc)
 	else Duel.HintSelection(sc) end
