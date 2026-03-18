@@ -23,8 +23,8 @@ function s.initial_effect(c)
 	e2:SetCode(EVENT_TO_HAND)
 	e2:SetCountLimit(1,{id,0})
 	e2:SetCondition(function(e) return not e:GetHandler():IsReason(REASON_DRAW) end)
-	e2:SetTarget(s.destg)
-	e2:SetOperation(s.desop)
+	e2:SetTarget(s.settg)
+	e2:SetOperation(s.setop)
 	c:RegisterEffect(e2)
 end
 s.listed_series={SET_LIBROMANCER}

@@ -8,6 +8,7 @@ function s.initial_effect(c)
 	e1:SetType(EFFECT_TYPE_IGNITION)
 	e1:SetRange(LOCATION_HAND)
 	e1:SetCountLimit(1,id)
+	e1:SetCost(s.spcost)
 	e1:SetCondition(aux.NOT(s.spquickcon))
 	e1:SetTarget(s.sptg)
 	e1:SetOperation(s.spop)
@@ -36,6 +37,17 @@ end
 s.listed_series={SET_LIBROMANCER}
 function s.spquickcon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.GetFieldGroupCount(tp,LOCATION_MZONE,0)==0 and Duel.GetFieldGroupCount(tp,0,LOCATION_MZONE)>0
+end
+function s.cfilter(c,e,tp)
+	return c:IsSetCard(SET_LIBROMANCER) and not c:IsPublic()
+end
+function s.spcost(e,tp,eg,ep,ev,re,r,rp,chk)
+	local c=e:GetHandler()
+	if chk==0 then return not c:IsPublic() and Duel.IsExistingMatchingCard(s.cfilter,tp,LOCATION_HAND,0,1,c,e,tp) end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_CONFIRM)
+	local rc=Duel.SelectMatchingCard(tp,s.cfilter,tp,LOCATION_HAND,0,1,1,c):GetFirst()
+	Duel.ConfirmCards(1-tp,Group.FromCards(c,rc))
+	Duel.ShuffleHand(tp)
 end
 function s.spfilter(c,e,tp,opp_chk)
 	return c:IsSetCard(SET_LIBROMANCER) and c:IsCanBeSpecialSummoned(e,100,tp,false,false)
