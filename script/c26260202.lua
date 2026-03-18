@@ -39,7 +39,7 @@ function s.spquickcon(e,tp,eg,ep,ev,re,r,rp)
 end
 function s.spfilter(c,e,tp,opp_chk)
 	return c:IsSetCard(SET_LIBROMANCER) and c:IsCanBeSpecialSummoned(e,100,tp,false,false)
-		and c:IsLocation(LOCATION_HAND|LOCATION_GRAVE)
+		and (c:IsLocation(LOCATION_HAND|LOCATION_GRAVE)
 		or (opp_chk and c:IsLocation(LOCATION_DECK)))
 end
 function s.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
