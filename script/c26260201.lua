@@ -67,7 +67,12 @@ function s.spfilter1(c,e,tp)
 	return c:IsSetCard(SET_LIBROMANCER) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
 end
 function s.thop(e,tp,eg,ep,ev,re,r,rp)
-	if Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND) then
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
+	local g=Duel.SelectMatchingCard(tp,s.thfilter,tp,LOCATION_DECK,0,1,1,nil)
+	if #g>0 and Duel.SendtoHand(g,nil,REASON_EFFECT)>0 then
+		Duel.ConfirmCards(1-tp,g)
+		Duel.ShuffleHand(tp)
+		Duel.BreakEffect()
 		if Duel.GetLocationCount(tp,LOCATION_MZONE)<=0 then return end
 		local g1=Duel.GetMatchingGroup(aux.NecroValleyFilter(s.spfilter1),tp,LOCATION_HAND|LOCATION_GRAVE,0,nil,e,tp)
 		if #g1>0 and Duel.GetFieldGroupCount(tp,LOCATION_MZONE,0)==0 and Duel.GetFieldGroupCount(tp,0,LOCATION_MZONE)>0 
